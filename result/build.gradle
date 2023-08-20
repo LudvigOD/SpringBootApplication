@@ -1,0 +1,63 @@
+plugins {
+    id 'application'
+    // id 'distribution'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+// define variable with main class, used further down
+ext {
+    javaMainClass = "result.ResultApplication"
+    shadow
+}
+
+application {
+    mainClass.set(javaMainClass)
+    project.version = gradle.ext.version
+}
+
+// Specify where to look for dependencies
+repositories {
+    mavenCentral()
+}
+
+// Declare that the task testCompile requires the JUnit framework
+dependencies {
+    implementation project(':shared')
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '[3.1,)'
+
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '[1.9,)'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '[5.9,)'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '[5.9,)'
+}
+
+// When running the task 'test'
+test {
+    useJUnitPlatform()
+    // Log passed/failed tests in the console (see also build/reports/tests):
+    testLogging.events 'passed', 'failed'
+}
+
+// specify main class
+jar {
+    from sourceSets.main.output
+    from configurations.runtimeClasspath
+
+    manifest {
+        attributes(
+                "Main-Class": javaMainClass,
+                "Developers": gradle.ext.devName
+        )
+    }
+}
+
+// Output to build/libs/shadow.jar
+// shadowJar {
+//    archiveBaseName.set('shadow')
+//    archiveClassifier.set('')
+//    archiveVersion.set('')
+// }

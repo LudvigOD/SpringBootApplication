@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+dependencies {   
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.1.2'
+
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.9.2'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.2'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.2'
+}
+
+// When running the task 'test'
+test {
+    useJUnitPlatform()
+    // Log passed/failed tests in the console (see also build/reports/tests):
+    testLogging.events 'passed', 'failed'
+}

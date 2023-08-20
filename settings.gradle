@@ -1,0 +1,6 @@
+rootProject.name = 'Enduro Time Keeper'
+include 'shared', 'register', 'result'
+
+gradle.ext.version = 'v0.1'
+gradle.ext.devName = 'The Shady Devs'
+

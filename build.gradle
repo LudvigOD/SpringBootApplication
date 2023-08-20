@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+// task mergeResultJar(type: Jar) {
+//     dependsOn(':result:jar', ':shared:jar', ':result:shadowJar')
+//     from zipTree(fileTree(project(':result').buildDir) { include 'libs/*-all.jar' }.singleFile)
+//     from zipTree(fileTree(project(':shared').buildDir) { include 'libs/*.jar' }.singleFile)
+//     archiveFileName = 'result-release.jar'
+//     destinationDirectory = file("$buildDir/dist")
+// }
+
+// task mergeRegisterJar(type: Jar) {
+//     dependsOn(':register:jar', ':shared:jar', ':register:shadowJar')
+//     from zipTree(fileTree(project(':register').buildDir) { include 'libs/*-all.jar' }.singleFile)
+//     from zipTree(fileTree(project(':shared').buildDir) { include 'libs/*.jar' }.singleFile)
+//     archiveFileName = 'register-release.jar'
+//     destinationDirectory = file("$buildDir/dist")
+// }
+
+// build {
+//     dependsOn mergeResultJar, mergeRegisterJar
+// }
