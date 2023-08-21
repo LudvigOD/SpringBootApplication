@@ -15,6 +15,15 @@ public class Time {
   private String startNbr;
   private String time;
 
+  public Time() {
+    // The automatic JSON conversion requires a default constructor
+  }
+
+  public Time(String startNbr, String time) {
+    this.startNbr = startNbr;
+    this.time = time;
+  }
+
   public Long getId() {
     return id;
   }

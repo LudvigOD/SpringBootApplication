@@ -1,6 +1,6 @@
 package result;
 
-import utils.Utils;
+import shared.Utils;
 
 public class ResultApplication {
 

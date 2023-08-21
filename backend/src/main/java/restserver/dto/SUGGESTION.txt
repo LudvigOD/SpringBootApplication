@@ -1,4 +1,0 @@
-
-I think we should probably move the dto folder to the shared project.
-DTOs are the data types that gets sent over the network, and is needed by
-all subprojects.

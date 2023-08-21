@@ -1,6 +1,4 @@
-package restserver.dto;
-
-import restserver.entity.Time;
+package shared.dto;
 
 public class TimeDTO {
   private String startNbr;
@@ -17,11 +15,13 @@ public class TimeDTO {
   // we'll need that, but I'm going to leave this here for now.
   // private ZonedDateTime time;
 
-  public TimeDTO(Time time) {
-    // Lots of things called time now. Maybe we can rename some of them to
-    // make it less confusing?
-    this.startNbr = time.getTime();
-    this.time = time.getTime();
+  public TimeDTO() {
+    // The automatic JSON conversion requires a default constructor
+  }
+
+  public TimeDTO(String startNbr, String time) {
+    this.startNbr = startNbr;
+    this.time = time;
   }
 
   public String getStartNbr() {
@@ -30,5 +30,10 @@ public class TimeDTO {
 
   public String getTime() {
     return time;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s; %s", startNbr, time);
   }
 }

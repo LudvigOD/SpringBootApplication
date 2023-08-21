@@ -18,4 +18,9 @@ public class TimeService {
     return timeRepository.findByStartNbr(startNbr);
   }
 
+  public Time registerTime(String startNbr, String time) {
+    Time timeEntity = new Time(startNbr, time);
+    return timeRepository.save(timeEntity);
+  }
+
 }
