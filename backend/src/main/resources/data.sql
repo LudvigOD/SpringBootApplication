@@ -1,0 +1,2 @@
+-- We can add SQL queries here, to have them run automatically on every startup.
+-- Use this to insert test data.

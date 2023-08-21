@@ -8,6 +8,10 @@ allprojects {
     }
 }
 
+sourceCompatibility = JavaVersion.VERSION_17 // Set your desired Java version
+targetCompatibility = JavaVersion.VERSION_17 // Set your desired Java version
+
+
 // task mergeResultJar(type: Jar) {
 //     dependsOn(':result:jar', ':shared:jar', ':result:shadowJar')
 //     from zipTree(fileTree(project(':result').buildDir) { include 'libs/*-all.jar' }.singleFile)
