@@ -14,7 +14,6 @@ application {
     project.version = gradle.ext.version
 }
 
-
 // Specify where to look for dependencies
 repositories {
     mavenCentral()
@@ -55,7 +54,7 @@ jar {
     }
 }
 
-// Output to build/libs/shadow.jar
+// The shadowJar task is added by the shadow plugin, and builds a jar with all dependencies included. We can configure it here, but the defaults seem fine.
 // shadowJar {
 //    archiveBaseName.set('shadow')
 //    archiveClassifier.set('')

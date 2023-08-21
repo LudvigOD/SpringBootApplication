@@ -2,9 +2,9 @@ Note to selves:
 
 Backend server uses Spring Boot. To start it, run:
 
-$ gradle :backend:bootRun
+$ ./gradlew :backend:bootRun
 
-from the project root. (Or gradlew when using the wrapper)
+from the project root.
 
 I'm gonna' write this stuff down before I forget it. Because I will...
 

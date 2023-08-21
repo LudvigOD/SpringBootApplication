@@ -6,10 +6,12 @@ allprojects {
     repositories {
         mavenCentral()
     }
+    // build.gradle
+    // gradleVersion = '8.3'
+    sourceCompatibility = JavaVersion.VERSION_17 
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
-sourceCompatibility = JavaVersion.VERSION_17 // Set your desired Java version
-targetCompatibility = JavaVersion.VERSION_17 // Set your desired Java version
 
 
 // task mergeResultJar(type: Jar) {

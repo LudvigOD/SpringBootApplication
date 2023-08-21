@@ -7,7 +7,6 @@ plugins {
 // define variable with main class, used further down
 ext {
     javaMainClass = "result.ResultApplication"
-    shadow
 }
 
 application {
@@ -55,7 +54,7 @@ jar {
     }
 }
 
-// Output to build/libs/shadow.jar
+// The shadowJar task is added by the shadow plugin, and builds a jar with all dependencies included. We can configure it here, but the defaults seem fine.
 // shadowJar {
 //    archiveBaseName.set('shadow')
 //    archiveClassifier.set('')
