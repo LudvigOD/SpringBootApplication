@@ -2,14 +2,15 @@ plugins {
     id 'java'
 }
 
+// Settings that apply to all projects
 allprojects {
     repositories {
         mavenCentral()
     }
-    // build.gradle
-    // gradleVersion = '8.3'
-    sourceCompatibility = JavaVersion.VERSION_17 
-    targetCompatibility = JavaVersion.VERSION_17
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 
