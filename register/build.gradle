@@ -4,20 +4,23 @@
  */
 
 plugins {
-    id 'application'
-    // id 'distribution'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
+
+    // I discovered these plugins, which makes the build process a lot easier!
+    // Now, it just works out of the box, without any configuration. (\(^_^)/)
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 // define variable with main class, used further down
 ext {
-    javaMainClass = "register.RegisterApplication"
+    javaMainClass = "register.main.RegisterApplication"
 }
 
-application {
-    mainClass.set(javaMainClass)
-    project.version = gradle.ext.version
-}
+// application {
+//     mainClass.set(javaMainClass)
+//     project.version = gradle.ext.version
+// }
 
 // Specify where to look for dependencies
 repositories {
@@ -28,29 +31,34 @@ repositories {
 dependencies {
     implementation project(':shared')
 
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.10.1'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.1'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.1'
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
+    testRuntimeOnly  group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.1'
+
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
     implementation 'org.springframework.boot:spring-boot-starter-webflux:3.1.2'
 
 }
 
+test {
+    useJUnitPlatform()
 
+    // Enables detailed test logging
+    // Note: We might want to exclude standardOut and standardError if our tests are too chatty
+    testLogging {
+        // Set options for log events
+        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
 
-// specify main class
-jar {
-    from sourceSets.main.output
-    from configurations.runtimeClasspath
+        // Show detailed exceptions or not ('short' or 'full')
+        exceptionFormat 'full'
 
-    manifest {
-        attributes(
-                "Main-Class": javaMainClass,
-                "Developers": gradle.ext.devName
-        )
+        // Show standard out and error streams
+        showStandardStreams true
     }
 }
 
-// The shadowJar task is added by the shadow plugin, and builds a jar with all dependencies included. We can configure it here, but the defaults seem fine.
-// shadowJar {
-//    archiveBaseName.set('shadow')
-//    archiveClassifier.set('')
-//    archiveVersion.set('')
-// }

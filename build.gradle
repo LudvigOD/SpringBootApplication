@@ -1,6 +1,12 @@
 
+evaluationDependsOn(':register')
+evaluationDependsOn(':result')
+evaluationDependsOn(':backend')
+
 // Settings that apply to all subprojects
 subprojects {
+
+    // Apply the java plugin to add support for Java
     apply plugin: 'java'
 
     repositories {
@@ -10,63 +16,45 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    dependencies {
-        // All projects need JUnit, so include it here instead of in each project
-
-        // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons
-        testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.10.1'
-        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.1'
-        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.1'
-        // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
-        testRuntimeOnly  group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.1'
-    }
-    test {
-        useJUnitPlatform()
-
-        // Enables detailed test logging
-        // Note: We might want to exclude standardOut and standardError if our tests are too chatty
-        testLogging {
-            // Set options for log events
-            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-
-            // Show detailed exceptions or not ('short' or 'full')
-            exceptionFormat 'full'
-
-            // Show standard out and error streams
-            showStandardStreams true
-        }
-    }
 
 }
 
+/**
+ * I think I finally managed to get the build to work. We might need
+ * to customize it a bit more, but for now it works. It pulls the
+ * built jar files from the subprojects and puts them in a zip file,
+ * and also includes our documentation (which is still empty, btw!).
+ *
+ * Importantly, each subproject has its own build.gradle file, which
+ * uses two boot plugins to build the jar files (this is where the
+ * task bootJar comes from). The bootJar task handles all the fancy
+ * magic, of which I understand very little, but it works!
+ */
+task assembleAll(type: Zip) {
+    // Set the destination directory for the zip file
+    destinationDirectory = layout.buildDirectory.dir('zip')
 
-// I did some experimentation below, but honestly I don't even remember what I was trying to do.
-// It looks like I was trying to merge the jars from each subproject into a single jar. But I
-// think that the register and result subprojects are handling that themselves, so I don't think
-// we need to do it here. I'm leaving this here for now, but we can delete it if we don't need it.
+    // Set the base name and extension of the archive
+    archiveBaseName.set('project-bundle')
+    archiveExtension.set('zip')
 
-// I think the register and result subprojects produces a runnable jar in their build/libs
-// directory, and I imagine that we'll want to package them all up into a single archive for
-// distribution here? Or maybe we'll just distribute the jars separately? I'm not sure.
+    // Add the jar files from the subprojects
+    from([
+        project(':backend').bootJar,
+        project(':register').bootJar,
+        project(':result').bootJar,
+    ])
 
-// task mergeResultJar(type: Jar) {
-//     dependsOn(':result:jar', ':shared:jar', ':result:shadowJar')
-//     from zipTree(fileTree(project(':result').buildDir) { include 'libs/*-all.jar' }.singleFile)
-//     from zipTree(fileTree(project(':shared').buildDir) { include 'libs/*.jar' }.singleFile)
-//     archiveFileName = 'result-release.jar'
-//     destinationDirectory = file("$buildDir/dist")
-// }
+     // Include README.md at the root of the zip
+    from('docs') {
+        include 'README.md'
+        into '/'
+    }
 
-// task mergeRegisterJar(type: Jar) {
-//     dependsOn(':register:jar', ':shared:jar', ':register:shadowJar')
-//     from zipTree(fileTree(project(':register').buildDir) { include 'libs/*-all.jar' }.singleFile)
-//     from zipTree(fileTree(project(':shared').buildDir) { include 'libs/*.jar' }.singleFile)
-//     archiveFileName = 'register-release.jar'
-//     destinationDirectory = file("$buildDir/dist")
-// }
+    // Include all other files in 'docs' into 'documentation', excluding README.md
+    from('docs') {
+        exclude 'README.md'
+        into 'documentation'
+    }
+}
 
-// build {
-//     dependsOn mergeResultJar, mergeRegisterJar
-// }
