@@ -8,6 +8,9 @@ import jakarta.persistence.Id;
 @Entity
 public class Time {
 
+  // Note to self: These annotations tells Spring that this id
+  // attribute should be an ID in the database table, and that
+  // its value should be automatically generated (1, 2, 3, ...).
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
