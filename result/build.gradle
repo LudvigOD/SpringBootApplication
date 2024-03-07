@@ -8,7 +8,7 @@ plugins {
 
     // I discovered these plugin, which makes the build process a lot easier!
     // Now, it just works out of the box, without any configuration. (\(^_^)/)
-    id 'org.springframework.boot' version '3.1.2'
+    id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
 
 }
@@ -26,15 +26,6 @@ repositories {
 // Declare that the task testCompile requires the JUnit framework
 dependencies {
     implementation project(':shared')
-
-    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons
-    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.10.1'
-    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.1'
-    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.1'
-    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
-    testRuntimeOnly  group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.1'
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
     implementation 'org.springframework.boot:spring-boot-starter-webflux:3.1.2'

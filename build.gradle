@@ -8,6 +8,7 @@ subprojects {
 
     // Apply the java plugin to add support for Java
     apply plugin: 'java'
+    apply plugin: 'jacoco'
 
     repositories {
         mavenCentral()
@@ -15,6 +16,38 @@ subprojects {
     java {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    dependencies {
+
+        // I previously had the following dependencies here, but I don't think we need them
+        // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons
+        // testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.10.1'
+        // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
+        // testRuntimeOnly  group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.1'
+
+
+        // JUnit Jupiter (includes API, engine, and params)
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.10.2'
+
+        // Mockito - for mocking objects in tests
+        // https://mvnrepository.com/artifact/org.mockito/mockito-core
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.11.0'
+        // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+        testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.11.0'
+
+    }
+
+    test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+    }
+    jacocoTestReport {
+        dependsOn test // tests are required to run before generating the report
+    }
+
+    // Add the jacoco plugin to generate test coverage reports
+    jacoco {
+        toolVersion = "0.8.7"
     }
 
 }
@@ -32,7 +65,7 @@ subprojects {
  */
 task assembleAll(type: Zip) {
     // Set the destination directory for the zip file
-    destinationDirectory = layout.buildDirectory.dir('zip')
+    destinationDirectory = new File(projectDir, 'release')
 
     // Set the base name and extension of the archive
     archiveBaseName.set('project-bundle')
@@ -55,6 +88,12 @@ task assembleAll(type: Zip) {
     from('docs') {
         exclude 'README.md'
         into 'documentation'
+    }
+
+    // Inclide the runner script, for starting and stopping the backend
+    from('scripts') {
+        include 'runner'
+        into '/'
     }
 }
 
