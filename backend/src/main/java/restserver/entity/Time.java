@@ -67,4 +67,9 @@ public class Time {
     this.time = time;
   }
 
+  @Override
+  public String toString() {
+    return String.format("Time[id=%d, startNbr='%s', time='%s']", id, startNbr, time);
+  }
+
 }

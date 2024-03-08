@@ -34,26 +34,3 @@ dependencies {
 
 }
 
-test {
-    useJUnitPlatform()
-
-    // Enables detailed test logging
-    // Note: We might want to exclude standardOut and standardError if our tests are too chatty
-    testLogging {
-        // Set options for log events
-        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-
-        // Show detailed exceptions or not ('short' or 'full')
-        exceptionFormat 'full'
-
-        // Show standard out and error streams
-        showStandardStreams true
-    }
-
-    // finalizedBy jacocoTestReport // Jacoco report is always generated after tests run
-}
-
-// jacocoTestReport {
-//     dependsOn test // tests are required to run before generating the report
-// }
-

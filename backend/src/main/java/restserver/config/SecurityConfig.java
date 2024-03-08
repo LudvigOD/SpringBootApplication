@@ -23,23 +23,23 @@ public class SecurityConfig {
    * applications.
    */
 
-  @Bean
-  public UserDetailsService users() {
-    UserBuilder users = User.withDefaultPasswordEncoder();
-    UserDetails user = users.username("user").password("password").roles("USER")
-        .build();
-    UserDetails admin = users.username("admin").password("password")
-        .roles("ADMIN", "USER").build();
+  // @Bean
+  // public UserDetailsService users() {
+  // UserBuilder users = User.withDefaultPasswordEncoder();
+  // UserDetails user = users.username("user").password("password").roles("USER")
+  // .build();
+  // UserDetails admin = users.username("admin").password("password")
+  // .roles("ADMIN", "USER").build();
 
-    // We can set up a database for users and roles like this:
-    // JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-    // users.createUser(user);
-    // users.createUser(admin);
-    // return users;
+  // // We can set up a database for users and roles like this:
+  // // JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+  // // users.createUser(user);
+  // // users.createUser(admin);
+  // // return users;
 
-    // Or we can set up users and roles in memory like this:
-    return new InMemoryUserDetailsManager(user, admin);
-  }
+  // // Or we can set up users and roles in memory like this:
+  // return new InMemoryUserDetailsManager(user, admin);
+  // }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -92,17 +92,18 @@ public class SecurityConfig {
                 // of matcher it is. But, I couldn't get that to work. So, I'm
                 // using the older way, which is to explicitly specify the type
                 // of matcher.
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
-                .permitAll()
+                // .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
+                // .permitAll()
                 // .requestMatchers(AntPathRequestMatcher.antMatcher("/admin/**"))
                 // .hasRole("ADMIN") //
                 .anyRequest().permitAll()) //
-        .headers(headers -> headers.frameOptions(opt -> opt.disable()))
-        .csrf(
-            csrf -> csrf.ignoringRequestMatchers(
-                AntPathRequestMatcher.antMatcher("/h2-console/**"))) //
+        // .headers(headers -> headers.frameOptions(opt -> opt.disable()))
+        // .csrf(
+        // csrf -> csrf.ignoringRequestMatchers(
+        // AntPathRequestMatcher.antMatcher("/h2-console/**"))) //
         .csrf(csrf -> csrf.disable()) //
-        .formLogin(Customizer.withDefaults());
+    // .formLogin(Customizer.withDefaults())
+    ;
     return http.build();
   }
 

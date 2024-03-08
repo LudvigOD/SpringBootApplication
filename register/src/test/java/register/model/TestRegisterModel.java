@@ -41,42 +41,10 @@ public class TestRegisterModel {
     private WebClient.RequestHeadersSpec requestHeadersSpecMock;
     private WebClient.ResponseSpec responseSpecMock;
 
-    @Test
-    public void test() {
-        System.out.println("Hello, Spring!");
-        assertEquals(1, 1);
-    }
-
-    @Test
-    public void testRegisterTime() {
-        // Mock the ExchangeFunction
-        ExchangeFunction exchangeFunction = mock(ExchangeFunction.class);
-        ClientResponse clientResponse = ClientResponse.create(HttpStatus.OK)
-                .header("Content-Type", "application/json")
-                .body("{}")
-                .build();
-        when(exchangeFunction.exchange(any(ClientRequest.class)))
-                .thenReturn(Mono.just(clientResponse));
-
-        // Create a WebClient with the mock ExchangeFunction
-        WebClient mockWebClient = WebClient.builder()
-                .exchangeFunction(exchangeFunction)
-                .build();
-
-        // Inject the mock WebClient into the model
-        RegisterModelImpl instance = new RegisterModelImpl(mockWebClient);
-
-        // Call the method under test
-        instance.registerTime("01");
-
-        // Verify the interactions or state changes expected
-        verify(exchangeFunction).exchange(any(ClientRequest.class));
-        // Additional verifications or assertions as needed
-    }
-
     @BeforeEach
     void setUp() throws Exception {
-        // Mock WebClient and its method chain
+        // Mock WebClient and its method chain, i.e. the same chain that is used in the
+        // actual implementation in RegisterModelImpl.
         webClientMock = mock(WebClient.class);
         requestHeadersUriSpecMock = mock(WebClient.RequestHeadersUriSpec.class);
         requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
@@ -87,20 +55,24 @@ public class TestRegisterModel {
         when(requestHeadersSpecMock.accept(any(MediaType.class))).thenReturn(requestHeadersSpecMock);
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
-        // Prepare your mock response
+        // Prepare our mock response
         List<TimeDTO> mockResponse = List.of(new TimeDTO("01", "12:34:56"));
-        // ObjectMapper objectMapper = new ObjectMapper();
-        // String jsonMockResponse = objectMapper.writeValueAsString(mockResponse);
 
-        // Setup the mock to return a response with your JSON body
+        // Setup the mock to return a response with our JSON body
         when(responseSpecMock.bodyToMono(
                 new ParameterizedTypeReference<List<TimeDTO>>() {
                 })).thenReturn(
                         Mono.delay(Duration.ofMillis(50))
                                 .then(Mono.just(mockResponse)));
 
-        // Initialize your service with the mocked WebClient
+        // Initialize RegisterModelImpl with the mocked WebClient
         regModel = new RegisterModelImpl(webClientMock);
+    }
+
+    @Test
+    public void test() {
+        System.out.println("Hello, Spring!");
+        assertEquals(1, 1);
     }
 
     @Test
@@ -125,11 +97,42 @@ public class TestRegisterModel {
         // Call the method that we want to test, with our response handler
         regModel.sendNonBlockingGetRequest(responseHandler);
 
-        // Wait for the response handler to be called (or for the timeout to expire)
-        // await returns true if the latch was counted down to zero, false otherwise
-        // For example, try to increase the wait time to 2 seconds and see what happens
+        // Wait for the response handler to be called (or for the timeout to expire).
+        // await returns true if the latch was counted down to zero, false otherwise.
+        // For example, try to increase the wait time from 50 ms to 2 seconds in the
+        // setup method and see what happens.
         assertTrue(latch.await(1, TimeUnit.SECONDS), "Response handler was not called in time!");
 
+    }
+
+    @Test
+    public void testRegisterTime() {
+        // Note to self: We should maybe move some of this setup to the setup method?
+
+        // Mock the ExchangeFunction, which is basically a function that takes a
+        // ClientRequest and returns a ClientResponse
+        ExchangeFunction exchangeFunction = mock(ExchangeFunction.class);
+        ClientResponse clientResponse = ClientResponse.create(HttpStatus.OK)
+                .header("Content-Type", "application/json")
+                .body("{}")
+                .build();
+        when(exchangeFunction.exchange(any(ClientRequest.class)))
+                .thenReturn(Mono.just(clientResponse));
+
+        // Create a WebClient with the mock ExchangeFunction
+        WebClient mockWebClient = WebClient.builder()
+                .exchangeFunction(exchangeFunction)
+                .build();
+
+        // Inject the mock WebClient into the model
+        RegisterModelImpl instance = new RegisterModelImpl(mockWebClient);
+
+        // Call the method under test
+        instance.registerTime("01");
+
+        // Verify the interactions or state changes expected
+        verify(exchangeFunction).exchange(any(ClientRequest.class));
+        // Additional verifications or assertions as needed
     }
 
 }
