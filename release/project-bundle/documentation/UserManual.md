@@ -1,3 +1,0 @@
-# Användarmanual
-
-**TODO!** `(\(^_^/)`

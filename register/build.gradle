@@ -10,9 +10,6 @@ plugins {
     // Now, it just works out of the box, without any configuration. (\(^_^)/)
     id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
-
-    // This plugin is used to generate the Jacoco test coverage report
-    // id 'jacoco'
 }
 
 // define variable with main class, used further down
@@ -20,17 +17,12 @@ ext {
     javaMainClass = "register.main.RegisterApplication"
 }
 
-// Specify where to look for dependencies
-repositories {
-    mavenCentral()
-}
-
 // Declare that the task testCompile requires the JUnit framework
 dependencies {
     implementation project(':shared')
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.1.2'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 }
 

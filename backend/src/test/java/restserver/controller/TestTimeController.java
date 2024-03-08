@@ -2,6 +2,7 @@ package restserver.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -65,9 +66,9 @@ public class TestTimeController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(timeDTOJson))
                 .andExpect(status().isOk());
-        // Depending on your controller, adjust the expected status accordingly
 
-        // Optionally verify that timeService.registerTime was called with the expected
-        // parameters
+        // verify that timeService.registerTime was called with the expected parameters
+        // (this is a Mockito verification)
+        verify(timeService).registerTime("01", "12:34:56");
     }
 }

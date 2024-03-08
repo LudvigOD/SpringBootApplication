@@ -1,5 +1,5 @@
 rootProject.name = 'Enduro Time Keeper' // The name of the project (currently just a placeholder)
-include 'shared', 'register', 'result', 'backend' // Subprojects to include
+include 'shared', 'register', 'admin', 'backend' // Subprojects to include
 
 gradle.ext.version = 'v0.1' // The version of the project, remember to update this when releasing a new version
 gradle.ext.devName = 'The Shady Devs' // Our developer or team name (currently just a placeholder)

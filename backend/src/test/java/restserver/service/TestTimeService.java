@@ -39,14 +39,14 @@ public class TestTimeService {
     public void testGetTimesForStartNbr() {
         // setting up - pretending we're looking up start number "01"
         String startNbr = "01";
-        // making some fake Time objs, like pretend database stuff
+        // making some fake Time objs
         Time[] mockTimes = new Time[] {
                 new Time(startNbr, "10:00:00"),
                 new Time(startNbr, "10:00:01"),
                 new Time(startNbr, "10:00:02")
         };
-        // telling mock repo, when findByStartNbr is called with "01", return our fake
-        // times
+        // telling the mock repository:
+        // when findByStartNbr is called with "01", return our fake times
         when(timeRepository.findByStartNbr(startNbr)).thenReturn(Arrays.asList(mockTimes));
 
         // running the actual method we wanna test
@@ -58,7 +58,7 @@ public class TestTimeService {
         assertEquals(mockTimes.length, result.size());
         assertArrayEquals(mockTimes, result.toArray());
 
-        // making sure the repo findByStartNbr was called with the right argument
+        // making sure the repo method findByStartNbr was called with the right argument
         verify(timeRepository).findByStartNbr(startNbr);
     }
 
@@ -67,7 +67,7 @@ public class TestTimeService {
         // setup with a startNbr "02" and time "11:00:00"
         String startNbr = "02";
         String time = "11:00:00";
-        // fake Time obj, pretending it's what gets saved
+        // fake Time obj, that will be saved to the mock repository
         Time timeEntity = new Time(startNbr, time);
         // mock repo save method, returns our fake timeEntity
         when(timeRepository.save(any(Time.class))).thenReturn(timeEntity);

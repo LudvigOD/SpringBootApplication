@@ -12,7 +12,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import register.model.RegisterModel;
+import register.model.RegisterModelImpl;
 import register.util.TimeTuple;
+import shared.dto.TimeDTO;
 import shared.gui.PlaceholderTextField;
 
 public class RegisterGUI extends JFrame implements RegisterView {
@@ -60,6 +62,19 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.add(startNumberField);
     inputPanel.add(registerButton);
 
+    // Temporary test, fetch times from the server
+    // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
+    JButton fetchTimesButton = new JButton("Test: Fetch times");
+    fetchTimesButton.addActionListener((e) -> {
+      ((RegisterModelImpl) model).sendNonBlockingGetRequest(timeList -> {
+        System.out.println("Received " + timeList.size() + " times from server");
+        for (TimeDTO time : timeList) {
+          System.out.println(time);
+        }
+      });
+    });
+    inputPanel.add(fetchTimesButton);
+
     mainPanel.add(inputPanel, BorderLayout.NORTH);
     mainPanel.add(new JScrollPane(registrationList), BorderLayout.CENTER);
 
@@ -67,7 +82,6 @@ public class RegisterGUI extends JFrame implements RegisterView {
       String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
         model.registerTime(startNumber);
-        startNumberField.setText("");
       }
     });
 

@@ -1,6 +1,6 @@
 
 evaluationDependsOn(':register')
-evaluationDependsOn(':result')
+evaluationDependsOn(':admin')
 evaluationDependsOn(':backend')
 
 // Settings that apply to all subprojects
@@ -89,7 +89,7 @@ task assembleAll(type: Zip) {
     from([
         project(':backend').bootJar,
         project(':register').bootJar,
-        project(':result').bootJar,
+        project(':admin').bootJar,
     ])
 
      // Include README.md at the root of the zip

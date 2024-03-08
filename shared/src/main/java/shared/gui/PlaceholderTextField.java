@@ -5,6 +5,10 @@ import java.awt.Graphics;
 
 import javax.swing.JTextField;
 
+/**
+ * A JTextField with a placeholder text that is displayed when the field is
+ * empty.
+ */
 public class PlaceholderTextField extends JTextField {
   private String placeholder;
 
