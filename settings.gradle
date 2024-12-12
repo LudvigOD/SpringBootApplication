@@ -1,4 +1,4 @@
-rootProject.name = 'Enduro Time Keeper' // The name of the project (currently just a placeholder)
+rootProject.name = 'Unnamed project' // The name of the project (currently just a placeholder)
 include 'shared', 'register', 'admin', 'backend' // Subprojects to include
 
 gradle.ext.version = 'v0.1' // The version of the project, remember to update this when releasing a new version
