@@ -1,0 +1,114 @@
+
+evaluationDependsOn(':register')
+evaluationDependsOn(':admin')
+evaluationDependsOn(':backend')
+
+// Settings that apply to all subprojects
+subprojects {
+
+    // Apply the java plugin to add support for Java
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    repositories {
+        mavenCentral()
+    }
+    // If Gradle is using the wrong Java version, you can set it here!
+    // java {
+    //     sourceCompatibility = JavaVersion.VERSION_17
+    //     targetCompatibility = JavaVersion.VERSION_17
+    // }
+    dependencies {
+
+        // I previously had the following dependencies here, but I don't think we need them
+        // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons
+        // testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: '1.10.1'
+        // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
+        // testRuntimeOnly  group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.1'
+
+
+        // JUnit Jupiter (includes API, engine, and params)
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.11.3'
+
+        // Mockito - for mocking objects in tests
+        // https://mvnrepository.com/artifact/org.mockito/mockito-core
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.14.2'
+        // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+        testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.14.2'
+
+    }
+
+    test {
+        useJUnitPlatform()
+        // Enables detailed test logging
+        // Note: We might want to exclude standardOut and standardError if our tests are too chatty
+        testLogging {
+            // Set options for log events
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+
+            // Show detailed exceptions or not ('short' or 'full')
+            exceptionFormat 'full'
+
+            // Show standard out and error streams
+            showStandardStreams true
+        }
+        
+        finalizedBy jacocoTestReport // report is always generated after tests run
+    }
+    jacocoTestReport {
+        dependsOn test // tests are required to run before generating the report
+    }
+
+    // Add the jacoco plugin to generate test coverage reports
+    jacoco {
+        toolVersion = "0.8.12"
+    }
+
+}
+
+/**
+ * I think I finally managed to get the build to work. We might need
+ * to customize it a bit more, but for now it works. It pulls the
+ * built jar files from the subprojects and puts them in a zip file,
+ * and also includes our documentation (which is still empty, btw!).
+ *
+ * Importantly, each subproject has its own build.gradle file, which
+ * uses two boot plugins to build the jar files (this is where the
+ * task bootJar comes from). The bootJar task handles all the fancy
+ * magic, of which I understand very little, but it works!
+ */
+task assembleAll(type: Zip) {
+    // Set the destination directory for the zip file
+    destinationDirectory = new File(projectDir, 'release')
+
+    // Set the base name and extension of the archive
+    archiveBaseName.set('project-bundle')
+    archiveExtension.set('zip')
+
+    // Add the jar files from the subprojects
+    from([
+        project(':backend').bootJar,
+        project(':register').bootJar,
+        project(':admin').bootJar,
+    ])
+
+     // Include README.md at the root of the zip
+    from('docs') {
+        include 'README.md'
+        into '/'
+    }
+
+    // Include all other files in 'docs' into 'documentation', excluding README.md
+    from('docs') {
+        exclude 'README.md'
+        into 'documentation'
+    }
+
+    // Include the runner script, for starting and stopping the backend
+    from('scripts') {
+        include 'runner'
+        into '/'
+    }
+}
+
