@@ -13,33 +13,36 @@ public class AdminModelImpl implements AdminModel {
 
     private WebClient webClient;
 
-    // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får flyttas dit isf.
+    // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
+    // flyttas dit isf.
     private int nbrCompetitors;
     private int nbrStations;
 
     public AdminModelImpl(WebClient webClient) {
         this.times = new ArrayList<>();
-        
+
         this.webClient = webClient;
     }
     // @Override
     // public void addListener(AdminView view) {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'addListener'");
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'addListener'");
     // }
 
     // @Override
     // public void removeListener(AdminView view) {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'removeListener'");
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'removeListener'");
     // }
-
 
     @Override
     public List<TimeDTO> getParticipantTimes(String startNbr) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getParticipantTimes'");
     }
+
     @Override
     public void startCompetition(int nbrCompetitors, int nbrStations) {
         this.nbrCompetitors = nbrCompetitors;
@@ -52,6 +55,18 @@ public class AdminModelImpl implements AdminModel {
 
     public int getNbrStations() {
         return nbrStations;
+    }
+
+    @Override
+    public List<List<TimeDTO>> getAllTimes() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllTimes'");
+    }
+
+    @Override
+    public int getTotalTime(String startNbr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTotalTime'");
     }
 
 }

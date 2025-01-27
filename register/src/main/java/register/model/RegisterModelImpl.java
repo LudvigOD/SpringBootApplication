@@ -41,7 +41,7 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   @Override
-  public void registerTime(String startNbr, Integer station) {
+  public void registerTime(String startNbr, Integer stationId) {
     TimeTuple timeTuple = new TimeTuple(startNbr, Instant.now());
     this.timeTuples.add(timeTuple);
     for (RegisterView view : this.views) {
