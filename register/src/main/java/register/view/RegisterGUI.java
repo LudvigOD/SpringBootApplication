@@ -3,12 +3,10 @@ package register.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -17,11 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
 import java.awt.Font;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-
 import register.model.RegisterModel;
 import register.model.RegisterModelImpl;
 import register.util.TimeTuple;
@@ -34,20 +28,19 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private Font defaultFont = new Font("SANS_SERIF", Font.PLAIN, 25);
   private JTextField startNumberField;
   private JButton registerButton;
-  private DefaultListModel<String> registrationListModel;
-  private JList<String> registrationList;
   private String[] columnNames = {"Startnummer", "Tid"};
-  DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+  private DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
   public RegisterGUI(RegisterModel model) {
     this.model = model;
     this.model.addListener(this);
     // Fungerar inte på vissa datorer
-    //setExtendedState(JFrame.MAXIMIZED_BOTH);
+    // setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     initGUI();
   }
 
+  // ??
   @Override
   public void update(Iterable<TimeTuple> timeTuples) {
   }
@@ -62,12 +55,11 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private void initGUI() {
     setTitle("Tidregistrering");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    // Behövs inte längre p.g.a fullscreen?
-    setSize(800, 900);
+    setSize(800, 600);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     JTable registrationTable = new JTable(tableModel);
-    // Eventuellt skapa klass?
+    // Eventuellt skapa klass för registrationTable?
     registrationTable.setFont(defaultFont);
     registrationTable.setRowHeight(34);
     registrationTable.setShowHorizontalLines(true);
@@ -85,14 +77,12 @@ public class RegisterGUI extends JFrame implements RegisterView {
     registerButton.setFont(defaultFont);
     registerButton.setBackground(Color.RED);
 
-    registrationListModel = new DefaultListModel<>();
-    registrationList = new JList<>(registrationListModel);
-
     JPanel inputPanel = new JPanel();
+
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
 
-    String[] stations = {"start", "mål"};
+    String[] stations = {"Start", "Mål"};
     JComboBox<String> chooseStation = new JComboBox<String>(stations);
 
     inputPanel.add(chooseStation);
@@ -115,10 +105,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
         }
       }, "01");
     });
-    inputPanel.add(fetchTimesButton);
 
+    inputPanel.add(fetchTimesButton);
     mainPanel.add(inputPanel, BorderLayout.NORTH);
-    
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
 
