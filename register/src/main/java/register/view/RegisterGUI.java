@@ -18,6 +18,7 @@ import javax.swing.text.AbstractDocument;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.time.temporal.ChronoUnit;
 
 import register.model.RegisterModel;
 import register.model.RegisterModelImpl;
@@ -51,6 +52,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
   @Override
   public void timeWasRegistered(TimeTuple timeTuple) {
     System.out.println("Time was registered: " + timeTuple);
+    // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1 DECIMAL
+    String nanoDecimal = String.valueOf(Math.round((double) timeTuple.getTime().getNano()/100000000));
+    
     tableModel.addRow(new Object[]{timeTuple.getStartNbr(), timeTuple.getTime()});
 
     // Maybe use a table instead of a list?
@@ -59,12 +63,16 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private void initGUI() {
     setTitle("Tidregistrering");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // Behövs inte längre p.g.a fullscreen?
     setSize(800, 900);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     JTable registrationTable = new JTable(tableModel);
     registrationTable.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
     registrationTable.setRowHeight(34);
+    registrationTable.setShowHorizontalLines(true);
+    registrationTable.setShowVerticalLines(true);
+    registrationTable.setGridColor(Color.BLACK);
 
     startNumberField = new PlaceholderTextField("Startnummer", 10);
     startNumberField.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
