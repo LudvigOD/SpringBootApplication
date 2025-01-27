@@ -31,7 +31,7 @@ public class RegisterModelImpl implements RegisterModel {
 
     this.webClient = webClient;
 
-    this.raceID = 0; // denna måste ändras till att bli dynamisk
+    this.raceID = 1; // denna måste ändras till att bli dynamisk
   }
 
   @Override
@@ -96,7 +96,7 @@ public class RegisterModelImpl implements RegisterModel {
     // but might be enough for us? I think the effect is that the program will
     // freeze briefly until the response is received, and then continue.
     return webClient.get()
-        .uri("/api/races/{raceId}/times", raceID)
+        .uri("/races/{raceId}/times", raceID)
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
@@ -106,7 +106,7 @@ public class RegisterModelImpl implements RegisterModel {
 
   public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
-        .uri("/api/races/{raceId}/times", raceId)
+        .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(dto)
         .retrieve()
