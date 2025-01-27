@@ -1,7 +1,6 @@
 package register.model;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -20,8 +19,6 @@ public class RegisterModelImpl implements RegisterModel {
   private final List<RegisterView> views;
 
   private final WebClient webClient;
-
-  private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
   private int raceID;
 
@@ -65,20 +62,21 @@ public class RegisterModelImpl implements RegisterModel {
     // });
   }
 
-  public void sendNonBlockingGetRequest(
+  public void asyncReloadTimes(
       Consumer<List<TimeDTO>> responseHandler, String startNbr) {
     // Note to self: subscribe means that we make an asynchronous GET request to the
     // server. Thus, this method returns immediately (void), and the response will
     // be handled by the given consumer in the future, by some other thread. So, we
     // can call this method with a lambda expression that handles the response.
-      webClient.get()
+    webClient.get()
         .uri(uriBuilder -> uriBuilder
-          .path("/races/{raceId}/times")
-          .queryParam("startNbr", startNbr)
-          .build(raceID))
+            .path("/races/{raceId}/times")
+            .queryParam("startNbr", startNbr)
+            .build(raceID))
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {})
+        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+        })
         .subscribe(responseHandler);
 
     // After some experimentation:
@@ -88,7 +86,7 @@ public class RegisterModelImpl implements RegisterModel {
     // accordingly, i.e. Consumer<List<TimeDTO>> or Consumer<TimeDTO>.
   }
 
-  public List<TimeDTO> sendBlockingGetRequest(String startNbr) {
+  public List<TimeDTO> syncReloadTimes(String startNbr) {
     // Note to self: block means that we make a synchronous GET request to the
     // server. That means that the program will be blocked and wait here until
     // the response is received. This is not recommended in a real applications,
@@ -96,17 +94,18 @@ public class RegisterModelImpl implements RegisterModel {
     // freeze briefly until the response is received, and then continue.
 
     return webClient.get()
-      .uri(uriBuilder -> uriBuilder
-        .path("/races/{raceId}/times")
-        .queryParam("startNbr", startNbr)
-        .build(raceID))
-      .accept(MediaType.APPLICATION_JSON)
-      .retrieve()
-      .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {})
-      .block(); // will wait here during network request
+        .uri(uriBuilder -> uriBuilder
+            .path("/races/{raceId}/times")
+            .queryParam("startNbr", startNbr)
+            .build(raceID))
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+        })
+        .block(); // will wait here during network request
   }
 
-  //denna verkar fungera
+  // denna verkar fungera
   public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
         .uri("/races/{raceId}/times", raceId)

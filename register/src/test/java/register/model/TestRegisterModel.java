@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,7 @@ public class TestRegisterModel {
 
                 when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
                 when(requestHeadersUriSpecMock.uri(any(String.class))).thenReturn(requestHeadersSpecMock);
+                when(requestHeadersUriSpecMock.uri(any(Function.class))).thenReturn(requestHeadersSpecMock);
                 when(requestHeadersSpecMock.accept(any(MediaType.class))).thenReturn(requestHeadersSpecMock);
                 when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
@@ -96,7 +98,7 @@ public class TestRegisterModel {
                 };
 
                 // Call the method that we want to test, with our response handler
-                regModel.sendNonBlockingGetRequest(responseHandler, "01");
+                regModel.asyncReloadTimes(responseHandler, "01");
 
                 // Wait for the response handler to be called (or for the timeout to expire).
                 // await returns true if the latch was counted down to zero, false otherwise.
