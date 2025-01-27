@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import restserver.entity.Time;
 import restserver.repository.TimeRepository;
 
+import org.springframework.data.domain.Sort;
+
 @Service
 public class TimeService {
 
@@ -21,6 +23,14 @@ public class TimeService {
   public Time registerTime(String startNbr, String time) {
     Time timeEntity = new Time(startNbr, time);
     return timeRepository.save(timeEntity);
+  }
+
+  public List<Time> fetchAllTimes() {
+    return timeRepository.findAll();
+  }
+
+  public List<Time> fetchAllStations(String station) {
+    return timeRepository.findByStation(station);
   }
 
 }

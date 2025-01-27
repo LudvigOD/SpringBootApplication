@@ -46,4 +46,28 @@ public class TimeController {
     timeService.registerTime(timeDTO.getStartNbr(), timeDTO.getTime());
   }
 
+  @GetMapping("/regtimes")
+  public List<TimeDTO> fetchAllTimes() {
+    List<Time> times = timeService.fetchAllTimes();
+
+    // Convert the data to DTOs
+    List<TimeDTO> timeDTOs = times.stream()
+        .map(time -> new TimeDTO(time.getStartNbr(), time.getTime()))
+        .collect(Collectors.toList());
+
+    return timeDTOs;
+  }
+
+  @GetMapping("/regtimes/{station}")
+  public List<TimeDTO> fetchAllTimes(@PathVariable("station") String station) {
+    List<Time> times = timeService.fetchAllStations(station);
+
+    // Convert the data to DTOs
+    List<TimeDTO> timeDTOs = times.stream()
+        .map(time -> new TimeDTO(time.getStartNbr(), time.getTime()))
+        .collect(Collectors.toList());
+
+    return timeDTOs;
+  }
+
 }

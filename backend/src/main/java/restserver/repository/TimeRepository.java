@@ -16,4 +16,12 @@ public interface TimeRepository extends JpaRepository<Time, Long> {
    */
   public List<Time> findByStartNbr(String startNbr);
 
+  /**
+   * Get all times for a specific start number.
+   * 
+   * @param station
+   * @return all entities containing station
+   */
+  public List<Time> findByStation(String station);
+
 }
