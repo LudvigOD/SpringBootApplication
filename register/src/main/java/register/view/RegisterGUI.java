@@ -2,6 +2,8 @@ package register.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,8 +16,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
-import java.awt.Font;
-
 import register.model.RegisterModel;
 import register.model.RegisterModelImpl;
 import register.util.TimeTuple;
@@ -26,9 +26,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
   private final RegisterModel model;
   private int selectedStation = 1;
-  private Integer[] stations = {1, 2 , 3 , 4};
+  private Integer[] stations = { 1, 2, 3, 4 };
   private JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
-  private String[] tableHeaders = {"Startnummer", "Tid", "Station"};
+  private String[] tableHeaders = { "Startnummer", "Tid", "Station" };
   private Font defaultFont = new Font("SANS_SERIF", Font.PLAIN, 25);
   private JTextField startNumberField;
   private JButton registerButton;
@@ -49,15 +49,18 @@ public class RegisterGUI extends JFrame implements RegisterView {
   @Override
   public void timeWasRegistered(TimeTuple timeTuple) {
     System.out.println("Time was registered: " + timeTuple);
-    // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1 DECIMAL
+    // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1
+    // DECIMAL
     var utils = new shared.Utils();
-    tableModel.addRow(new Object[]{timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()), selectedStation});
+    tableModel.addRow(new Object[] { timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()),
+        selectedStation });
   }
 
   private void initGUI() {
     setTitle("Tidregistrering");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    setSize(Toolkit.getDefaultToolkit().getScreenSize().width,
+        Toolkit.getDefaultToolkit().getScreenSize().height);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     JTable registrationTable = new JTable(tableModel) {
@@ -87,7 +90,6 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
 
-    
     chooseStation = new JComboBox<Integer>(stations);
     chooseStation.setFont(new Font("SANS_SERIF", Font.PLAIN, 20));
     chooseStation.addActionListener(event -> {
@@ -102,7 +104,6 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.add(startNum);
     inputPanel.add(startNumberField);
     inputPanel.add(registerButton);
-    
 
     // Temporary test, fetch times from the server
     // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
@@ -119,7 +120,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
       }, startNumberField.getText());
     });
 
-   //inputPanel.add(fetchTimesButton);
+    // inputPanel.add(fetchTimesButton);
     mainPanel.add(inputPanel, BorderLayout.NORTH);
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
