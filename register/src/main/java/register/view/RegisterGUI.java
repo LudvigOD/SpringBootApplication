@@ -10,6 +10,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -57,6 +59,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     startNumberField = new PlaceholderTextField("Startnummer", 10);
     startNumberField.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+
+    ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
+    
     registerButton = new JButton("Registrera tid");
     registerButton.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
 
