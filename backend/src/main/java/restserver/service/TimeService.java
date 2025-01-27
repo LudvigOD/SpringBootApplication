@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.sql.ast.tree.predicate.BooleanExpressionPredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,4 +39,18 @@ public class TimeService {
 
     return timeRepository.findByRaceId(raceId);
   }
+
+  //public List<Time> getAllPlayerTimes(){
+  //}
+
+  public Boolean isDefect(int raceId, int stationId, String startNbr){
+      return (timeRepository.findByRaceIdAndStationIdAndStartNbr(raceId, stationId, startNbr).size() > 1);
+  }
+
+  public Time editStartNbr (int raceId, Optional<Integer> stationId, Optional<String> oldStartNbr, Optional<String> newStartNbr) {    
+    var result = timeRepository.findByRaceIdAndStationIdAndStartNbr(raceId, stationId.get(), oldStartNbr.get()).get(0);
+    result.setStartNbr(newStartNbr.get());
+    return result;
+  }
+
 }
