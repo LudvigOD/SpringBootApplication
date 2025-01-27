@@ -15,4 +15,6 @@ public interface RegisterModel {
    */
   void registerTime(String startNbr, int stationId, int raceId);
 
+  void registerTime(String startNbr, int stationId);
+
 }

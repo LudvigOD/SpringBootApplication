@@ -81,7 +81,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     registerButton.addActionListener((e) -> {
       String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
-        model.registerTime(startNumber, 1, 1);
+        model.registerTime(startNumber, 0);
       }
     });
 

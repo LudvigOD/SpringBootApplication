@@ -42,8 +42,6 @@ public class RegisterModelImpl implements RegisterModel {
 
   @Override
   public void registerTime(String startNbr, int stationId, int raceId) {
-    // dont forget to remove
-    raceId = 0;
     TimeTuple timeTuple = new TimeTuple(startNbr, Instant.now());
     this.timeTuples.add(timeTuple);
     for (RegisterView view : this.views) {
@@ -61,6 +59,10 @@ public class RegisterModelImpl implements RegisterModel {
     // System.out.println(time);
     //
     // });
+  }
+
+  public void registerTime(String startNbr, int stationId) {
+    registerTime(startNbr, stationId, 0);
   }
 
   public void sendNonBlockingGetRequest(
