@@ -15,7 +15,17 @@ public interface AdminModel {
    * 
    * @param startNbr
    */
+  List<List<TimeDTO>> getAllTimes();
+
+  /**
+   * Retrieve a competitors times
+   * 
+   * @param startNbr
+   */
   List<TimeDTO> getParticipantTimes(String startNbr);
+
+  
+  int getTotalTime(String startNbr);
 
   /**
    * Starts the competition.
@@ -28,7 +38,5 @@ public interface AdminModel {
   int getNbrCompetitors();
 
   int getNbrStations();
-
-  /** */
 
 }
