@@ -129,7 +129,7 @@ public class TestRegisterModel {
                 RegisterModelImpl instance = new RegisterModelImpl(mockWebClient);
 
                 // Call the method under test
-                instance.registerTime("01", "A");
+                instance.registerTime("01", 1);
 
                 // Verify the interactions or state changes expected
                 verify(exchangeFunction).exchange(any(ClientRequest.class));
