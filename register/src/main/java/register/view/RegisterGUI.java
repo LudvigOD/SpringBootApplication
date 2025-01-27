@@ -2,6 +2,8 @@ package register.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,18 +27,17 @@ import shared.gui.PlaceholderTextField;
 public class RegisterGUI extends JFrame implements RegisterView {
 
   private final RegisterModel model;
-  private int selectedStation = 1;
-  private Integer[] stations = {1, 2 , 3 , 4};
-  private JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
-  private String[] tableHeaders = {"Startnummer", "Tid", "Station"};
   private Font defaultFont = new Font("SANS_SERIF", Font.PLAIN, 25);
   private JTextField startNumberField;
   private JButton registerButton;
-  private DefaultTableModel tableModel = new DefaultTableModel(tableHeaders, 0);
+  private String[] columnNames = { "Startnummer", "Tid" };
+  private DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
   public RegisterGUI(RegisterModel model) {
     this.model = model;
     this.model.addListener(this);
+    // Fungerar inte på vissa datorer
+    // setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     initGUI();
   }
@@ -49,22 +50,19 @@ public class RegisterGUI extends JFrame implements RegisterView {
   @Override
   public void timeWasRegistered(TimeTuple timeTuple) {
     System.out.println("Time was registered: " + timeTuple);
-    // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1 DECIMAL
-    var utils = new shared.Utils();
-    tableModel.addRow(new Object[]{timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()), selectedStation});
+    // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1
+    // DECIMAL
+    tableModel.addRow(new Object[] { timeTuple.getStartNbr(),
+        timeTuple.getTime().format(DateTimeFormatter.ofPattern("HH:mm:ss.S")) });
   }
 
   private void initGUI() {
     setTitle("Tidregistrering");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    setSize(800, 600);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
-    JTable registrationTable = new JTable(tableModel) {
-      public boolean isCellEditable(int row, int col) {
-        return false;
-      }
-    };
+    JTable registrationTable = new JTable(tableModel);
     // Eventuellt skapa klass för registrationTable?
     registrationTable.setFont(defaultFont);
     registrationTable.setRowHeight(34);
@@ -88,17 +86,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
 
-    
-    JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
-    chooseStation.setFont(new Font("SANS_SERIF", Font.PLAIN, 20));
-    chooseStation.addActionListener(event -> {
-      selectedStation = (int) chooseStation.getSelectedItem();
-    });
+    String[] stations = { "Start", "Mål" };
+    JComboBox<String> chooseStation = new JComboBox<String>(stations);
 
-    JLabel stationLabel = new JLabel("Station:");
-    stationLabel.setFont(defaultFont);
-
-    inputPanel.add(stationLabel);
     inputPanel.add(chooseStation);
     inputPanel.add(startNum);
     inputPanel.add(startNumberField);
@@ -117,10 +107,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
         for (TimeDTO time : timeList) {
           System.out.println(time);
         }
-      });
+      }, "01");
     });
 
-   //inputPanel.add(fetchTimesButton);
+    inputPanel.add(fetchTimesButton);
     mainPanel.add(inputPanel, BorderLayout.NORTH);
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
@@ -128,7 +118,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     registerButton.addActionListener((e) -> {
       String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
-        model.registerTime(startNumber, 1);
+        model.registerTime(startNumber);
       }
     });
 

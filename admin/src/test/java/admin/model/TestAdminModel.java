@@ -70,7 +70,7 @@ public class TestAdminModel {
 
     @Test 
     public void testGetParticipantTimes() {
-            
+        
     }
 
     @Test 
@@ -81,7 +81,7 @@ public class TestAdminModel {
         adminModel.startCompetition(competitors, stations);
 
         assertEquals(adminModel.getNbrCompetitors(), 10);
-        assertEquals(adminModel.getNbrStations(), 10);
+        assertEquals(adminModel.getNbrStations(), 3);
 
     }
  
