@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -42,7 +43,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     this.model = model;
     this.model.addListener(this);
     // Fungerar inte på vissa datorer
-    setExtendedState(JFrame.MAXIMIZED_BOTH);
+    //setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     initGUI();
   }
@@ -91,12 +92,14 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
 
-    JScrollPane a = new JScrollPane();
+    String[] stations = {"start", "mål"};
+    JComboBox<String> chooseStation = new JComboBox<String>(stations);
 
-
+    inputPanel.add(chooseStation);
     inputPanel.add(startNum);
     inputPanel.add(startNumberField);
     inputPanel.add(registerButton);
+    
 
     // Temporary test, fetch times from the server
     // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
