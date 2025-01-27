@@ -45,21 +45,30 @@ public class TestTimeRepository {
     @Test
     public void findByStartNbr_ShouldReturnTimes() {
         // Setup data for testing
-        Time time1 = new Time("01", "10:00:00");
-        Time time2 = new Time("02", "10:05:00");
-        Time time3 = new Time("01", "10:10:00");
+        Time time1 = new Time("01", "10:00:00", "A");
+        Time time2 = new Time("02", "10:05:00", "B");
+        Time time3 = new Time("01", "10:10:00", "C");
         timeRepository.save(time1);
         timeRepository.save(time2);
         timeRepository.save(time3);
 
         // Run the method we want to test
-        List<Time> results = timeRepository.findByStartNbr("01");
+        List<Time> results1 = timeRepository.findByStartNbr("01");
+        List<Time> results2 = timeRepository.findByStartNbr("02");
 
         // Verify the results
-        assertThat(results).hasSize(2);
-        assertThat(results.get(0).getStartNbr()).isEqualTo("01");
-        assertThat(results.get(0).getTime()).isEqualTo("10:00:00");
-        assertThat(results.get(1).getStartNbr()).isEqualTo("01");
-        assertThat(results.get(1).getTime()).isEqualTo("10:10:00");
+        assertThat(results1).hasSize(2);
+        assertThat(results1.get(0).getStartNbr()).isEqualTo("01");
+        assertThat(results1.get(0).getTime()).isEqualTo("10:00:00");
+        assertThat(results1.get(0).getStation()).isEqualTo("A");
+
+        assertThat(results1.get(1).getStartNbr()).isEqualTo("01");
+        assertThat(results1.get(1).getTime()).isEqualTo("10:10:00");
+        assertThat(results1.get(1).getStation()).isEqualTo("C");
+
+        assertThat(results2).hasSize(1);
+        assertThat(results2.get(0).getStartNbr()).isEqualTo("02");
+        assertThat(results2.get(0).getTime()).isEqualTo("10:05:00");
+        assertThat(results2.get(0).getStation()).isEqualTo("B");
     }
 }

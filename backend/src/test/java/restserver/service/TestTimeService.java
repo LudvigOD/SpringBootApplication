@@ -41,9 +41,9 @@ public class TestTimeService {
         String startNbr = "01";
         // making some fake Time objs
         Time[] mockTimes = new Time[] {
-                new Time(startNbr, "10:00:00"),
-                new Time(startNbr, "10:00:01"),
-                new Time(startNbr, "10:00:02")
+                new Time(startNbr, "10:00:00", "A"),
+                new Time(startNbr, "10:00:01", "B"),
+                new Time(startNbr, "10:00:02", "C")
         };
         // telling the mock repository:
         // when findByStartNbr is called with "01", return our fake times
@@ -64,22 +64,23 @@ public class TestTimeService {
 
     @Test
     public void testRegisterTime() {
-        // setup with a startNbr "02" and time "11:00:00"
+        // setup with a startNbr "02" and time "11:00:00" and station A
         String startNbr = "02";
         String time = "11:00:00";
+        String station = "A";
         // fake Time obj, that will be saved to the mock repository
-        Time timeEntity = new Time(startNbr, time);
+        Time timeEntity = new Time(startNbr, time, station);
         // mock repo save method, returns our fake timeEntity
         when(timeRepository.save(any(Time.class))).thenReturn(timeEntity);
 
         // running the method we want to test
-        Time result = timeService.registerTime(startNbr, time);
+        Time result = timeService.registerTime(startNbr, time, station);
 
         // result shouldn't be null, startNbr and time should match what we set up
         assertNotNull(result);
         assertEquals(startNbr, result.getStartNbr());
         assertEquals(time, result.getTime());
-
+        assertEquals(station, result.getStation());
         // making sure save was called on the repo
         verify(timeRepository).save(any(Time.class));
     }
