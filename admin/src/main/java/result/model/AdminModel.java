@@ -1,46 +1,34 @@
 package result.model;
 
-import admin.view.RegisterView;
+import java.util.List;
+
+import shared.dto.TimeDTO;
 
 public interface AdminModel {
 
-  void addListener(AdminView view);
+  // void addListener(AdminView view);
 
-  void removeListener(AdminView view);
+  // void removeListener(AdminView view);
 
   /**
-   * Registers a time for a start number using the current time.
+   * Retrieves all the times from the server.
    * 
    * @param startNbr
    */
-  void registerTime(String startNbr);
+  List<TimeDTO> getParticipantTimes(String startNbr);
 
   /**
-   * Edits the time of a start number.
+   * Starts the competition.
    * 
-   * @param startNbr
+   * @param amountCompetitors
+   * @param stations
    */
-  void editTime(String startNbr);
+  void startCompetition(int amountCompetitors, int stations);
 
-  /**
-   * Deletes a time for a start number.
-   * 
-   * @param startNbr
-   */
-  void deleteTime(String startNbr);
+  int getNbrCompetitors();
 
-  /**
-   * Change a start number.
-   * 
-   * @param startNbr
-   */
-  void editStartNbr(String startNbr);
+  int getNbrStations();
 
-  /**
-   * Create a participant.
-   * 
-   * @param startNbr
-   */
-  void registerParticipant();
+  /** */
 
 }
