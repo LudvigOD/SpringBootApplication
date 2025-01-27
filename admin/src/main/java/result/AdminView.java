@@ -6,6 +6,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 
+/*
+ * Använd /regtimes för att hämta alla tider
+ * Använd /regtimes/{station} för att filtrera på station
+ * Använd /regtimes/{startNbr} för att filtrera på startNbr
+ */
+
 public class AdminView {
 
     public static void createAndShowGUI() {
@@ -27,12 +33,12 @@ public class AdminView {
         rightScrollPane.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, new Color(156, 202, 124)));
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int totalHeight = (int)(screenSize.height * 0.9);
-        leftScrollPane.setPreferredSize(new Dimension((int)(screenSize.width * 0.2), totalHeight));
-        rightScrollPane.setPreferredSize(new Dimension((int)(screenSize.width * 0.6), totalHeight));
+        int totalHeight = (int) (screenSize.height * 0.9);
+        leftScrollPane.setPreferredSize(new Dimension((int) (screenSize.width * 0.2), totalHeight));
+        rightScrollPane.setPreferredSize(new Dimension((int) (screenSize.width * 0.6), totalHeight));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.2;
@@ -51,16 +57,16 @@ public class AdminView {
     }
 
     private static JTable createLeftTable() {
-        String[] columnNames = {"Station", "Nr.", "Tid"};
+        String[] columnNames = { "Station", "Nr.", "Tid" };
         Object[][] data = {
-            {"s", "1", "-"},
-            {"s", "2", "-"},
-            {"s", "3", "-"},
-            {"s", "4", "-"},
-            {"e", "2", "-"},
-            {"e", "3", "-"},
-            {"e", "1", "-"},
-            {"e", "2", "-"}
+                { "s", "1", "-" },
+                { "s", "2", "-" },
+                { "s", "3", "-" },
+                { "s", "4", "-" },
+                { "e", "2", "-" },
+                { "e", "3", "-" },
+                { "e", "1", "-" },
+                { "e", "2", "-" }
         };
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
@@ -75,13 +81,13 @@ public class AdminView {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 c.setForeground(Color.BLACK);
-                
+
                 setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
                 setHorizontalAlignment(SwingConstants.LEFT);
-                
+
                 if (row % 2 == 0) {
                     c.setBackground(new Color(240, 240, 255));
                 } else {
@@ -108,12 +114,12 @@ public class AdminView {
     }
 
     private static JTable createRightTable() {
-        String[] columnNames = {"Nr.", "Namn", "Start", "Mål", "Totalt"};
+        String[] columnNames = { "Nr.", "Namn", "Start", "Mål", "Totalt" };
         Object[][] data = {
-            {"1", "AA", "-", "-", "-"},
-            {"2", "BB", "-", "2 tider!", "-"},
-            {"3", "CC", "-", "-", "-"},
-            {"4", "DD", "-", "X", "?"}
+                { "1", "AA", "-", "-", "-" },
+                { "2", "BB", "-", "2 tider!", "-" },
+                { "3", "CC", "-", "-", "-" },
+                { "4", "DD", "-", "X", "?" }
         };
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
@@ -128,12 +134,12 @@ public class AdminView {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                    boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
+
                 setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
                 setHorizontalAlignment(SwingConstants.LEFT);
-                
+
                 if (row % 2 == 0) {
                     c.setBackground(new Color(240, 255, 240));
                 } else {
