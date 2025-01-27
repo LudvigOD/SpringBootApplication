@@ -35,7 +35,7 @@ public class TimeController {
 
     // Convert the data to DTOs
     List<TimeDTO> timeDTOs = times.stream()
-        .map(time -> new TimeDTO(time.getStartNbr(), time.getTime()))
+        .map(time -> new TimeDTO(time.getStartNbr(), time.getTime(), time.getStation()))
         .collect(Collectors.toList());
 
     return timeDTOs;
@@ -43,7 +43,7 @@ public class TimeController {
 
   @PostMapping("/register")
   public void registerTime(@RequestBody TimeDTO timeDTO) {
-    timeService.registerTime(timeDTO.getStartNbr(), timeDTO.getTime());
+    timeService.registerTime(timeDTO.getStartNbr(), timeDTO.getTime(), timeDTO.getStation());
   }
 
 }

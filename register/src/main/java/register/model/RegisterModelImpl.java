@@ -41,7 +41,7 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   @Override
-  public void registerTime(String startNbr) {
+  public void registerTime(String startNbr, String station) {
     TimeTuple timeTuple = new TimeTuple(startNbr, LocalTime.now());
     this.timeTuples.add(timeTuple);
     for (RegisterView view : this.views) {
@@ -50,7 +50,7 @@ public class RegisterModelImpl implements RegisterModel {
 
     // Send a POST request to the server with the time
     sendPostRequest(new TimeDTO(timeTuple.getStartNbr(),
-        timeTuple.getTime().format(formatter)));
+        timeTuple.getTime().format(formatter), station));
 
     // Test sending a GET request to the server. This is purely for testing and
     // should be removed later.
@@ -58,7 +58,7 @@ public class RegisterModelImpl implements RegisterModel {
     // System.out.println("Received " + times.size() + " time times from server");
     // for (TimeDTO time : times) {
     // System.out.println(time);
-    // }
+    //
     // });
   }
 

@@ -56,7 +56,7 @@ public class TestRegisterModel {
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
         // Prepare our mock response
-        List<TimeDTO> mockResponse = List.of(new TimeDTO("01", "12:34:56"));
+        List<TimeDTO> mockResponse = List.of(new TimeDTO("01", "12:34:56", "A"));
 
         // Setup the mock to return a response with our JSON body
         when(responseSpecMock.bodyToMono(
@@ -128,7 +128,7 @@ public class TestRegisterModel {
         RegisterModelImpl instance = new RegisterModelImpl(mockWebClient);
 
         // Call the method under test
-        instance.registerTime("01");
+        instance.registerTime("01", "A");
 
         // Verify the interactions or state changes expected
         verify(exchangeFunction).exchange(any(ClientRequest.class));
