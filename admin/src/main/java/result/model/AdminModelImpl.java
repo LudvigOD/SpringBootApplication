@@ -12,11 +12,11 @@ import result.AdminView;
 
 public class AdminModelImpl implements AdminModel {
 
-<<<<<<< HEAD
+
     public AdminModelImpl(WebClient webClient) {
 
     }
-=======
+
     private List<TimeDTO> times;
 
     private WebClient webClient;
@@ -44,7 +44,6 @@ public class AdminModelImpl implements AdminModel {
     // throw new UnsupportedOperationException("Unimplemented method
     // 'removeListener'");
     // }
->>>>>>> origin/story/b7
 
     @Override
     public List<TimeDTO> getParticipantTimes(String startNbr) {
@@ -57,17 +56,7 @@ public class AdminModelImpl implements AdminModel {
 
     public void editTime(String startNbr) {
         // TODO Auto-generated method stub
-<<<<<<< HEAD
         throw new UnsupportedOperationException("Unimplemented method 'editTime'");
-=======
-        throw new UnsupportedOperationException("Unimplemented method 'getParticipantTimes'");
-    }
-
-    @Override
-    public void startCompetition(int nbrCompetitors, int nbrStations) {
-        this.nbrCompetitors = nbrCompetitors;
-        this.nbrStations = nbrStations;
->>>>>>> origin/story/b7
     }
 
     public void deleteTime(String startNbr) {
@@ -88,6 +77,11 @@ public class AdminModelImpl implements AdminModel {
     public void addListener(AdminView view) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addListener'");
+
+    @Override
+    public void startCompetition(int nbrCompetitors, int nbrStations) {
+        this.nbrCompetitors = nbrCompetitors;
+        this.nbrStations = nbrStations;
     }
 
     public void removeListener(AdminView view) {
@@ -99,7 +93,6 @@ public class AdminModelImpl implements AdminModel {
         return nbrStations;
     }
 
-<<<<<<< HEAD
 
 
   public void sendNonBlockingGetRequest(
@@ -128,7 +121,10 @@ public class AdminModelImpl implements AdminModel {
     public void registerTime(String startNbr) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'registerTime'");
-=======
+    }
+
+}
+
     @Override
     public List<List<TimeDTO>> getAllTimes() {
         // TODO Auto-generated method stub
@@ -139,7 +135,6 @@ public class AdminModelImpl implements AdminModel {
     public int getTotalTime(String startNbr) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTotalTime'");
->>>>>>> origin/story/b7
     }
 
 }
