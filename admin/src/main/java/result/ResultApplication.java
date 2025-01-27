@@ -1,14 +1,26 @@
 package result;
 
-import shared.Utils;
+import java.awt.Dimension;
 
-public class ResultApplication {
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
+
+public class ResultApplication implements Runnable {
 
     public static void main(String[] args) {
-        Utils u = new Utils();
-        String h = u.helper();
-
-        System.out.println("The helper string is: " + h);
+        ResultApplication example = new ResultApplication();
+        // schedule this for the event dispatch thread (edt)
+        SwingUtilities.invokeLater(example);
     }
 
+    public void run()
+    {
+        JFrame frame = new JFrame("My JFrame Example");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(400, 200));
+        frame.pack();
+        frame.setVisible(true);
+    }
 }
