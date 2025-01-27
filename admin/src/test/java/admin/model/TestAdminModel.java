@@ -64,7 +64,7 @@ public class TestAdminModel {
                                 .then(Mono.just(mockResponse)));
 
         // Initialize RegisterModelImpl with the mocked WebClient
-        adminModel = new adminModelImpl(webClientMock);
+        adminModel = new AdminModelImpl(webClientMock);
     }
 
 
