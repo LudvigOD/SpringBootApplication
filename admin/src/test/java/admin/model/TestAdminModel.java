@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +43,7 @@ public class TestAdminModel {
     @BeforeEach
     void setUp() throws Exception {
         // Mock WebClient and its method chain, i.e. the same chain that is used in the
-        // actual implementation in RegisterModelImpl.
+        // actual implementation in AdminModelImpl.
         webClientMock = mock(WebClient.class);
         requestHeadersUriSpecMock = mock(WebClient.RequestHeadersUriSpec.class);
         requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
@@ -54,7 +55,7 @@ public class TestAdminModel {
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
         // Prepare our mock response
-        List<TimeDTO> mockResponse = List.of(new TimeDTO("01", "12:34:56"));
+        List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123)));
 
         // Setup the mock to return a response with our JSON body
         when(responseSpecMock.bodyToMono(
@@ -63,9 +64,26 @@ public class TestAdminModel {
                         Mono.delay(Duration.ofMillis(50))
                                 .then(Mono.just(mockResponse)));
 
-        // Initialize RegisterModelImpl with the mocked WebClient
+        // Initialize AdminModelImpl with the mocked WebClient
         adminModel = new AdminModelImpl(webClientMock);
     }
 
+    @Test 
+    public void testGetParticipantTimes() {
+            
+    }
+
+    @Test 
+    public void testStartCompetition() {
+        int competitors = 10;
+        int stations = 3;
+
+        adminModel.startCompetition(competitors, stations);
+
+        assertEquals(adminModel.getNbrCompetitors(), 10);
+        assertEquals(adminModel.getNbrStations(), 10);
+
+    }
+ 
 
 }
