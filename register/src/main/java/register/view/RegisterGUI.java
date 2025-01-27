@@ -112,12 +112,12 @@ public class RegisterGUI extends JFrame implements RegisterView {
     fetchTimesButton.setFont(defaultFont);
 
     fetchTimesButton.addActionListener((e) -> {
-      ((RegisterModelImpl) model).sendNonBlockingGetRequest(timeList -> {
+      ((RegisterModelImpl) model).asyncReloadTimes(timeList -> {
         System.out.println("Received " + timeList.size() + " times from server");
         for (TimeDTO time : timeList) {
           System.out.println(time);
         }
-      });
+      }, startNumberField.getText());
     });
 
    //inputPanel.add(fetchTimesButton);
