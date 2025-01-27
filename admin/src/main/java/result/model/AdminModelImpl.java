@@ -8,26 +8,26 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import shared.dto.TimeDTO;
+import result.AdminView;
 
 public class AdminModelImpl implements AdminModel {
 
-    private List<TimeDTO> times;
-
-    private WebClient webClient;
-
-    // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får flyttas dit isf.
-    private int nbrCompetitors;
-    private int nbrStations;
-
     public AdminModelImpl(WebClient webClient) {
-        this.times = new ArrayList<>();
-        
-        this.webClient = webClient;
+
+    }
+
+    public void addListener(AdminView view) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addListener'");
     }
     // @Override
 public void addListener(AdminView view) {
  }
+
+    public void removeListener(AdminView view) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeListener'");
+    }
 
     // @Override
 public void removeListener(AdminView view) {
@@ -36,17 +36,41 @@ public void removeListener(AdminView view) {
 
     @Override
     public List<TimeDTO> getParticipantTimes(String startNbr) {
+    // public void registerTime(String startNbr) {
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'registerTime'");
+    // }
+    // Behöver vi denna?
+
+    public void editTime(String startNbr) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getParticipantTimes'");
-    }
-    @Override
-    public void startCompetition(int nbrCompetitors, int nbrStations) {
-        this.nbrCompetitors = nbrCompetitors;
-        this.nbrStations = nbrStations;
+        throw new UnsupportedOperationException("Unimplemented method 'editTime'");
     }
 
-    public int getNbrCompetitors() {
-        return nbrCompetitors;
+    public void deleteTime(String startNbr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteTime'");
+    }
+
+    public void editStartNbr(String startNbr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'editStartNbr'");
+    }
+
+    public void registerParticipant() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'registerParticipant'");
+    }
+
+    public void addListener(AdminView view) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addListener'");
+    }
+
+    public void removeListener(AdminView view) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removeListener'");
     }
 
     public int getNbrStations() {
@@ -78,5 +102,9 @@ public void removeListener(AdminView view) {
         })
         .block(); 
   }
+    public void registerTime(String startNbr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'registerTime'");
+    }
 
 }
