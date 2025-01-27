@@ -10,4 +10,30 @@ public class ResultDTO {
   public Optional<Instant> startTime;
   public Optional<Instant> finishTime;
   public Optional<Duration> totalDuration;
+
+  public ResultDTO(String startNbr) {
+    this.startNbr = startNbr;
+    name = "";
+  }
+
+  public String getStartNbr() {
+    return startNbr;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Optional<Instant> getStartTime(){
+    return startTime;
+  }
+
+  public Optional<Instant> getFinishTime() {
+    return finishTime;
+  } 
+
+  public Optional<Duration> getTotal() {
+    return totalDuration;
+  }
 }
+

@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -19,11 +20,15 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import result.dto.ResultDTO;
+import result.model.AdminModel;
 import shared.dto.TimeDTO;
 
 public class AdminGUI extends JFrame implements AdminView {
 
     private final AdminModel model;
+
+    private Object[][] data;
 
     private final DefaultTableModel timesTableModel = new DefaultTableModel(new String[] { "Station", "Nr.", "Tid" },
             0);
@@ -42,6 +47,12 @@ public class AdminGUI extends JFrame implements AdminView {
     public void onTimeAdded(TimeDTO time) {
         Object[] row = { time.getStationId(), time.getStartNbr(), time.getTime() };
         timesTableModel.addRow(row);
+        List<ResultDTO> results = model.getResults();
+        for(ResultDTO result : results) {
+            updateRow(result);
+        }
+
+        
     }
 
     public void initGUI() {
@@ -151,14 +162,9 @@ public class AdminGUI extends JFrame implements AdminView {
 
     private JTable createResultsTable() {
         String[] columnNames = { "Nr.", "Namn", "Start", "Mål", "Totalt" };
-        Object[][] data = {
-                { "1", "AA", "-", "-", "-" },
-                { "2", "BB", "-", "2 tider!", "-" },
-                { "3", "CC", "-", "-", "-" },
-                { "4", "DD", "-", "X", "?" }
-        };
-
-        JTable table = new JTable(resultsTableModel);
+        data = new Object[model.getNbrCompetitors()][columnNames.length];
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        JTable table = new JTable(model);
         table.setShowGrid(true);
         table.setGridColor(Color.WHITE);
 
@@ -200,11 +206,12 @@ public class AdminGUI extends JFrame implements AdminView {
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
 
-        model.getResults().forEach(result -> {
-            Object[] row = { result.startNbr, result.name, result.startTime, result.finishTime, result.totalDuration };
-            resultsTableModel.addRow(row);
-        });
+        
 
         return table;
+    }
+
+    private void updateRow(ResultDTO result) {
+        data[Integer.valueOf(result.getStartNbr()) - 1] = new Object[]{result.getStartNbr(), result.getName(), result.getStartTime(), result.getFinishTime(), result.getTotal()};
     }
 }
