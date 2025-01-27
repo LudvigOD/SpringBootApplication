@@ -1,6 +1,7 @@
 package restserver.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import restserver.entity.Time;
@@ -16,34 +18,30 @@ import restserver.service.TimeService;
 import shared.dto.TimeDTO;
 
 @RestController
-@RequestMapping("/api/time")
-public class TimeController {
+@RequestMapping("/api/races/{raceId}/times")
+public class TimesController {
 
   @Autowired
   private TimeService timeService;
 
-  /*
-   * Yes, it works!
-   * Go to http://localhost:8080/api/time/startNbr/01 to see the result!
-   */
+  @PostMapping()
+  public void registerTime(
+      @PathVariable("raceId") int raceId,
+      @RequestBody TimeDTO timeDTO) {
+    timeService.registerTime(raceId, timeDTO.getStationId(), timeDTO.getStartNbr(), timeDTO.getTime());
+  }
 
-  @GetMapping("/startNbr/{startNbr}")
-  public List<TimeDTO> fetchTimeByStartNbr(@PathVariable("startNbr") String startNbr) {
+  @GetMapping()
+  public List<TimeDTO> fetchAllTimes(
+      @PathVariable("raceId") int raceId,
+      @RequestParam("stationId") Optional<Integer> stationId,
+      @RequestParam("startNbr") Optional<String> startNbr) {
+    List<Time> times = timeService.getAllTimes(raceId, stationId, startNbr);
 
-    // Call the service to fetch the data
-    List<Time> times = timeService.getTimesForStartNbr(startNbr);
-
-    // Convert the data to DTOs
     List<TimeDTO> timeDTOs = times.stream()
-        .map(time -> new TimeDTO(time.getStartNbr(), time.getTime()))
+        .map(time -> new TimeDTO(time.getStationId(), time.getStartNbr(), time.getTime()))
         .collect(Collectors.toList());
 
     return timeDTOs;
   }
-
-  @PostMapping("/register")
-  public void registerTime(@RequestBody TimeDTO timeDTO) {
-    timeService.registerTime(timeDTO.getStartNbr(), timeDTO.getTime());
-  }
-
 }
