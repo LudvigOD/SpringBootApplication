@@ -10,7 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
 import java.awt.Font;
@@ -31,10 +33,13 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private JButton registerButton;
   private DefaultListModel<String> registrationListModel;
   private JList<String> registrationList;
+  private String[] columnNames = {"Startnummer", "Tid"};
+  DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
   public RegisterGUI(RegisterModel model) {
     this.model = model;
     this.model.addListener(this);
+    setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     initGUI();
   }
@@ -46,7 +51,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
   @Override
   public void timeWasRegistered(TimeTuple timeTuple) {
     System.out.println("Time was registered: " + timeTuple);
-    registrationListModel.addElement(String.format("%s - %s", timeTuple.getStartNbr(), timeTuple.getTime()));
+    tableModel.addRow(new Object[]{timeTuple.getStartNbr(), timeTuple.getTime()});
 
     // Maybe use a table instead of a list?
   }
@@ -54,9 +59,12 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private void initGUI() {
     setTitle("Tidregistrering");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setSize(1400, 900);
+    setSize(800, 900);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
+    JTable registrationTable = new JTable(tableModel);
+    registrationTable.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+    registrationTable.setRowHeight(34);
 
     startNumberField = new PlaceholderTextField("Startnummer", 10);
     startNumberField.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
@@ -74,6 +82,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JPanel inputPanel = new JPanel();
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+
+    JScrollPane a = new JScrollPane();
+
 
     inputPanel.add(startNum);
     inputPanel.add(startNumberField);
@@ -96,7 +107,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.add(fetchTimesButton);
 
     mainPanel.add(inputPanel, BorderLayout.NORTH);
-    mainPanel.add(new JScrollPane(registrationList), BorderLayout.CENTER);
+    
+    JScrollPane scrollPane = new JScrollPane(registrationTable);
+    mainPanel.add(scrollPane, BorderLayout.CENTER);
 
     registerButton.addActionListener((e) -> {
       String startNumber = startNumberField.getText();
