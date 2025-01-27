@@ -13,6 +13,6 @@ public interface RegisterModel {
    *
    * @param startNbr
    */
-  void registerTime(String startNbr, int stationId);
+  void registerTime(String startNbr, int stationId, int raceId);
 
 }

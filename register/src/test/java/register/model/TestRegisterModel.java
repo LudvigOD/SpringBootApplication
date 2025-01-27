@@ -96,7 +96,7 @@ public class TestRegisterModel {
                 };
 
                 // Call the method that we want to test, with our response handler
-                regModel.sendNonBlockingGetRequest(responseHandler);
+                regModel.sendNonBlockingGetRequest(responseHandler, 0);
 
                 // Wait for the response handler to be called (or for the timeout to expire).
                 // await returns true if the latch was counted down to zero, false otherwise.
@@ -129,7 +129,7 @@ public class TestRegisterModel {
                 RegisterModelImpl instance = new RegisterModelImpl(mockWebClient);
 
                 // Call the method under test
-                instance.registerTime("01", 1);
+                instance.registerTime("01", 1, 0);
 
                 // Verify the interactions or state changes expected
                 verify(exchangeFunction).exchange(any(ClientRequest.class));

@@ -41,7 +41,9 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   @Override
-  public void registerTime(String startNbr, int stationId) {
+  public void registerTime(String startNbr, int stationId, int raceId) {
+    // dont forget to remove
+    raceId = 0;
     TimeTuple timeTuple = new TimeTuple(startNbr, Instant.now());
     this.timeTuples.add(timeTuple);
     for (RegisterView view : this.views) {
@@ -49,7 +51,7 @@ public class RegisterModelImpl implements RegisterModel {
     }
 
     // Send a POST request to the server with the time
-    sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime()));
+    sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime()), raceId);
 
     // Test sending a GET request to the server. This is purely for testing and
     // should be removed later.
@@ -62,13 +64,14 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   public void sendNonBlockingGetRequest(
-      Consumer<List<TimeDTO>> responseHandler) {
+      Consumer<List<TimeDTO>> responseHandler,
+      int raceId) {
     // Note to self: subscribe means that we make an asynchronous GET request to the
     // server. Thus, this method returns immediately (void), and the response will
     // be handled by the given consumer in the future, by some other thread. So, we
     // can call this method with a lambda expression that handles the response.
     webClient.get()
-        .uri("/time/startNbr/01")
+        .uri("/races/{raceId}/times", raceId)
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         // Use ParameterizedTypeReference to keep the generic type information, rather
@@ -85,14 +88,14 @@ public class RegisterModelImpl implements RegisterModel {
     // accordingly, i.e. Consumer<List<TimeDTO>> or Consumer<TimeDTO>.
   }
 
-  public List<TimeDTO> sendBlockingGetRequest() {
+  public List<TimeDTO> sendBlockingGetRequest(int raceId) {
     // Note to self: block means that we make a synchronous GET request to the
     // server. That means that the program will be blocked and wait here until
     // the response is received. This is not recommended in a real applications,
     // but might be enough for us? I think the effect is that the program will
     // freeze briefly until the response is received, and then continue.
     return webClient.get()
-        .uri("/time/startNbr/01")
+        .uri("/races/{raceId}/times", raceId)
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
@@ -100,9 +103,9 @@ public class RegisterModelImpl implements RegisterModel {
         .block(); // will wait here during network request
   }
 
-  public void sendPostRequest(TimeDTO dto) {
+  public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
-        .uri("/time/register")
+        .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(dto)
         .retrieve()
