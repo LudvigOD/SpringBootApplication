@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -96,14 +95,6 @@ public class RegisterModelImpl implements RegisterModel {
     // but might be enough for us? I think the effect is that the program will
     // freeze briefly until the response is received, and then continue.
 
-    // return webClient.get()
-    //     .uri("/races/{raceId}/times", raceID)
-    //     .accept(MediaType.APPLICATION_JSON)
-    //     .retrieve()
-    //     .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
-    //     })
-    //     .block(); // will wait here during network request
-
     return webClient.get()
       .uri(uriBuilder -> uriBuilder
         .path("/races/{raceId}/times")
@@ -112,7 +103,7 @@ public class RegisterModelImpl implements RegisterModel {
       .accept(MediaType.APPLICATION_JSON)
       .retrieve()
       .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {})
-      .block();
+      .block(); // will wait here during network request
   }
 
   //denna verkar fungera
