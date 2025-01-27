@@ -1,6 +1,7 @@
 package register.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -60,16 +61,18 @@ public class RegisterGUI extends JFrame implements RegisterView {
     startNumberField = new PlaceholderTextField("Startnummer", 10);
     startNumberField.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
 
+    // Filter för TextField så att man ej kan skriva in annat än siffror
     ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
-    
+
     registerButton = new JButton("Registrera tid");
     registerButton.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+    registerButton.setBackground(Color.RED);
 
     registrationListModel = new DefaultListModel<>();
     registrationList = new JList<>(registrationListModel);
 
     JPanel inputPanel = new JPanel();
-    JLabel startNum = new JLabel("Start nummer:");
+    JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
 
     inputPanel.add(startNum);
