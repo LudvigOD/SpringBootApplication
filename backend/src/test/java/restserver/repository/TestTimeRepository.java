@@ -2,6 +2,7 @@ package restserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -12,63 +13,66 @@ import restserver.entity.Time;
 
 @DataJpaTest
 public class TestTimeRepository {
-
-    /*
-     * Ok, so here's my understanding of testing repositories:
-     * - first off, we're not testing the interface itself, because that's just
-     * Spring doing its magic
-     * - but, we gotta make sure the stuff we think happens in the database,
-     * actually does. I.e., "does this query even work?"
-     * 
-     * Why bother testing interfaces?
-     * - Spring is doing a lot of magic for us, dynamically creating real
-     * implementations of the repository interface, and we want to test that it
-     * works as expected
-     * - If we ever need to write custom queries (like SQL queries) we want to make
-     * sure they actually fetch what we think they do
-     * - Same for the named methods that automatically become queries (e.g.
-     * findByStartNbr). We need test those that they work as expected. 'cause typos
-     * and logic errors, they happen 🤷‍♂️
-     * - plus, mapping entities to tables in the db requires that we use the same
-     * names everywhere, so it's easy to mess up e.g. relations or column names
-     * 
-     * How it works?
-     * - Apparently, we can use @DataJpaTest annotation to pretend we're talking to
-     * a real db, but it's all in-memory and fast
-     * - save some stuff, fetch it, see if it comes back right. If it does, we're
-     * good!
-     */
-
     @Autowired
     private TimeRepository timeRepository;
 
     @Test
-    public void findByStartNbr_ShouldReturnTimes() {
-        // Setup data for testing
-        Time time1 = new Time("01", "10:00:00", "A");
-        Time time2 = new Time("02", "10:05:00", "B");
-        Time time3 = new Time("01", "10:10:00", "C");
-        timeRepository.save(time1);
-        timeRepository.save(time2);
-        timeRepository.save(time3);
+    public void testFindByRaceId() {
+        timeRepository.save(new Time(1, 1, "01", Instant.ofEpochSecond(123)));
+        timeRepository.save(new Time(1, 1, "02", Instant.ofEpochSecond(456)));
+        timeRepository.save(new Time(2, 1, "03", Instant.ofEpochSecond(789)));
 
-        // Run the method we want to test
-        List<Time> results1 = timeRepository.findByStartNbr("01");
-        List<Time> results2 = timeRepository.findByStartNbr("02");
+        List<Time> results = timeRepository.findByRaceId(1);
 
-        // Verify the results
-        assertThat(results1).hasSize(2);
-        assertThat(results1.get(0).getStartNbr()).isEqualTo("01");
-        assertThat(results1.get(0).getTime()).isEqualTo("10:00:00");
-        assertThat(results1.get(0).getStation()).isEqualTo("A");
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0).getRaceId()).isEqualTo(1);
+        assertThat(results.get(1).getRaceId()).isEqualTo(1);
+    }
 
-        assertThat(results1.get(1).getStartNbr()).isEqualTo("01");
-        assertThat(results1.get(1).getTime()).isEqualTo("10:10:00");
-        assertThat(results1.get(1).getStation()).isEqualTo("C");
+    @Test
+    public void testFindByRaceIdAndStationId() {
+        timeRepository.save(new Time(1, 1, "01", Instant.ofEpochSecond(123)));
+        timeRepository.save(new Time(1, 1, "02", Instant.ofEpochSecond(456)));
+        timeRepository.save(new Time(1, 2, "03", Instant.ofEpochSecond(789)));
+        timeRepository.save(new Time(2, 1, "04", Instant.ofEpochSecond(789)));
 
-        assertThat(results2).hasSize(1);
-        assertThat(results2.get(0).getStartNbr()).isEqualTo("02");
-        assertThat(results2.get(0).getTime()).isEqualTo("10:05:00");
-        assertThat(results2.get(0).getStation()).isEqualTo("B");
+        List<Time> results = timeRepository.findByRaceIdAndStationId(1, 1);
+
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0).getRaceId()).isEqualTo(1);
+        assertThat(results.get(0).getStartNbr()).isEqualTo("01");
+        assertThat(results.get(1).getRaceId()).isEqualTo(1);
+        assertThat(results.get(1).getStartNbr()).isEqualTo("02");
+    }
+
+    @Test
+    public void testFindByRaceIdAndStartNbr() {
+        timeRepository.save(new Time(1, 1, "01", Instant.ofEpochSecond(123)));
+        timeRepository.save(new Time(1, 1, "02", Instant.ofEpochSecond(456)));
+        timeRepository.save(new Time(2, 1, "01", Instant.ofEpochSecond(789)));
+        timeRepository.save(new Time(2, 2, "01", Instant.ofEpochSecond(234)));
+
+        List<Time> results = timeRepository.findByRaceIdAndStartNbr(2, "01");
+
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0).getRaceId()).isEqualTo(2);
+        assertThat(results.get(0).getStartNbr()).isEqualTo("01");
+        assertThat(results.get(1).getRaceId()).isEqualTo(2);
+        assertThat(results.get(1).getStartNbr()).isEqualTo("01");
+    }
+
+    @Test
+    public void testFindByRaceIdAndStationIdAndStartNbr() {
+        timeRepository.save(new Time(1, 1, "01", Instant.ofEpochSecond(123)));
+        timeRepository.save(new Time(1, 1, "02", Instant.ofEpochSecond(456)));
+        timeRepository.save(new Time(2, 1, "01", Instant.ofEpochSecond(789)));
+        timeRepository.save(new Time(2, 2, "03", Instant.ofEpochSecond(789)));
+
+        List<Time> results = timeRepository.findByRaceIdAndStationIdAndStartNbr(2, 2, "03");
+
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).getRaceId()).isEqualTo(2);
+        assertThat(results.get(0).getStationId()).isEqualTo(2);
+        assertThat(results.get(0).getStartNbr()).isEqualTo("03");
     }
 }

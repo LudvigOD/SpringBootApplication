@@ -8,8 +8,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,53 +38,85 @@ public class TestTimeService {
     }
 
     @Test
-    public void testGetTimesForStartNbr() {
-        // setting up - pretending we're looking up start number "01"
-        String startNbr = "01";
-        // making some fake Time objs
+    public void testRegisterTime() {
+        Time timeEntity = new Time(1, 1, "02", Instant.ofEpochSecond(123));
+        when(timeRepository.save(any(Time.class))).thenReturn(timeEntity);
+
+        Time result = timeService.registerTime(1, 1, "02", Instant.ofEpochSecond(123));
+
+        assertNotNull(result);
+        assertEquals(result.getStartNbr(), "02");
+        assertEquals(result.getTime(), Instant.ofEpochSecond(123));
+
+        verify(timeRepository).save(any(Time.class));
+    }
+
+    @Test
+    public void testGetAllTimes() {
         Time[] mockTimes = new Time[] {
-                new Time(startNbr, "10:00:00", "A"),
-                new Time(startNbr, "10:00:01", "B"),
-                new Time(startNbr, "10:00:02", "C")
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
         };
-        // telling the mock repository:
-        // when findByStartNbr is called with "01", return our fake times
-        when(timeRepository.findByStartNbr(startNbr)).thenReturn(Arrays.asList(mockTimes));
+        when(timeRepository.findByRaceId(1)).thenReturn(Arrays.asList(mockTimes));
 
-        // running the actual method we wanna test
-        List<Time> result = timeService.getTimesForStartNbr(startNbr);
+        List<Time> result = timeService.getAllTimes(1, Optional.empty(), Optional.empty());
 
-        // bunch of checks to make sure we got back what we expected
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(mockTimes.length, result.size());
         assertArrayEquals(mockTimes, result.toArray());
 
-        // making sure the repo method findByStartNbr was called with the right argument
-        verify(timeRepository).findByStartNbr(startNbr);
+        verify(timeRepository).findByRaceId(1);
     }
 
     @Test
-    public void testRegisterTime() {
-        // setup with a startNbr "02" and time "11:00:00" and station A
-        String startNbr = "02";
-        String time = "11:00:00";
-        String station = "A";
-        // fake Time obj, that will be saved to the mock repository
-        Time timeEntity = new Time(startNbr, time, station);
-        // mock repo save method, returns our fake timeEntity
-        when(timeRepository.save(any(Time.class))).thenReturn(timeEntity);
+    public void testGetAllTimesStationId() {
+        Time[] mockTimes = new Time[] {
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
+        };
+        when(timeRepository.findByRaceIdAndStationId(1, 1)).thenReturn(Arrays.asList(mockTimes));
 
-        // running the method we want to test
-        Time result = timeService.registerTime(startNbr, time, station);
+        List<Time> result = timeService.getAllTimes(1, Optional.of(1), Optional.empty());
 
-        // result shouldn't be null, startNbr and time should match what we set up
         assertNotNull(result);
-        assertEquals(startNbr, result.getStartNbr());
-        assertEquals(time, result.getTime());
-        assertEquals(station, result.getStation());
-        // making sure save was called on the repo
-        verify(timeRepository).save(any(Time.class));
+        assertFalse(result.isEmpty());
+        assertEquals(mockTimes.length, result.size());
+        assertArrayEquals(mockTimes, result.toArray());
+
+        verify(timeRepository).findByRaceIdAndStationId(1, 1);
+    }
+
+    @Test
+    public void testGetAllTimesStartNbr() {
+        Time[] mockTimes = new Time[] {
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
+        };
+        when(timeRepository.findByRaceIdAndStartNbr(1, "01")).thenReturn(Arrays.asList(mockTimes));
+
+        List<Time> result = timeService.getAllTimes(1, Optional.empty(), Optional.of("01"));
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(mockTimes.length, result.size());
+        assertArrayEquals(mockTimes, result.toArray());
+
+        verify(timeRepository).findByRaceIdAndStartNbr(1, "01");
+    }
+
+    @Test
+    public void testGetAllTimesStationIdAndStartNbr() {
+        Time[] mockTimes = new Time[] {
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
+        };
+        when(timeRepository.findByRaceIdAndStationIdAndStartNbr(1, 1, "01")).thenReturn(Arrays.asList(mockTimes));
+
+        List<Time> result = timeService.getAllTimes(1, Optional.of(1), Optional.of("01"));
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(mockTimes.length, result.size());
+        assertArrayEquals(mockTimes, result.toArray());
+
+        verify(timeRepository).findByRaceIdAndStationIdAndStartNbr(1, 1, "01");
     }
 
 }
