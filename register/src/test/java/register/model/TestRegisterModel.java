@@ -96,7 +96,7 @@ public class TestRegisterModel {
                 };
 
                 // Call the method that we want to test, with our response handler
-                regModel.sendNonBlockingGetRequest(responseHandler, 0);
+                regModel.sendNonBlockingGetRequest(responseHandler);
 
                 // Wait for the response handler to be called (or for the timeout to expire).
                 // await returns true if the latch was counted down to zero, false otherwise.

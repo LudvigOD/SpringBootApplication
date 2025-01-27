@@ -90,6 +90,10 @@ public class RegisterModelImpl implements RegisterModel {
     // accordingly, i.e. Consumer<List<TimeDTO>> or Consumer<TimeDTO>.
   }
 
+  public void sendNonBlockingGetRequest(Consumer<List<TimeDTO>> responseHandler) {
+    sendNonBlockingGetRequest(responseHandler, 0);
+  }
+
   public List<TimeDTO> sendBlockingGetRequest(int raceId) {
     // Note to self: block means that we make a synchronous GET request to the
     // server. That means that the program will be blocked and wait here until
