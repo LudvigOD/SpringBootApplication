@@ -10,6 +10,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import java.awt.Font;
 
 import register.model.RegisterModel;
 import register.model.RegisterModelImpl;
@@ -48,23 +49,32 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private void initGUI() {
     setTitle("Tidregistrering");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setSize(300, 300);
+    //setSize(300, 300);
+    setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
 
     startNumberField = new PlaceholderTextField("Startnummer", 10);
+    startNumberField.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
     registerButton = new JButton("Registrera tid");
+    registerButton.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+
     registrationListModel = new DefaultListModel<>();
     registrationList = new JList<>(registrationListModel);
 
     JPanel inputPanel = new JPanel();
-    inputPanel.add(new JLabel("Start Number:"));
+    JLabel startNum = new JLabel("Start Number:");
+    startNum.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+
+    inputPanel.add(startNum);
     inputPanel.add(startNumberField);
     inputPanel.add(registerButton);
 
     // Temporary test, fetch times from the server
     // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
     JButton fetchTimesButton = new JButton("Test: Fetch times");
+    fetchTimesButton.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+
     fetchTimesButton.addActionListener((e) -> {
       ((RegisterModelImpl) model).sendNonBlockingGetRequest(timeList -> {
         System.out.println("Received " + timeList.size() + " times from server");
