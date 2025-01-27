@@ -44,15 +44,10 @@ public class AdminGUI extends JFrame implements AdminView {
     }
 
     @Override
-    public void onTimeAdded(TimeDTO time) {
-        Object[] row = { time.getStationId(), time.getStartNbr(), time.getTime() };
+    public void onTimeAdded(TimeDTO time, ResultDTO result) {
+        Object[] row = {time.getStationId(), time.getStartNbr(), time.getTime() };
         timesTableModel.addRow(row);
-        List<ResultDTO> results = model.getResults();
-        for(ResultDTO result : results) {
-            updateRow(result);
-        }
-
-        
+        updateRow(result);
     }
 
     public void initGUI() {
