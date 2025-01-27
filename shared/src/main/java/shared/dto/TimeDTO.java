@@ -35,10 +35,6 @@ public class TimeDTO {
     return time;
   }
 
-  public String getStation() {
-    return station;
-  }
-
   @Override
   public String toString() {
     return String.format("%s; %s; %s", stationId, startNbr, time);
