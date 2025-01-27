@@ -2,7 +2,10 @@ package result.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import shared.dto.TimeDTO;
@@ -23,16 +26,12 @@ public class AdminModelImpl implements AdminModel {
         this.webClient = webClient;
     }
     // @Override
-    // public void addListener(AdminView view) {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'addListener'");
-    // }
+public void addListener(AdminView view) {
+ }
 
     // @Override
-    // public void removeListener(AdminView view) {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'removeListener'");
-    // }
+public void removeListener(AdminView view) {
+ }
 
 
     @Override
@@ -53,5 +52,31 @@ public class AdminModelImpl implements AdminModel {
     public int getNbrStations() {
         return nbrStations;
     }
+
+
+
+  public void sendNonBlockingGetRequest(
+      Consumer<List<TimeDTO>> responseHandler) {
+    webClient.get()
+        .uri("/time/startNbr/01")
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        // Use ParameterizedTypeReference to keep the generic type information, rather
+        // than just a List.class
+        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+        })
+        // .bodyToFlux(TimeDTO.class)
+        .subscribe(responseHandler);
+  }
+
+  public List<TimeDTO> sendBlockingGetRequest(String startNbr) {
+    return webClient.get()
+        .uri("/time/startNbr/" + startNbr)
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+        })
+        .block(); 
+  }
 
 }
