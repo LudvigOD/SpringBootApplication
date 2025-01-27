@@ -2,6 +2,7 @@ package restserver.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,9 +45,9 @@ public class TestTimeController {
     public void fetchTimeByStartNbr_ShouldReturnTimeDTOList() throws Exception {
         // Mock the time service to return a list of Time objects
         List<Time> mockTimes = List.of(
-                new Time("01", "12:34:56"),
-                new Time("01", "12:34:57"),
-                new Time("01", "12:35:00"));
+                new Time("01", "12:34:56", "A"),
+                new Time("01", "12:34:57", "B"),
+                new Time("01", "12:35:00", "C"));
         when(timeService.getTimesForStartNbr("01")).thenReturn(mockTimes);
 
         // Perform the GET request and verify the response
@@ -54,12 +55,15 @@ public class TestTimeController {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].startNbr", is("01")));
+                .andExpect(jsonPath("$[0].startNbr", is("01")))
+                .andExpect(jsonPath("$[0].station", is("A")))
+                .andExpect(jsonPath("$[1].station", is("B")))
+                .andExpect(jsonPath("$[2].station", is("C")));
     }
 
     @Test
     public void registerTime_ShouldProcessTimeDTO() throws Exception {
-        TimeDTO timeDTO = new TimeDTO("01", "12:34:56");
+        TimeDTO timeDTO = new TimeDTO("01", "12:34:56", "A");
         String timeDTOJson = objectMapper.writeValueAsString(timeDTO);
 
         mockMvc.perform(post("/api/time/register")
@@ -69,6 +73,6 @@ public class TestTimeController {
 
         // verify that timeService.registerTime was called with the expected parameters
         // (this is a Mockito verification)
-        verify(timeService).registerTime("01", "12:34:56");
+        verify(timeService).registerTime("01", "12:34:56", "A");
     }
 }

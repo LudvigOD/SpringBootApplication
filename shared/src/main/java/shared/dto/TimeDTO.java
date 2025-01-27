@@ -17,13 +17,16 @@ public class TimeDTO {
   // we'll need that, but I'm going to leave this here for now.
   // private ZonedDateTime time;
 
+  private String station;
+
   public TimeDTO() {
     // The automatic JSON conversion requires a default constructor
   }
 
-  public TimeDTO(@NonNull String startNbr, String time) {
+  public TimeDTO(@NonNull String startNbr, String time, String station) {
     this.startNbr = startNbr;
     this.time = time;
+    this.station = station;
   }
 
   public String getStartNbr() {
@@ -34,8 +37,12 @@ public class TimeDTO {
     return time;
   }
 
+  public String getStation() {
+    return station;
+  }
+
   @Override
   public String toString() {
-    return String.format("%s; %s", startNbr, time);
+    return String.format("%s; %s; %s", startNbr, time, station);
   }
 }

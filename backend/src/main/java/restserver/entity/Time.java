@@ -30,6 +30,7 @@ public class Time {
 
   private String startNbr;
   private String time;
+  private String station;
   // Note to self: The "time" column is a string for now, but maybe we should
   // use a different data type? I'm thinking that we should use an actual time
   // data type, e.g. LocalTime or Timestamp. ZonedDateTime perhaps?
@@ -38,9 +39,10 @@ public class Time {
     // The automatic JSON conversion requires a default constructor
   }
 
-  public Time(String startNbr, String time) {
+  public Time(String startNbr, String time, String station) {
     this.startNbr = startNbr;
     this.time = time;
+    this.station = station;
   }
 
   public Long getId() {
@@ -55,6 +57,10 @@ public class Time {
     return time;
   }
 
+  public String getStation() {
+    return station;
+  }
+
   public void setId(Long id) {
     this.id = id;
   }
@@ -67,9 +73,13 @@ public class Time {
     this.time = time;
   }
 
+  public void setStation(String station) {
+    this.station = station;
+  }
+
   @Override
   public String toString() {
-    return String.format("Time[id=%d, startNbr='%s', time='%s']", id, startNbr, time);
+    return String.format("Time[id=%d, startNbr='%s', time='%s', station='%s']", id, startNbr, time, station);
   }
 
 }
