@@ -100,9 +100,9 @@ public class RegisterModelImpl implements RegisterModel {
         .block(); // will wait here during network request
   }
 
-  public void sendPostRequest(TimeDTO dto) {
+  public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
-        .uri("/time/register")
+        .uri("/api/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(dto)
         .retrieve()
