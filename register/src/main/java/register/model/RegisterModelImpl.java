@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -66,20 +67,19 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   public void sendNonBlockingGetRequest(
-      Consumer<List<TimeDTO>> responseHandler) {
+      Consumer<List<TimeDTO>> responseHandler, String startNbr) {
     // Note to self: subscribe means that we make an asynchronous GET request to the
     // server. Thus, this method returns immediately (void), and the response will
     // be handled by the given consumer in the future, by some other thread. So, we
     // can call this method with a lambda expression that handles the response.
-    webClient.get()
-        .uri("/time/startNbr/01")
+      webClient.get()
+        .uri(uriBuilder -> uriBuilder
+          .path("/races/{raceId}/times")
+          .queryParam("startNbr", startNbr)
+          .build(raceID))
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
-        // Use ParameterizedTypeReference to keep the generic type information, rather
-        // than just a List.class
-        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
-        })
-        // .bodyToFlux(TimeDTO.class)
+        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {})
         .subscribe(responseHandler);
 
     // After some experimentation:
@@ -89,21 +89,33 @@ public class RegisterModelImpl implements RegisterModel {
     // accordingly, i.e. Consumer<List<TimeDTO>> or Consumer<TimeDTO>.
   }
 
-  public List<TimeDTO> sendBlockingGetRequest() {
+  public List<TimeDTO> sendBlockingGetRequest(String startNbr) {
     // Note to self: block means that we make a synchronous GET request to the
     // server. That means that the program will be blocked and wait here until
     // the response is received. This is not recommended in a real applications,
     // but might be enough for us? I think the effect is that the program will
     // freeze briefly until the response is received, and then continue.
+
+    // return webClient.get()
+    //     .uri("/races/{raceId}/times", raceID)
+    //     .accept(MediaType.APPLICATION_JSON)
+    //     .retrieve()
+    //     .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+    //     })
+    //     .block(); // will wait here during network request
+
     return webClient.get()
-        .uri("/races/{raceId}/times", raceID)
-        .accept(MediaType.APPLICATION_JSON)
-        .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
-        })
-        .block(); // will wait here during network request
+      .uri(uriBuilder -> uriBuilder
+        .path("/races/{raceId}/times")
+        .queryParam("startNbr", startNbr)
+        .build(raceID))
+      .accept(MediaType.APPLICATION_JSON)
+      .retrieve()
+      .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {})
+      .block();
   }
 
+  //denna verkar fungera
   public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
         .uri("/races/{raceId}/times", raceId)

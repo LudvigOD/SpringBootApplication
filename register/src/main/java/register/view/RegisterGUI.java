@@ -71,7 +71,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
         for (TimeDTO time : timeList) {
           System.out.println(time);
         }
-      });
+      }, startNumberField.getText());
     });
     inputPanel.add(fetchTimesButton);
 
