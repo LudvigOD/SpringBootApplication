@@ -1,7 +1,6 @@
 package register.model;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -21,13 +20,15 @@ public class RegisterModelImpl implements RegisterModel {
 
   private final WebClient webClient;
 
-  private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+  private int raceID;
 
   public RegisterModelImpl(WebClient webClient) {
     this.timeTuples = new ArrayList<>();
     this.views = new ArrayList<>();
 
     this.webClient = webClient;
+
+    this.raceID = 1; // denna måste ändras till att bli dynamisk
   }
 
   @Override
@@ -49,7 +50,7 @@ public class RegisterModelImpl implements RegisterModel {
     }
 
     // Send a POST request to the server with the time
-    sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime()));
+    sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime()), raceID);
 
     // Test sending a GET request to the server. This is purely for testing and
     // should be removed later.
@@ -61,21 +62,21 @@ public class RegisterModelImpl implements RegisterModel {
     // });
   }
 
-  public void sendNonBlockingGetRequest(
-      Consumer<List<TimeDTO>> responseHandler) {
+  public void asyncReloadTimes(
+      Consumer<List<TimeDTO>> responseHandler, String startNbr) {
     // Note to self: subscribe means that we make an asynchronous GET request to the
     // server. Thus, this method returns immediately (void), and the response will
     // be handled by the given consumer in the future, by some other thread. So, we
     // can call this method with a lambda expression that handles the response.
     webClient.get()
-        .uri("/time/startNbr/01")
+        .uri(uriBuilder -> uriBuilder
+            .path("/races/{raceId}/times")
+            .queryParam("startNbr", startNbr)
+            .build(raceID))
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
-        // Use ParameterizedTypeReference to keep the generic type information, rather
-        // than just a List.class
         .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
         })
-        // .bodyToFlux(TimeDTO.class)
         .subscribe(responseHandler);
 
     // After some experimentation:
@@ -85,14 +86,18 @@ public class RegisterModelImpl implements RegisterModel {
     // accordingly, i.e. Consumer<List<TimeDTO>> or Consumer<TimeDTO>.
   }
 
-  public List<TimeDTO> sendBlockingGetRequest(String startNbr) {
+  public List<TimeDTO> syncReloadTimes(String startNbr) {
     // Note to self: block means that we make a synchronous GET request to the
     // server. That means that the program will be blocked and wait here until
     // the response is received. This is not recommended in a real applications,
     // but might be enough for us? I think the effect is that the program will
     // freeze briefly until the response is received, and then continue.
+
     return webClient.get()
-        .uri("/time/startNbr/" + startNbr)
+        .uri(uriBuilder -> uriBuilder
+            .path("/races/{raceId}/times")
+            .queryParam("startNbr", startNbr)
+            .build(raceID))
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
@@ -100,9 +105,10 @@ public class RegisterModelImpl implements RegisterModel {
         .block(); // will wait here during network request
   }
 
-  public void sendPostRequest(TimeDTO dto) {
+  // denna verkar fungera
+  public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
-        .uri("/time/register")
+        .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(dto)
         .retrieve()
