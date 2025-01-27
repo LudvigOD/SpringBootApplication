@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
 import java.awt.Font;
-import java.time.format.DateTimeFormatter;
+
 import register.model.RegisterModel;
 import register.model.RegisterModelImpl;
 import register.util.TimeTuple;
@@ -65,7 +65,6 @@ public class RegisterGUI extends JFrame implements RegisterView {
         return false;
       }
     };
-    // Eventuellt skapa klass för registrationTable?
     registrationTable.setFont(defaultFont);
     registrationTable.setRowHeight(34);
     registrationTable.setShowHorizontalLines(true);
@@ -89,7 +88,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     startNum.setFont(defaultFont);
 
     
-    JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
+    chooseStation = new JComboBox<Integer>(stations);
     chooseStation.setFont(new Font("SANS_SERIF", Font.PLAIN, 20));
     chooseStation.addActionListener(event -> {
       selectedStation = (int) chooseStation.getSelectedItem();
@@ -120,7 +119,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
       });
     });
 
-    inputPanel.add(fetchTimesButton);
+    //inputPanel.add(fetchTimesButton);
+
     mainPanel.add(inputPanel, BorderLayout.NORTH);
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
@@ -128,7 +128,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     registerButton.addActionListener((e) -> {
       String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
-        model.registerTime(startNumber, 1);
+        model.registerTime(startNumber, selectedStation);
       }
     });
 
