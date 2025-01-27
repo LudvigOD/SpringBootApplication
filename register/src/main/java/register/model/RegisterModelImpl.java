@@ -1,6 +1,6 @@
 package register.model;
 
-import java.time.LocalTime;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +41,15 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   @Override
-  public void registerTime(String startNbr, String station) {
-    TimeTuple timeTuple = new TimeTuple(startNbr, LocalTime.now());
+  public void registerTime(String startNbr) {
+    TimeTuple timeTuple = new TimeTuple(startNbr, Instant.now());
     this.timeTuples.add(timeTuple);
     for (RegisterView view : this.views) {
       view.timeWasRegistered(timeTuple);
     }
 
     // Send a POST request to the server with the time
-    sendPostRequest(new TimeDTO(timeTuple.getStartNbr(),
-        timeTuple.getTime().format(formatter), station));
+    sendPostRequest(new TimeDTO(1, timeTuple.getStartNbr(), timeTuple.getTime()));
 
     // Test sending a GET request to the server. This is purely for testing and
     // should be removed later.

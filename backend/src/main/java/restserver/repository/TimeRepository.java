@@ -7,21 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import restserver.entity.Time;
 
 public interface TimeRepository extends JpaRepository<Time, Long> {
+  public List<Time> findByRaceId(int raceId);
 
-  /**
-   * Get all times for a specific start number.
-   * 
-   * @param startNbr
-   * @return
-   */
-  public List<Time> findByStartNbr(String startNbr);
+  public List<Time> findByRaceIdAndStationId(int raceId, int stationId);
 
-  /**
-   * Get all times for a specific start number.
-   * 
-   * @param station
-   * @return all entities containing station
-   */
-  public List<Time> findByStation(String station);
+  public List<Time> findByRaceIdAndStartNbr(int raceId, String startNbr);
 
+  public List<Time> findByRaceIdAndStationIdAndStartNbr(int raceId, int stationId, String startNbr);
 }
