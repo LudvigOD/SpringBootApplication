@@ -62,11 +62,6 @@ public class RegisterModelImpl implements RegisterModel {
     // });
   }
 
-  @Override
-  public void registerTime(String startNbr, int stationId) {
-    registerTime(startNbr, stationId, 0);
-  }
-
   public void asyncReloadTimes(
       Consumer<List<TimeDTO>> responseHandler, String startNbr) {
     // Note to self: subscribe means that we make an asynchronous GET request to the
