@@ -25,8 +25,10 @@ import shared.gui.PlaceholderTextField;
 public class RegisterGUI extends JFrame implements RegisterView {
 
   private final RegisterModel model;
-  private String[] tableHeaders = {"Start", "Mål", "Station"};
+  private int selectedStation = 1;
   private Integer[] stations = {1, 2 , 3 , 4};
+  private JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
+  private String[] tableHeaders = {"Start", "Mål", "Station"};
   private Font defaultFont = new Font("SANS_SERIF", Font.PLAIN, 25);
   private JTextField startNumberField;
   private JButton registerButton;
@@ -48,7 +50,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
   public void timeWasRegistered(TimeTuple timeTuple) {
     System.out.println("Time was registered: " + timeTuple);
     // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1 DECIMAL
-    tableModel.addRow(new Object[]{timeTuple.getStartNbr(), timeTuple.getTime().format(DateTimeFormatter.ofPattern("HH:mm:ss.S"))});
+    var utils = new shared.Utils();
+    tableModel.addRow(new Object[]{timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()), selectedStation});
   }
 
   private void initGUI() {
@@ -88,6 +91,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
     
     JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
     chooseStation.setFont(new Font("SANS_SERIF", Font.PLAIN, 20));
+    chooseStation.addActionListener(event -> {
+      selectedStation = (int) chooseStation.getSelectedItem();
+    });
 
     JLabel stationLabel = new JLabel("Station:");
     stationLabel.setFont(defaultFont);
@@ -111,7 +117,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
         for (TimeDTO time : timeList) {
           System.out.println(time);
         }
-      }, "01");
+      });
     });
 
     inputPanel.add(fetchTimesButton);

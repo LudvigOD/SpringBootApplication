@@ -62,13 +62,13 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   public void sendNonBlockingGetRequest(
-      Consumer<List<TimeDTO>> responseHandler, String startNbr) {
+      Consumer<List<TimeDTO>> responseHandler) {
     // Note to self: subscribe means that we make an asynchronous GET request to the
     // server. Thus, this method returns immediately (void), and the response will
     // be handled by the given consumer in the future, by some other thread. So, we
     // can call this method with a lambda expression that handles the response.
     webClient.get()
-        .uri("/time/startNbr/" + startNbr)
+        .uri("/time/startNbr/01")
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         // Use ParameterizedTypeReference to keep the generic type information, rather
