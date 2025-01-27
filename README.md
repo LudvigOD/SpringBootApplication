@@ -1,4 +1,4 @@
-# Unnamed project (TBD)
+# Enduro timer
 
 ## Story/Banan
 
@@ -41,7 +41,7 @@ project:
 ./gradlew :backend:bootRun
 
 # Run the registration application
-./gradlew :backend:bootRun
+./gradlew :register:bootRun
 ```
 
 And of course, normal Gradle commands work as well.
