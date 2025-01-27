@@ -18,6 +18,7 @@ import javax.swing.text.AbstractDocument;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import register.model.RegisterModel;
@@ -29,7 +30,7 @@ import shared.gui.PlaceholderTextField;
 public class RegisterGUI extends JFrame implements RegisterView {
 
   private final RegisterModel model;
-
+  private Font defaultFont = new Font("SANS_SERIF", Font.PLAIN, 25);
   private JTextField startNumberField;
   private JButton registerButton;
   private DefaultListModel<String> registrationListModel;
@@ -40,6 +41,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
   public RegisterGUI(RegisterModel model) {
     this.model = model;
     this.model.addListener(this);
+    // Fungerar inte på vissa datorer
     setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     initGUI();
@@ -53,11 +55,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
   public void timeWasRegistered(TimeTuple timeTuple) {
     System.out.println("Time was registered: " + timeTuple);
     // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1 DECIMAL
-    String nanoDecimal = String.valueOf(Math.round((double) timeTuple.getTime().getNano()/100000000));
-    
-    tableModel.addRow(new Object[]{timeTuple.getStartNbr(), timeTuple.getTime()});
-
-    // Maybe use a table instead of a list?
+    tableModel.addRow(new Object[]{timeTuple.getStartNbr(), timeTuple.getTime().format(DateTimeFormatter.ofPattern("HH:mm:ss.S"))});
   }
 
   private void initGUI() {
@@ -68,20 +66,22 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     JTable registrationTable = new JTable(tableModel);
-    registrationTable.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+    // Eventuellt skapa klass?
+    registrationTable.setFont(defaultFont);
     registrationTable.setRowHeight(34);
     registrationTable.setShowHorizontalLines(true);
     registrationTable.setShowVerticalLines(true);
     registrationTable.setGridColor(Color.BLACK);
+    registrationTable.getTableHeader().setFont(defaultFont);
 
     startNumberField = new PlaceholderTextField("Startnummer", 10);
-    startNumberField.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+    startNumberField.setFont(defaultFont);
 
     // Filter för TextField så att man ej kan skriva in annat än siffror
     ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
 
     registerButton = new JButton("Registrera tid");
-    registerButton.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+    registerButton.setFont(defaultFont);
     registerButton.setBackground(Color.RED);
 
     registrationListModel = new DefaultListModel<>();
@@ -89,7 +89,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     JPanel inputPanel = new JPanel();
     JLabel startNum = new JLabel("Startnummer:");
-    startNum.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+    startNum.setFont(defaultFont);
 
     JScrollPane a = new JScrollPane();
 
@@ -102,7 +102,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
     // Denna ska tas bort sen och ersättas med bara register-knappen
     JButton fetchTimesButton = new JButton("Test: Fetch times");
-    fetchTimesButton.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
+    fetchTimesButton.setFont(defaultFont);
 
     fetchTimesButton.addActionListener((e) -> {
       ((RegisterModelImpl) model).sendNonBlockingGetRequest(timeList -> {
