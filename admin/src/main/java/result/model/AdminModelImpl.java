@@ -28,22 +28,8 @@ public class AdminModelImpl implements AdminModel {
 
     public AdminModelImpl(WebClient webClient) {
         this.times = new ArrayList<>();
-
         this.webClient = webClient;
     }
-    // @Override
-    // public void addListener(AdminView view) {
-    // // TODO Auto-generated method stub
-    // throw new UnsupportedOperationException("Unimplemented method
-    // 'addListener'");
-    // }
-
-    // @Override
-    // public void removeListener(AdminView view) {
-    // // TODO Auto-generated method stub
-    // throw new UnsupportedOperationException("Unimplemented method
-    // 'removeListener'");
-    // }
 
     @Override
     public List<TimeDTO> getParticipantTimes(String startNbr) {
