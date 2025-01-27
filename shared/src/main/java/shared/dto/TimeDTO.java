@@ -1,21 +1,14 @@
 package shared.dto;
 
+import java.time.Instant;
+
 import org.springframework.lang.NonNull;
 
 public class TimeDTO {
+  private Integer stationId;
   private String startNbr;
 
-  // I don't know whether to represent time as a string or as a LocalTime
-  // object. We'll have to see what works best!
-  // My thoughts: LocalTime already has methods for comparing times, so
-  // it might be easier to use that.
-  private String time;
-  // private LocalTime time;
-
-  // Update: I discovered that there is another type, ZonedDateTime, which
-  // is used to represent a time in a specific time zone. I don't know if
-  // we'll need that, but I'm going to leave this here for now.
-  // private ZonedDateTime time;
+  private Instant time;
 
   private String station;
 
@@ -23,17 +16,25 @@ public class TimeDTO {
     // The automatic JSON conversion requires a default constructor
   }
 
-  public TimeDTO(@NonNull String startNbr, String time, String station) {
+  public TimeDTO(
+      Integer stationId,
+      @NonNull String startNbr,
+      Instant time) {
+    this.stationId = stationId;
     this.startNbr = startNbr;
     this.time = time;
     this.station = station;
+  }
+
+  public Integer getStationId() {
+    return stationId;
   }
 
   public String getStartNbr() {
     return startNbr;
   }
 
-  public String getTime() {
+  public Instant getTime() {
     return time;
   }
 
@@ -43,6 +44,6 @@ public class TimeDTO {
 
   @Override
   public String toString() {
-    return String.format("%s; %s; %s", startNbr, time, station);
+    return String.format("%s; %s; %s", stationId, startNbr, time);
   }
 }
