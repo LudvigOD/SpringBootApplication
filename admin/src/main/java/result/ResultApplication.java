@@ -1,14 +1,16 @@
 package result;
 
-import shared.Utils;
+import javax.swing.SwingUtilities;
 
-public class ResultApplication {
+public class ResultApplication implements Runnable {
 
     public static void main(String[] args) {
-        Utils u = new Utils();
-        String h = u.helper();
-
-        System.out.println("The helper string is: " + h);
+        ResultApplication example = new ResultApplication();
+        SwingUtilities.invokeLater(example);
     }
 
+    public void run()
+    {
+        AdminView.createAndShowGUI();
+    }
 }

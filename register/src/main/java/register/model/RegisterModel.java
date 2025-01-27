@@ -10,7 +10,7 @@ public interface RegisterModel {
 
   /**
    * Registers a time for a start number using the current time.
-   * 
+   *
    * @param startNbr
    */
   void registerTime(String startNbr, Integer station);

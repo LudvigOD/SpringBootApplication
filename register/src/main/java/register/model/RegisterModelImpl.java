@@ -49,7 +49,7 @@ public class RegisterModelImpl implements RegisterModel {
     }
 
     // Send a POST request to the server with the time
-    sendPostRequest(new TimeDTO(1, timeTuple.getStartNbr(), timeTuple.getTime()));
+    sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime()));
 
     // Test sending a GET request to the server. This is purely for testing and
     // should be removed later.
