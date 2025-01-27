@@ -28,7 +28,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private int selectedStation = 1;
   private Integer[] stations = {1, 2 , 3 , 4};
   private JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
-  private String[] tableHeaders = {"Start", "Mål", "Station"};
+  private String[] tableHeaders = {"Startnummer", "Tid", "Station"};
   private Font defaultFont = new Font("SANS_SERIF", Font.PLAIN, 25);
   private JTextField startNumberField;
   private JButton registerButton;
@@ -111,16 +111,15 @@ public class RegisterGUI extends JFrame implements RegisterView {
     fetchTimesButton.setFont(defaultFont);
 
     fetchTimesButton.addActionListener((e) -> {
-      ((RegisterModelImpl) model).sendNonBlockingGetRequest(timeList -> {
+      ((RegisterModelImpl) model).asyncReloadTimes(timeList -> {
         System.out.println("Received " + timeList.size() + " times from server");
         for (TimeDTO time : timeList) {
           System.out.println(time);
         }
-      });
+      }, startNumberField.getText());
     });
 
-    //inputPanel.add(fetchTimesButton);
-
+   //inputPanel.add(fetchTimesButton);
     mainPanel.add(inputPanel, BorderLayout.NORTH);
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);

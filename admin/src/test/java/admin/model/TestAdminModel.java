@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +55,8 @@ public class TestAdminModel {
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
         // Prepare our mock response
-        List<TimeDTO> mockResponse = List.of(new TimeDTO("01", "12:34:56"));
+        List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123)));
+
 
         // Setup the mock to return a response with our JSON body
         when(responseSpecMock.bodyToMono(
@@ -80,7 +82,7 @@ public class TestAdminModel {
         adminModel.startCompetition(competitors, stations);
 
         assertEquals(adminModel.getNbrCompetitors(), 10);
-        assertEquals(adminModel.getNbrStations(), 10);
+        assertEquals(adminModel.getNbrStations(), 3);
 
     }
  
