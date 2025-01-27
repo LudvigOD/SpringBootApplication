@@ -16,24 +16,6 @@ public class AdminModelImpl implements AdminModel {
 
     }
 
-    public void addListener(AdminView view) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addListener'");
-    }
-    // @Override
-public void addListener(AdminView view) {
- }
-
-    public void removeListener(AdminView view) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeListener'");
-    }
-
-    // @Override
-public void removeListener(AdminView view) {
- }
-
-
     @Override
     public List<TimeDTO> getParticipantTimes(String startNbr) {
     // public void registerTime(String startNbr) {
