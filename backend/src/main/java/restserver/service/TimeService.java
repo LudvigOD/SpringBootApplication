@@ -16,6 +16,7 @@ public class TimeService {
   @Autowired
   private TimeRepository timeRepository;
 
+  // outrule this?
   public List<Time> getTimesForStartNbr(String startNbr) {
     return timeRepository.findByStartNbr(startNbr);
   }
@@ -31,6 +32,11 @@ public class TimeService {
 
   public List<Time> fetchAllStations(String station) {
     return timeRepository.findByStation(station);
+  }
+
+  // keep this
+  public List<Time> fetchAllStartNbr(String startNbr) {
+    return timeRepository.findByStation(startNbr);
   }
 
 }
