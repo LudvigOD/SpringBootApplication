@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 import register.model.RegisterModel;
 import register.model.RegisterModelImpl;
@@ -49,8 +51,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private void initGUI() {
     setTitle("Tidregistrering");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //setSize(300, 300);
-    setExtendedState(JFrame.MAXIMIZED_BOTH);
+    setSize(1400, 900);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
 
@@ -63,7 +64,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     registrationList = new JList<>(registrationListModel);
 
     JPanel inputPanel = new JPanel();
-    JLabel startNum = new JLabel("Start Number:");
+    JLabel startNum = new JLabel("Start nummer:");
     startNum.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
 
     inputPanel.add(startNum);
@@ -72,6 +73,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     // Temporary test, fetch times from the server
     // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
+    // Denna ska tas bort sen och ersättas med bara register-knappen
     JButton fetchTimesButton = new JButton("Test: Fetch times");
     fetchTimesButton.setFont(new Font("SANS_SERIF", Font.PLAIN, 25));
 
