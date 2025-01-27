@@ -10,8 +10,6 @@ public class TimeDTO {
 
   private Instant time;
 
-  private String station;
-
   public TimeDTO() {
     // The automatic JSON conversion requires a default constructor
   }
@@ -23,7 +21,6 @@ public class TimeDTO {
     this.stationId = stationId;
     this.startNbr = startNbr;
     this.time = time;
-    this.station = station;
   }
 
   public Integer getStationId() {
