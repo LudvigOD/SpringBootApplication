@@ -23,11 +23,15 @@ public class RegisterModelImpl implements RegisterModel {
 
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+  private int raceID;
+
   public RegisterModelImpl(WebClient webClient) {
     this.timeTuples = new ArrayList<>();
     this.views = new ArrayList<>();
 
     this.webClient = webClient;
+
+    this.raceID = 0; // denna måste ändras till att bli dynamisk
   }
 
   @Override
@@ -49,7 +53,7 @@ public class RegisterModelImpl implements RegisterModel {
     }
 
     // Send a POST request to the server with the time
-    sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime()));
+    sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime()), raceID);
 
     // Test sending a GET request to the server. This is purely for testing and
     // should be removed later.
@@ -92,7 +96,7 @@ public class RegisterModelImpl implements RegisterModel {
     // but might be enough for us? I think the effect is that the program will
     // freeze briefly until the response is received, and then continue.
     return webClient.get()
-        .uri("/time/startNbr/01")
+        .uri("/api/races/{raceId}/times", raceID)
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
