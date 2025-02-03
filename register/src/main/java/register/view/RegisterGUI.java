@@ -109,7 +109,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
 
-  
+
     chooseStation.setFont(new Font("SANS_SERIF", Font.PLAIN, 20));
     chooseStation.addActionListener(event -> {
       selectedStation = (StationModel) chooseStation.getSelectedItem();
@@ -146,7 +146,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     mainPanel.add(inputPanel, BorderLayout.NORTH);
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
-   
+
 
     registerButton.addActionListener((e) -> {
       String startNumber = startNumberField.getText();
