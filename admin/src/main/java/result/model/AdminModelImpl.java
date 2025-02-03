@@ -28,6 +28,7 @@ public class AdminModelImpl implements AdminModel {
     private List<AdminView> views;
     private Map<String, Competitor> competitors;
     private WebClient webClient;
+    private List<TimeDTO> times;
 
 
     // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
@@ -44,6 +45,7 @@ public class AdminModelImpl implements AdminModel {
         this.views = new ArrayList<>();
         this.competitors = new HashMap<>();
         this.webClient = webClient;
+        times = new ArrayList<>() ;
     }
 
     @Override
@@ -54,6 +56,13 @@ public class AdminModelImpl implements AdminModel {
     @Override
     public void removeListener(AdminView view) {
         this.views.remove(view);
+    }
+
+    public void filterNewTimes(List<TimeDTO> times) {
+        if(this.times.size() != times.size()){
+            updateTimeTable(times.subList(this.times.size(), times.size()));
+            this.times = times; 
+        }
     }
 
     @Override
