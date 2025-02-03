@@ -1,6 +1,8 @@
 package result.model;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
+import org.springframework.format.datetime.DateTimeFormatAnnotationFormatterFactory;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.qos.logback.core.util.Duration;
@@ -20,6 +23,7 @@ public class AdminModelImpl implements AdminModel {
     //Ska attributen vara final som i Register modellen?
     private List<AdminView> views;
     private Map<String, Competitor> competitors;
+
     //private WebClient webClient;
 
     // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
@@ -89,8 +93,9 @@ public class AdminModelImpl implements AdminModel {
         ArrayList<TimeDTO> times = new ArrayList<>();
         TimeDTO time1 = new TimeDTO(0, "7", Instant.now());
         TimeDTO time2 = new TimeDTO(0, "5", Instant.now());
+        System.out.println(time2.getTime());
         try {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
