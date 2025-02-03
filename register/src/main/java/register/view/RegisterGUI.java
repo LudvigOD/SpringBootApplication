@@ -146,7 +146,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     mainPanel.add(inputPanel, BorderLayout.NORTH);
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
-    
+   
 
     registerButton.addActionListener((e) -> {
       String startNumber = startNumberField.getText();
