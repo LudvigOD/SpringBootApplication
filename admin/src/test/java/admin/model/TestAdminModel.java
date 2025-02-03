@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import result.model.AdminModelImpl;
 import shared.dto.TimeDTO;
@@ -29,7 +30,10 @@ public class TestAdminModel {
 
     @BeforeEach
     void setUp() throws Exception {
-        model = new AdminModelImpl();
+        WebClient webClient = WebClient.builder()
+                .baseUrl("http://localhost:8080/api")
+                .build();
+        model = new AdminModelImpl(webClient);
         times = new ArrayList<>();
         TimeDTO time1 = new TimeDTO(0, "1", Instant.parse("2025-02-03T20:20:20.00Z"));
         TimeDTO time2 = new TimeDTO(0, "3", Instant.parse("2025-02-03T20:22:15.00Z"));
