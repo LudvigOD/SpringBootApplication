@@ -1,5 +1,6 @@
 package register.model;
 
+import register.util.TimeTuple;
 import register.view.RegisterView;
 
 public interface RegisterModel {
@@ -14,5 +15,12 @@ public interface RegisterModel {
    * @param startNbr
    */
   void registerTime(String startNbr, Integer station);
+
+
+  /**
+   * Edits a registered time.
+   * @param timeTuple
+   */
+  void editRegisteredTime(String startNbr, TimeTuple timeTuple);
 
 }
