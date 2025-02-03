@@ -3,17 +3,16 @@ package result;
 import java.util.Optional;
 
 import javax.swing.SwingUtilities;
-
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import result.model.AdminModelImpl;
 import result.view.AdminGUI;
 
+
 public class AdminApplication implements Runnable {
 
 
-        private AdminModelImpl model;
+    private AdminModelImpl model;
     public static void main(String[] args) {
         AdminApplication example = new AdminApplication();
         SwingUtilities.invokeLater(example);
@@ -27,19 +26,20 @@ public class AdminApplication implements Runnable {
         AdminGUI gui = new AdminGUI(model);
         gui.setVisible(true);
         model.test();
-        fetchLatestTimes();
        
-        
+        new Thread(() -> {
+            while (true) {
+                model.getAllTimesFromServer(times -> model.updateTimeTable(times), 1, Optional.empty(), Optional.empty());
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    System.err.println("Fetching thread interrupted.");
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }).start();
 
-    
-   //model.getAllTimesFromServer(times -> model.updateTimeTable(times), 1, Optional.empty(), Optional.empty());
-    //model.getAllTimesFromServer(times -> System.out.println(times.toString()), 1, Optional.empty(), Optional.empty());
-        
     }
-
-    @Scheduled(fixedRate = 3000)
-    public void fetchLatestTimes() {
-    model.getAllTimesFromServer(times -> model.updateTimeTable(times), 1, Optional.empty(), Optional.empty());
-}
 
 }

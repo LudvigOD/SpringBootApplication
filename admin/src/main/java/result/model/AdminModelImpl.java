@@ -9,30 +9,23 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.qos.logback.core.util.Duration;
 import result.view.AdminView;
 import shared.dto.TimeDTO;
 import result.util.Competitor;
 import java.util.function.Consumer;
 
-@EnableScheduling
+
 public class AdminModelImpl implements AdminModel {
 
     //Ska attributen vara final som i Register modellen?
     private List<AdminView> views;
     private Map<String, Competitor> competitors;
     private WebClient webClient;
-    private int currentRaceID = 1;
-    private List<TimeDTO> times;
-    private long delayMillis = 2000;
-    private boolean quit = false;
+
 
     // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
     // flyttas dit isf.
@@ -48,7 +41,6 @@ public class AdminModelImpl implements AdminModel {
         this.views = new ArrayList<>();
         this.competitors = new HashMap<>();
         this.webClient = webClient;
-        this.times = new ArrayList<>();
     }
 
     @Override
@@ -136,41 +128,6 @@ public class AdminModelImpl implements AdminModel {
             .block(); // will wait here during network request
     }
 
-    @Scheduled(fixedRate =  2000)
-    public void getTimesAndUpdateView(){
-        System.out.println("update");
-        getAllTimesFromServer(times -> updateTimeTable(times), 1, Optional.empty(), Optional.empty());
-    }
-
-    // public void updateLoop(){
-    //     while(!quit){
-    //      //   long t0 = System.currentTimeMillis();
-    //         getAllTimesFromServer(times -> updateTimeTable(times), 1, Optional.empty(), Optional.empty());
-    //         Thread.sleep(2000);
-    //    //     long elapsedMillis = System.currentTimeMillis()-t0;
-    //  //       long delayMinusElapsed = delayMillis-elapsedMillis;
-    //   //      if(delayMinusElapsed > 0){
-    //     //        Thread.sleep(delayMinusElapsed);
-    //         }
-    //     }
-
-/* 
-    public void getLatestTimesAndUpdateView() {
-        List<TimeDTO> updatedTimes = syncGetAllTimesFromServer(currentRaceID, Optional.empty(), Optional.empty());
-        System.out.println("innan if statement");
-        if (!updatedTimes.equals(times)) {
-            System.out.println("efter if statement");
-            times = updatedTimes;
-            updateTimeTable(updatedTimes);
-            getAllTimesFromServer(timeList -> {
-                System.out.println("Received " + timeList.size() + " times from server");
-                for (TimeDTO time : timeList) {
-                  System.out.println(time);
-                }
-            }, currentRaceID, Optional.empty(), Optional.empty());
-        }
-    }*/
-
     public void getAllTimesFromServer(Consumer<List<TimeDTO>> responseHandler, int raceID, Optional<Integer> station, Optional<Integer> startNbr){
         webClient.get()
        .uri(uriBuilder -> uriBuilder
@@ -197,6 +154,4 @@ public class AdminModelImpl implements AdminModel {
 //   public List<TimeDTO> getStationTimeForOneParticipant(int raceID, Integer station, Optional<Integer> startNbr) {
 //     return syncGetAllTimesFromServer(raceID, station, startNbr);
 //   }
-  //Optional.of(1)
-  //Optional.isEmpty()
 }
