@@ -7,12 +7,16 @@ import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AbstractDocument;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
@@ -37,10 +41,13 @@ public class RegisterGUI extends JFrame implements RegisterView {
   public RegisterGUI(RegisterModel model) {
     this.model = model;
     this.model.addListener(this);
+    // Fungerar inte på vissa datorer
+    // setExtendedState(JFrame.MAXIMIZED_BOTH);
 
     initGUI();
   }
 
+  // ??
   // ??
   @Override
   public void update(Iterable<TimeTuple> timeTuples) {
@@ -81,7 +88,14 @@ public class RegisterGUI extends JFrame implements RegisterView {
     // Filter för TextField så att man ej kan skriva in annat än siffror
     ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
 
+    startNumberField.setFont(defaultFont);
+
+    // Filter för TextField så att man ej kan skriva in annat än siffror
+    ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
+
     registerButton = new JButton("Registrera tid");
+    registerButton.setFont(defaultFont);
+    registerButton.setBackground(Color.RED);
     registerButton.setFont(defaultFont);
     registerButton.setBackground(Color.RED);
 
@@ -108,7 +122,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
     // Temporary test, fetch times from the server
     // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
     // Denna ska tas bort sen och ersättas med bara register-knappen
+    // Denna ska tas bort sen och ersättas med bara register-knappen
     JButton fetchTimesButton = new JButton("Test: Fetch times");
+    fetchTimesButton.setFont(defaultFont);
+
     fetchTimesButton.setFont(defaultFont);
 
     fetchTimesButton.addActionListener((e) -> {
@@ -122,6 +139,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     // inputPanel.add(fetchTimesButton);
     mainPanel.add(inputPanel, BorderLayout.NORTH);
+    JScrollPane scrollPane = new JScrollPane(registrationTable);
+    mainPanel.add(scrollPane, BorderLayout.CENTER);
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
 

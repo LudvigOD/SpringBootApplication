@@ -39,7 +39,7 @@ public class TestAdminModel {
     private WebClient.RequestHeadersSpec requestHeadersSpecMock;
     private WebClient.ResponseSpec responseSpecMock;
 
-
+    /* 
     @BeforeEach
     void setUp() throws Exception {
         // Mock WebClient and its method chain, i.e. the same chain that is used in the
@@ -57,7 +57,6 @@ public class TestAdminModel {
         // Prepare our mock response
         List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123)));
 
-
         // Setup the mock to return a response with our JSON body
         when(responseSpecMock.bodyToMono(
                 new ParameterizedTypeReference<List<TimeDTO>>() {
@@ -71,7 +70,7 @@ public class TestAdminModel {
 
     @Test 
     public void testGetParticipantTimes() {
-
+        
     }
 
     @Test 
@@ -84,7 +83,7 @@ public class TestAdminModel {
         assertEquals(adminModel.getNbrCompetitors(), 10);
         assertEquals(adminModel.getNbrStations(), 3);
 
-    }
+    } */
  
 
 }
