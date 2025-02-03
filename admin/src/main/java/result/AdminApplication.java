@@ -1,5 +1,7 @@
 package result;
 
+import java.util.Optional;
+
 import javax.swing.SwingUtilities;
 
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,6 +24,8 @@ public class AdminApplication implements Runnable {
         AdminGUI gui = new AdminGUI(model);
         gui.setVisible(true);
         model.test();
+        model.getAllTimesFromServer(times -> model.updateTimeTable(times), 1, Optional.empty(), Optional.empty());
+        model.getAllTimesFromServer(times -> System.out.println(times.toString()), 1, Optional.empty(), Optional.empty());
         
     }
 }

@@ -99,12 +99,6 @@ public class AdminModelImpl implements AdminModel {
         ArrayList<TimeDTO> times = new ArrayList<>();
         TimeDTO time1 = new TimeDTO(0, "7", Instant.now());
         TimeDTO time2 = new TimeDTO(0, "5", Instant.now());
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         TimeDTO time3 = new TimeDTO(1, "5", Instant.now());
         TimeDTO time4 = new TimeDTO(110, "12", Instant.now());
         times.add(time1);
