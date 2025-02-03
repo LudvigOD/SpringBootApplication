@@ -8,6 +8,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.sql.Date;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,8 @@ public class AdminGUI extends JFrame implements AdminView {
 
     private final AdminModel model;
     private Map<String, Integer> startNbrRows;
+    private static final String PATTERN_FORMAT = "hh:mm:ss:S";
+    private DateTimeFormatter formatter;
 
     //private Object[][] data;
 
@@ -41,6 +46,7 @@ public class AdminGUI extends JFrame implements AdminView {
         this.model = model;
         this.model.addListener(this);
         startNbrRows = new HashMap<>();
+        formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT).withZone(ZoneId.systemDefault());
 
         //String[] columnNames = { "Nr.", "Namn", "Start", "Mål", "Totalt" };
         //data = new Object[model.getNbrCompetitors()][columnNames.length];
@@ -51,7 +57,7 @@ public class AdminGUI extends JFrame implements AdminView {
 
     @Override
     public void onTimeAdded(TimeDTO time, Competitor competitor) {
-        Object[] row = {time.getStationId(), time.getStartNbr(), time.getTime() };
+        Object[] row = {time.getStationId(), time.getStartNbr(), formatter.format(time.getTime()) };
         timesTableModel.addRow(row);
         if(resultsTableModel.getRowCount() < model.getNbrCompetitors()) {
             resultsTableModel.addRow(new Object[]{});
