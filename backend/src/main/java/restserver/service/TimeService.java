@@ -17,7 +17,7 @@ public class TimeService {
   private TimeRepository timeRepository;
 
   public Time registerTime(int raceId, int stationId, String startNbr, Instant time) {
-    Time timeEntity = new Time(raceId, stationId, startNbr, time);
+    Time timeEntity = new Time(raceId, stationId, this.cleanStartNbr(startNbr), time);
     return timeRepository.save(timeEntity);
   }
 
@@ -35,5 +35,19 @@ public class TimeService {
     }
 
     return timeRepository.findByRaceId(raceId);
+  }
+
+  private String cleanStartNbr(String startNbr) {
+    int desiredLength = 2;
+
+    String cleanedStartNbr = Integer.toString(Integer.parseInt(startNbr));
+
+    int missingZeros = desiredLength - startNbr.length();
+
+    for (int i = 0; i < missingZeros; i++) {
+      cleanedStartNbr = "0" + cleanedStartNbr;
+    }
+
+    return cleanedStartNbr.toString();
   }
 }

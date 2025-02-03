@@ -20,8 +20,11 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
+import register.model.EndStation;
 import register.model.RegisterModel;
 import register.model.RegisterModelImpl;
+import register.model.StartStation;
+import register.model.StationModel;
 import register.util.TimeTuple;
 import shared.dto.TimeDTO;
 import shared.gui.PlaceholderTextField;
@@ -29,9 +32,11 @@ import shared.gui.PlaceholderTextField;
 public class RegisterGUI extends JFrame implements RegisterView {
 
   private final RegisterModel model;
-  private int selectedStation = 1;
-  private Integer[] stations = { 1, 2, 3, 4 };
-  private JComboBox<Integer> chooseStation = new JComboBox<Integer>(stations);
+  private StationModel startStation = new StartStation();
+  private StationModel endStation = new EndStation();
+  private StationModel selectedStation = startStation;
+  private StationModel[] stations = { startStation, endStation };
+  private JComboBox<StationModel> chooseStation = new JComboBox<StationModel>(stations);
   private String[] tableHeaders = { "Startnummer", "Tid", "Station" };
   private Font defaultFont = new Font("SANS_SERIF", Font.PLAIN, 25);
   private JTextField startNumberField;
@@ -104,10 +109,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
 
-    chooseStation = new JComboBox<Integer>(stations);
+  
     chooseStation.setFont(new Font("SANS_SERIF", Font.PLAIN, 20));
     chooseStation.addActionListener(event -> {
-      selectedStation = (int) chooseStation.getSelectedItem();
+      selectedStation = (StationModel) chooseStation.getSelectedItem();
     });
 
     JLabel stationLabel = new JLabel("Station:");
@@ -146,7 +151,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     registerButton.addActionListener((e) -> {
       String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
-        model.registerTime(startNumber, selectedStation);
+        model.registerTime(startNumber, selectedStation.id());
       }
     });
 
