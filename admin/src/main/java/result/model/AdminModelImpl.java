@@ -1,5 +1,7 @@
 package result.model;
 
+//import static org.mockito.Mockito.times;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,19 +10,26 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import ch.qos.logback.core.util.Duration;
 import result.view.AdminView;
 import shared.dto.TimeDTO;
 import result.util.Competitor;
+import java.util.function.Consumer;
 
 public class AdminModelImpl implements AdminModel {
 
     //Ska attributen vara final som i Register modellen?
     private List<AdminView> views;
     private Map<String, Competitor> competitors;
-    //private WebClient webClient;
+    private WebClient webClient;
+    private int currentRaceID = 1;
+    private List<TimeDTO> times;
 
     // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
     // flyttas dit isf.
@@ -32,10 +41,11 @@ public class AdminModelImpl implements AdminModel {
     //    this.webClient = webClient;
     //}
 
-    public AdminModelImpl() {
+    public AdminModelImpl(WebClient webClient) {
         this.views = new ArrayList<>();
         this.competitors = new HashMap<>();
-        //this.webClient = webClient;
+        this.webClient = webClient;
+        this.times = new ArrayList<>();
     }
 
     @Override
@@ -115,5 +125,62 @@ public class AdminModelImpl implements AdminModel {
         return nbrStations;
     } 
     */
+    public List<TimeDTO> syncGetAllTimesFromServer(int raceID, Optional<Integer> station, Optional<Integer> startNbr) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/races/{raceID}/times")
+                .queryParamIfPresent("startNbr", startNbr)
+                .queryParamIfPresent("station", station)
+                .build(raceID))
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+            })
+            .block(); // will wait here during network request
+    }
 
+    public void getLatestTimesAndUpdateView() {
+        List<TimeDTO> updatedTimes = syncGetAllTimesFromServer(currentRaceID, Optional.empty(), Optional.empty());
+        System.out.println("innan if statement");
+        if (!updatedTimes.equals(times)) {
+            System.out.println("efter if statement");
+            times = updatedTimes;
+            updateTimeTable(updatedTimes);
+            getAllTimesFromServer(timeList -> {
+                System.out.println("Received " + timeList.size() + " times from server");
+                for (TimeDTO time : timeList) {
+                  System.out.println(time);
+                }
+            }, currentRaceID, Optional.empty(), Optional.empty());
+        }
+    }
+
+    public void getAllTimesFromServer(Consumer<List<TimeDTO>> responseHandler, int raceID, Optional<Integer> station, Optional<Integer> startNbr){
+        webClient.get()
+       .uri(uriBuilder -> uriBuilder
+       .path("/races/{raceID}/times")
+       .queryParamIfPresent("startNbr", startNbr)
+       .queryParamIfPresent("station", station)
+       .build(raceID))
+       .accept(MediaType.APPLICATION_JSON)
+       .retrieve()
+       .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+       })
+       .subscribe(responseHandler);
+    }
+
+
+//   public List<TimeDTO> getParticipantTimes(int raceID, Optional<Integer> station, Optional<Integer> startNbr) {
+//     return syncGetAllTimesFromServer(raceID, startNbr);
+//   }
+
+//   public List<TimeDTO> getStationTimes(int raceID, Optional<Integer> station) {
+//     return syncGetAllTimesFromServer(raceID, station);
+//   }
+
+//   public List<TimeDTO> getStationTimeForOneParticipant(int raceID, Integer station, Optional<Integer> startNbr) {
+//     return syncGetAllTimesFromServer(raceID, station, startNbr);
+//   }
+  //Optional.of(1)
+  //Optional.isEmpty()
 }
