@@ -57,7 +57,7 @@ public class AdminGUI extends JFrame implements AdminView {
 
     @Override
     public void onTimeAdded(TimeDTO time, Competitor competitor) {
-        Object[] row = {time.getStationId(), time.getStartNbr(), formatter.format(time.getTime()) };
+        Object[] row = {time.getStationId() == 1 ? "Start" : "Mål", time.getStartNbr(), formatter.format(time.getTime()) };
         timesTableModel.addRow(row);
         if(resultsTableModel.getRowCount() < model.getNbrCompetitors()) {
             resultsTableModel.addRow(new Object[]{});
@@ -160,9 +160,9 @@ public class AdminGUI extends JFrame implements AdminView {
                 // c.setBackground(new Color(100, 149, 237));
                 // }
 
-                if (row == 4 && column == 1) {
-                    c.setForeground(new Color(255, 99, 71));
-                }
+                // if (row == 4 && column == 1) {
+                //     c.setForeground(new Color(255, 99, 71));
+                // }
 
                 return c;
             }

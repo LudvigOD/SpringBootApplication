@@ -85,19 +85,7 @@ public class AdminModelImpl implements AdminModel {
         return competitors.size();
     }
 
-    
-
     public void test(){
-        ArrayList<TimeDTO> times = new ArrayList<>();
-        TimeDTO time1 = new TimeDTO(0, "7", Instant.now());
-        TimeDTO time2 = new TimeDTO(0, "5", Instant.now());
-        TimeDTO time3 = new TimeDTO(1, "5", Instant.now());
-        TimeDTO time4 = new TimeDTO(110, "12", Instant.now());
-        times.add(time1);
-        times.add(time2);
-        times.add(time3);
-        times.add(time4);
-        updateTimeTable(times);
     }
 
     /* 
