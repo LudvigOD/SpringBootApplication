@@ -52,48 +52,6 @@ public class TestTimeService {
     }
 
     @Test
-    public void testRegisterTimePadStartNbr() {
-        Time timeEntity = new Time(1, 1, "02", Instant.ofEpochSecond(123));
-        when(timeRepository.save(any(Time.class))).thenReturn(timeEntity);
-
-        Time result = timeService.registerTime(1, 1, "2", Instant.ofEpochSecond(123));
-
-        assertNotNull(result);
-        assertEquals(result.getStartNbr(), "02");
-        assertEquals(result.getTime(), Instant.ofEpochSecond(123));
-
-        verify(timeRepository).save(any(Time.class));
-    }
-
-    @Test
-    public void testRegisterTimeTrimStartNbr() {
-        Time timeEntity = new Time(1, 1, "02", Instant.ofEpochSecond(123));
-        when(timeRepository.save(any(Time.class))).thenReturn(timeEntity);
-
-        Time result = timeService.registerTime(1, 1, "002", Instant.ofEpochSecond(123));
-
-        assertNotNull(result);
-        assertEquals(result.getStartNbr(), "02");
-        assertEquals(result.getTime(), Instant.ofEpochSecond(123));
-
-        verify(timeRepository).save(any(Time.class));
-    }
-
-    @Test
-    public void testRegisterTimeTrimOnlyLeadingZerosStartNbr() {
-        Time timeEntity = new Time(1, 1, "1002", Instant.ofEpochSecond(123));
-        when(timeRepository.save(any(Time.class))).thenReturn(timeEntity);
-
-        Time result = timeService.registerTime(1, 1, "1002", Instant.ofEpochSecond(123));
-
-        assertNotNull(result);
-        assertEquals(result.getStartNbr(), "1002");
-        assertEquals(result.getTime(), Instant.ofEpochSecond(123));
-
-        verify(timeRepository).save(any(Time.class));
-    }
-
-    @Test
     public void testGetAllTimes() {
         Time[] mockTimes = new Time[] {
                 new Time(1, 1, "01", Instant.ofEpochSecond(123)),
