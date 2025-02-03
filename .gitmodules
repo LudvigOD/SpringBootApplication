@@ -1,0 +1,3 @@
+[submodule "wiki"]
+	path = wiki
+	url = git@coursegit.cs.lth.se:edaf45/ht24-vt25/projects/team05.wiki.git

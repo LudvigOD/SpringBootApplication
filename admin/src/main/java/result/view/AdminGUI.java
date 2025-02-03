@@ -8,6 +8,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -19,29 +22,56 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import result.model.AdminModel;
+import result.util.Competitor;
 import shared.dto.TimeDTO;
 
 public class AdminGUI extends JFrame implements AdminView {
 
     private final AdminModel model;
+    private Map<String, Integer> startNbrRows;
+
+    //private Object[][] data;
 
     private final DefaultTableModel timesTableModel = new DefaultTableModel(new String[] { "Station", "Nr.", "Tid" },
             0);
-    private final DefaultTableModel resultsTableModel = new DefaultTableModel(
-            new String[] { "Nr.", "Namn", "Start", "Mål", "Totalt" },
-            0);
+    private DefaultTableModel resultsTableModel = new DefaultTableModel(new String[]{ "Nr.", "Namn", "Start", "Mål", "Totalt" }, 0);
 
     public AdminGUI(AdminModel model) {
         this.model = model;
         this.model.addListener(this);
+        startNbrRows = new HashMap<>();
+
+        //String[] columnNames = { "Nr.", "Namn", "Start", "Mål", "Totalt" };
+        //data = new Object[model.getNbrCompetitors()][columnNames.length];
+        //this.resultsTableModel = new DefaultTableModel(data, columnNames);
 
         initGUI();
     }
 
     @Override
-    public void onTimeAdded(TimeDTO time) {
-        Object[] row = { time.getStationId(), time.getStartNbr(), time.getTime() };
+    public void onTimeAdded(TimeDTO time, Competitor competitor) {
+        Object[] row = {time.getStationId(), time.getStartNbr(), time.getTime() };
         timesTableModel.addRow(row);
+        if(resultsTableModel.getRowCount() < model.getNbrCompetitors()) {
+            resultsTableModel.addRow(new Object[]{});
+            startNbrRows.put(competitor.getStartNbr(), resultsTableModel.getRowCount()-1);
+        }
+        updateRow(competitor);
+    }
+
+    private void updateRow(Competitor competitor) {
+        //int rowNbr = Integer.valueOf(result.getStartNbr()) - 1;
+        int rowNbr = startNbrRows.get(competitor.getStartNbr());
+        //data[rowNbr] = new Object[]{result.getStartNbr(), "-", result.getStartTime(), result.getFinishTime(), result.getTotal()};
+        Object[] data = new Object[]{competitor.getStartNbr(), "-", competitor.getStartTime(), competitor.getFinishTime(), competitor.getTotalTime()};
+        editRow(resultsTableModel, rowNbr, data);
+    }
+
+    private void editRow(DefaultTableModel model, int rowIndex, Object[] newRowData) {
+        for (int col = 0; col < newRowData.length; col++) {
+            model.setValueAt(newRowData[col], rowIndex, col);
+        }
     }
 
     public void initGUI() {
@@ -140,23 +170,17 @@ public class AdminGUI extends JFrame implements AdminView {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-
+/* 
         model.getAllTimes().forEach(time -> {
             Object[] row = { time.getStationId(), time.getStartNbr(), time.getTime() };
             timesTableModel.addRow(row);
-        });
+        }); 
+*/
 
         return table;
     }
 
     private JTable createResultsTable() {
-        String[] columnNames = { "Nr.", "Namn", "Start", "Mål", "Totalt" };
-        Object[][] data = {
-                { "1", "AA", "-", "-", "-" },
-                { "2", "BB", "-", "2 tider!", "-" },
-                { "3", "CC", "-", "-", "-" },
-                { "4", "DD", "-", "X", "?" }
-        };
 
         JTable table = new JTable(resultsTableModel);
         table.setShowGrid(true);
@@ -199,12 +223,8 @@ public class AdminGUI extends JFrame implements AdminView {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-
-        model.getResults().forEach(result -> {
-            Object[] row = { result.startNbr, result.name, result.startTime, result.finishTime, result.totalDuration };
-            resultsTableModel.addRow(row);
-        });
-
         return table;
     }
+
+
 }

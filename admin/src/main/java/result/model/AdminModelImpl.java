@@ -1,126 +1,119 @@
 package result.model;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
 
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import result.AdminView;
+import ch.qos.logback.core.util.Duration;
+import result.view.AdminView;
+import shared.dto.TimeDTO;
+import result.util.Competitor;
 
 public class AdminModelImpl implements AdminModel {
 
-
-    public AdminModelImpl(WebClient webClient) {
-
-    }
-
-    private List<TimeDTO> times;
-
-    private WebClient webClient;
+    //Ska attributen vara final som i Register modellen?
+    private List<AdminView> views;
+    private Map<String, Competitor> competitors;
+    //private WebClient webClient;
 
     // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
     // flyttas dit isf.
-    private int nbrCompetitors;
-    private int nbrStations;
+    //private int nbrCompetitors;
+    //private int nbrStations;
 
-    public AdminModelImpl(WebClient webClient) {
-        this.times = new ArrayList<>();
-        this.webClient = webClient;
+    //public AdminModelImpl(WebClient webClient) {
+    //    this.times = new ArrayList<>();
+    //    this.webClient = webClient;
+    //}
+
+    public AdminModelImpl() {
+        this.views = new ArrayList<>();
+        this.competitors = new HashMap<>();
+        //this.webClient = webClient;
     }
 
     @Override
-    public List<TimeDTO> getParticipantTimes(String startNbr) {
-    // public void registerTime(String startNbr) {
-    // // TODO Auto-generated method stub
-    // throw new UnsupportedOperationException("Unimplemented method
-    // 'registerTime'");
-    // }
-    // Behöver vi denna?
-
-    public void editTime(String startNbr) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'editTime'");
-    }
-
-    public void deleteTime(String startNbr) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTime'");
-    }
-
-    public void editStartNbr(String startNbr) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'editStartNbr'");
-    }
-
-    public void registerParticipant() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'registerParticipant'");
-    }
-
     public void addListener(AdminView view) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addListener'");
+        this.views.add(view);
+    }
 
+    @Override
+    public void removeListener(AdminView view) {
+        this.views.remove(view);
+    }
+
+    @Override
+    public void updateTimeTable(List<TimeDTO> times) {
+        for(TimeDTO time : times) {
+            String startNbr = time.getStartNbr();
+            if (!competitors.containsKey(startNbr)){
+                competitors.put(startNbr, new Competitor(startNbr));
+                System.out.println(startNbr);
+            }
+            Competitor competitor = competitors.get(startNbr);
+            competitor.addTimetoCompetitor(time.getStationId(), time.getTime());
+            for (AdminView view : this.views) {
+                view.onTimeAdded(time, competitor);
+            }
+        }
+    }
+
+    @Override
+    public int getNbrCompetitors() {
+        return competitors.size();
+    }
+
+    
+    @Override
+    public List<TimeDTO> getAllTimes() {
+        ArrayList<TimeDTO> times = new ArrayList<>();
+        TimeDTO time1 = new TimeDTO(0, "1", Instant.now());
+        TimeDTO time2 = new TimeDTO(0, "3", Instant.now());
+        TimeDTO time3 = new TimeDTO(0, "2", Instant.now());
+        TimeDTO time4 = new TimeDTO(1, "1", Instant.now());
+        times.add(time1);
+        times.add(time2);
+        times.add(time3);
+        times.add(time4);
+        updateTimeTable(times);
+        return times;
+    }
+
+    public void test(){
+        ArrayList<TimeDTO> times = new ArrayList<>();
+        TimeDTO time1 = new TimeDTO(0, "7", Instant.now());
+        TimeDTO time2 = new TimeDTO(0, "5", Instant.now());
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        TimeDTO time3 = new TimeDTO(1, "5", Instant.now());
+        TimeDTO time4 = new TimeDTO(110, "12", Instant.now());
+        times.add(time1);
+        times.add(time2);
+        times.add(time3);
+        times.add(time4);
+        updateTimeTable(times);
+    }
+
+    /* 
     @Override
     public void startCompetition(int nbrCompetitors, int nbrStations) {
         this.nbrCompetitors = nbrCompetitors;
         this.nbrStations = nbrStations;
     }
 
-    public void removeListener(AdminView view) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeListener'");
-    }
-
     public int getNbrStations() {
         return nbrStations;
-    }
-
-
-
-  public void sendNonBlockingGetRequest(
-      Consumer<List<TimeDTO>> responseHandler) {
-    webClient.get()
-        .uri("/time/startNbr/01")
-        .accept(MediaType.APPLICATION_JSON)
-        .retrieve()
-        // Use ParameterizedTypeReference to keep the generic type information, rather
-        // than just a List.class
-        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
-        })
-        // .bodyToFlux(TimeDTO.class)
-        .subscribe(responseHandler);
-  }
-
-  public List<TimeDTO> sendBlockingGetRequest(String startNbr) {
-    return webClient.get()
-        .uri("/time/startNbr/" + startNbr)
-        .accept(MediaType.APPLICATION_JSON)
-        .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
-        })
-        .block(); 
-  }
-    public void registerTime(String startNbr) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'registerTime'");
-    }
-
-}
-
-    @Override
-    public List<List<TimeDTO>> getAllTimes() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllTimes'");
-    }
-
-    @Override
-    public int getTotalTime(String startNbr) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTotalTime'");
-    }
+    } 
+    */
 
 }

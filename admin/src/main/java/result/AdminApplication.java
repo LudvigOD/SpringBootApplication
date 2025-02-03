@@ -2,6 +2,9 @@ package result;
 
 import javax.swing.SwingUtilities;
 
+import result.model.AdminModelImpl;
+import result.view.AdminGUI;
+
 public class AdminApplication implements Runnable {
 
     public static void main(String[] args) {
@@ -10,6 +13,9 @@ public class AdminApplication implements Runnable {
     }
 
     public void run() {
-        AdminGUI.createAndShowGUI();
+        AdminModelImpl model = new AdminModelImpl();
+        AdminGUI gui = new AdminGUI(model);
+        gui.setVisible(true);
+        model.test();
     }
 }

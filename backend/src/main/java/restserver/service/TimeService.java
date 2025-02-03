@@ -20,7 +20,7 @@ public class TimeService {
   private TimeRepository timeRepository;
 
   public Time registerTime(int raceId, int stationId, String startNbr, Instant time) {
-    Time timeEntity = new Time(raceId, stationId, startNbr, time);
+    Time timeEntity = new Time(raceId, stationId, this.cleanStartNbr(startNbr), time);
     return timeRepository.save(timeEntity);
   }
 
@@ -40,17 +40,17 @@ public class TimeService {
     return timeRepository.findByRaceId(raceId);
   }
 
-  //public List<Time> getAllPlayerTimes(){
-  //}
+  private String cleanStartNbr(String startNbr) {
+    int desiredLength = 2;
 
-  public Boolean isDefect(int raceId, int stationId, String startNbr){
-      return (timeRepository.findByRaceIdAndStationIdAndStartNbr(raceId, stationId, startNbr).size() > 1);
+    String cleanedStartNbr = Integer.toString(Integer.parseInt(startNbr));
+
+    int missingZeros = desiredLength - startNbr.length();
+
+    for (int i = 0; i < missingZeros; i++) {
+      cleanedStartNbr = "0" + cleanedStartNbr;
+    }
+
+    return cleanedStartNbr.toString();
   }
-
-  public Time editStartNbr (int raceId, Optional<Integer> stationId, Optional<String> oldStartNbr, Optional<String> newStartNbr) {    
-    var result = timeRepository.findByRaceIdAndStationIdAndStartNbr(raceId, stationId.get(), oldStartNbr.get()).get(0);
-    result.setStartNbr(newStartNbr.get());
-    return result;
-  }
-
 }

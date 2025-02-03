@@ -46,14 +46,14 @@ public class TimesController {
     return timeDTOs;
   }
 
-  @PutMapping()
-  public void editStartNbr (
-    @PathVariable("raceId") int raceId,
-    @RequestParam("stationId") Optional<Integer> stationId,
-    @RequestParam("oldStartNbr") Optional<String> oldStartNbr,
-    @RequestParam("newStartNbr") Optional<String> newStartNbr){
-    timeService.editStartNbr(raceId, stationId, oldStartNbr, newStartNbr);
-  }
+  // @PutMapping()
+  // public void editStartNbr (
+  //   @PathVariable("raceId") int raceId,
+  //   @RequestParam("stationId") Optional<Integer> stationId,
+  //   @RequestParam("oldStartNbr") Optional<String> oldStartNbr,
+  //   @RequestParam("newStartNbr") Optional<String> newStartNbr){
+  //   timeService.editStartNbr(raceId, stationId, oldStartNbr, newStartNbr);
+  // }
 
 
 }

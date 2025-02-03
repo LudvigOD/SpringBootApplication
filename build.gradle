@@ -83,7 +83,7 @@ task assembleAll(type: Zip) {
     destinationDirectory = new File(projectDir, 'release')
 
     // Set the base name and extension of the archive
-    archiveBaseName.set('project-bundle')
+    archiveBaseName.set("${rootProject.name}-${gradle.ext.version}".toLowerCase())
     archiveExtension.set('zip')
 
     // Add the jar files from the subprojects
@@ -93,11 +93,7 @@ task assembleAll(type: Zip) {
         project(':admin').bootJar,
     ])
 
-     // Include README.md at the root of the zip
-    from('docs') {
-        include 'README.md'
-        into '/'
-    }
+   
 
     // Include all other files in 'docs' into 'documentation', excluding README.md
     from('docs') {
