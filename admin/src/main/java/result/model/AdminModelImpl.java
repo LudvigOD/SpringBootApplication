@@ -1,5 +1,7 @@
 package result.model;
 
+//import static org.mockito.Mockito.times;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -9,22 +11,24 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.format.datetime.DateTimeFormatAnnotationFormatterFactory;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import ch.qos.logback.core.util.Duration;
 import result.view.AdminView;
 import shared.dto.TimeDTO;
 import result.util.Competitor;
+import java.util.function.Consumer;
+
 
 public class AdminModelImpl implements AdminModel {
 
     //Ska attributen vara final som i Register modellen?
     private List<AdminView> views;
     private Map<String, Competitor> competitors;
+    private WebClient webClient;
 
-    //private WebClient webClient;
 
     // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
     // flyttas dit isf.
@@ -36,10 +40,10 @@ public class AdminModelImpl implements AdminModel {
     //    this.webClient = webClient;
     //}
 
-    public AdminModelImpl() {
+    public AdminModelImpl(WebClient webClient) {
         this.views = new ArrayList<>();
         this.competitors = new HashMap<>();
-        //this.webClient = webClient;
+        this.webClient = webClient;
     }
 
     @Override
@@ -78,13 +82,6 @@ public class AdminModelImpl implements AdminModel {
         ArrayList<TimeDTO> times = new ArrayList<>();
         TimeDTO time1 = new TimeDTO(0, "7", Instant.now());
         TimeDTO time2 = new TimeDTO(0, "5", Instant.now());
-        System.out.println(time2.getTime());
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         TimeDTO time3 = new TimeDTO(1, "5", Instant.now());
         TimeDTO time4 = new TimeDTO(110, "12", Instant.now());
         times.add(time1);
@@ -105,5 +102,44 @@ public class AdminModelImpl implements AdminModel {
         return nbrStations;
     } 
     */
+    public List<TimeDTO> syncGetAllTimesFromServer(int raceID, Optional<Integer> station, Optional<Integer> startNbr) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/races/{raceID}/times")
+                .queryParamIfPresent("startNbr", startNbr)
+                .queryParamIfPresent("station", station)
+                .build(raceID))
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+            })
+            .block(); // will wait here during network request
+    }
 
+    public void getAllTimesFromServer(Consumer<List<TimeDTO>> responseHandler, int raceID, Optional<Integer> station, Optional<Integer> startNbr){
+        webClient.get()
+       .uri(uriBuilder -> uriBuilder
+       .path("/races/{raceID}/times")
+       .queryParamIfPresent("startNbr", startNbr)
+       .queryParamIfPresent("station", station)
+       .build(raceID))
+       .accept(MediaType.APPLICATION_JSON)
+       .retrieve()
+       .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+       })
+       .subscribe(responseHandler);
+    }
+
+
+//   public List<TimeDTO> getParticipantTimes(int raceID, Optional<Integer> station, Optional<Integer> startNbr) {
+//     return syncGetAllTimesFromServer(raceID, startNbr);
+//   }
+
+//   public List<TimeDTO> getStationTimes(int raceID, Optional<Integer> station) {
+//     return syncGetAllTimesFromServer(raceID, station);
+//   }
+
+//   public List<TimeDTO> getStationTimeForOneParticipant(int raceID, Integer station, Optional<Integer> startNbr) {
+//     return syncGetAllTimesFromServer(raceID, station, startNbr);
+//   }
 }
