@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import restserver.entity.Participant;
 import restserver.repository.ParticipantRepository;
 
+@Service
 public class ParticipantService {
 
     @Autowired
