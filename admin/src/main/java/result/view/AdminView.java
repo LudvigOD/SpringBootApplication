@@ -1,8 +1,8 @@
 package result.view;
 
-import result.dto.ResultDTO;
+import result.util.Competitor;
 import shared.dto.TimeDTO;
 
 public interface AdminView {
-  void onTimeAdded(TimeDTO time, ResultDTO result);
+  void onTimeAdded(TimeDTO time, Competitor competitor);
 }

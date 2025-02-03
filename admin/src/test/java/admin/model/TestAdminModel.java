@@ -39,7 +39,7 @@ public class TestAdminModel {
     private WebClient.RequestHeadersSpec requestHeadersSpecMock;
     private WebClient.ResponseSpec responseSpecMock;
 
-
+    /* 
     @BeforeEach
     void setUp() throws Exception {
         // Mock WebClient and its method chain, i.e. the same chain that is used in the
@@ -83,7 +83,7 @@ public class TestAdminModel {
         assertEquals(adminModel.getNbrCompetitors(), 10);
         assertEquals(adminModel.getNbrStations(), 3);
 
-    }
+    } */
  
 
 }

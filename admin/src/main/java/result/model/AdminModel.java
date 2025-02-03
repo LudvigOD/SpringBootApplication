@@ -2,7 +2,6 @@ package result.model;
 
 import java.util.List;
 
-import result.dto.ResultDTO;
 import result.view.AdminView;
 import shared.dto.TimeDTO;
 
@@ -12,6 +11,10 @@ public interface AdminModel {
 
   void removeListener(AdminView view);
 
+  void updateTimeTable(List<TimeDTO> times);
+
+  void test();
+
   /**
    * Retrieves all the times from the server.
    *
@@ -19,16 +22,17 @@ public interface AdminModel {
    */
   List<TimeDTO> getAllTimes();
 
-  List<ResultDTO> getResults();
+
+  //List<ResultDTO> getResults();
 
   /**
    * Retrieve a competitors times
    *
    * @param startNbr
    */
-  List<TimeDTO> getParticipantTimes(String startNbr);
+  //List<TimeDTO> getParticipantTimes(String startNbr);
 
-  int getTotalTime(String startNbr);
+  //int getTotalTime(String startNbr);
 
   /**
    * Starts the competition.
@@ -36,10 +40,10 @@ public interface AdminModel {
    * @param amountCompetitors
    * @param stations
    */
-  void startCompetition(int amountCompetitors, int stations);
+  //void startCompetition(int amountCompetitors, int stations);
 
   int getNbrCompetitors();
 
-  int getNbrStations();
+  //int getNbrStations();
 
 }
