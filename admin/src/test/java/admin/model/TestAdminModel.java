@@ -6,84 +6,61 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.ExchangeFunction;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import reactor.core.publisher.Mono;
 import result.model.AdminModelImpl;
 import shared.dto.TimeDTO;
 
 public class TestAdminModel {
 
 
-    private AdminModelImpl adminModel;
-    private WebClient webClientMock;
-    private WebClient.RequestHeadersUriSpec requestHeadersUriSpecMock;
-    private WebClient.RequestHeadersSpec requestHeadersSpecMock;
-    private WebClient.ResponseSpec responseSpecMock;
+    private AdminModelImpl model;
+    private ArrayList<TimeDTO> times;
 
-    /* 
+
     @BeforeEach
     void setUp() throws Exception {
-        // Mock WebClient and its method chain, i.e. the same chain that is used in the
-        // actual implementation in AdminModelImpl.
-        webClientMock = mock(WebClient.class);
-        requestHeadersUriSpecMock = mock(WebClient.RequestHeadersUriSpec.class);
-        requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
-        responseSpecMock = mock(WebClient.ResponseSpec.class);
-
-        when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
-        when(requestHeadersUriSpecMock.uri(any(String.class))).thenReturn(requestHeadersSpecMock);
-        when(requestHeadersSpecMock.accept(any(MediaType.class))).thenReturn(requestHeadersSpecMock);
-        when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
-
-        // Prepare our mock response
-        List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123)));
-
-        // Setup the mock to return a response with our JSON body
-        when(responseSpecMock.bodyToMono(
-                new ParameterizedTypeReference<List<TimeDTO>>() {
-                })).thenReturn(
-                        Mono.delay(Duration.ofMillis(50))
-                                .then(Mono.just(mockResponse)));
-
-        // Initialize AdminModelImpl with the mocked WebClient
-        adminModel = new AdminModelImpl(webClientMock);
+        model = new AdminModelImpl();
+        times = new ArrayList<>();
+        TimeDTO time1 = new TimeDTO(0, "1", Instant.parse("2025-02-03T20:20:20.00Z"));
+        TimeDTO time2 = new TimeDTO(0, "3", Instant.parse("2025-02-03T20:22:15.00Z"));
+        TimeDTO time3 = new TimeDTO(0, "2", Instant.parse("2025-02-03T20:24:23.00Z"));
+        TimeDTO time4 = new TimeDTO(1, "1", Instant.parse("2025-02-03T20:25:10.00Z"));
+        times.add(time1);
+        times.add(time2);
+        times.add(time3);
+        times.add(time4);
+        model.updateTimeTable(times);
     }
 
     @Test 
-    public void testGetParticipantTimes() {
-        
+    public void testGetNbrCompetitors() {
+        assertEquals(model.getNbrCompetitors(), 3);
     }
 
     @Test 
-    public void testStartCompetition() {
-        int competitors = 10;
-        int stations = 3;
+    public void testAddNewCompetitor() {
+        List<TimeDTO> times2 = new ArrayList<>();
+        TimeDTO time = new TimeDTO(0, "4", Instant.parse("2025-02-03T20:20:20.00Z"));
+        times2.add(time);
+        model.updateTimeTable(times2);
+        assertEquals(model.getNbrCompetitors(), 4);
+    }
 
-        adminModel.startCompetition(competitors, stations);
+    @Test 
+    public void test2() {
 
-        assertEquals(adminModel.getNbrCompetitors(), 10);
-        assertEquals(adminModel.getNbrStations(), 3);
 
-    } */
+    } 
  
 
 }

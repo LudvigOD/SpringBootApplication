@@ -15,13 +15,6 @@ public interface AdminModel {
 
   void test();
 
-  /**
-   * Retrieves all the times from the server.
-   *
-   * @param startNbr
-   */
-  List<TimeDTO> getAllTimes();
-
 
   //List<ResultDTO> getResults();
 

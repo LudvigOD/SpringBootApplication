@@ -36,23 +36,23 @@ public class Competitor {
     }
 
     public String getStartTime() {
-        if(stationIDAndTimes.containsKey(0)){
-            return formatter.format(stationIDAndTimes.get(0).get(0));
-        }
-        return "-";
-    }
-
-    public String getFinishTime() {
         if(stationIDAndTimes.containsKey(1)){
             return formatter.format(stationIDAndTimes.get(1).get(0));
         }
         return "-";
     }
 
+    public String getFinishTime() {
+        if(stationIDAndTimes.containsKey(2)){
+            return formatter.format(stationIDAndTimes.get(2).get(0));
+        }
+        return "-";
+    }
+
     public String getTotalTime() {
-        if(stationIDAndTimes.containsKey(0) && stationIDAndTimes.containsKey(1)){
-            Instant instant1 = stationIDAndTimes.get(0).get(0);
-            Instant instant2 = stationIDAndTimes.get(1).get(0);
+        if(stationIDAndTimes.containsKey(1) && stationIDAndTimes.containsKey(2)){
+            Instant instant1 = stationIDAndTimes.get(1).get(0);
+            Instant instant2 = stationIDAndTimes.get(2).get(0);
             Duration duration = Duration.between(instant1, instant2);
             return String.format("%02d:%02d:%02d:%02d", duration.toHours(), duration.toMinutes(), duration.toSeconds(), duration.toMillis());
         }
