@@ -1,0 +1,22 @@
+Release 1
+
+Filer som finns med:
+- admin.jar
+- register.jar
+- backend.jar
+- runner
+- Instruktioner.pdf
+- releaseinfo.txt
+
+Stories i releasen:
+- B1: GUI för registrering
+- B2: Registreringsmodell
+- B3: REST-server
+- B4: REST API
+- B5: Integrera Reg+Server
+- B6: GUI för Adminverktyg
+- B7: Modell för Adminverktyg
+- B8: Integrera Admin+Server
+- F0: Enkelt maraton
+- F3: Inställningar
+- F4: Manual/instruktioner
