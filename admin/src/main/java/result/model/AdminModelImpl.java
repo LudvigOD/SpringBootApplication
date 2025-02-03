@@ -58,7 +58,6 @@ public class AdminModelImpl implements AdminModel {
             String startNbr = time.getStartNbr();
             if (!competitors.containsKey(startNbr)){
                 competitors.put(startNbr, new Competitor(startNbr));
-                System.out.println(startNbr);
             }
             Competitor competitor = competitors.get(startNbr);
             competitor.addTimetoCompetitor(time.getStationId(), time.getTime());
@@ -74,20 +73,6 @@ public class AdminModelImpl implements AdminModel {
     }
 
     
-    @Override
-    public List<TimeDTO> getAllTimes() {
-        ArrayList<TimeDTO> times = new ArrayList<>();
-        TimeDTO time1 = new TimeDTO(0, "1", Instant.now());
-        TimeDTO time2 = new TimeDTO(0, "3", Instant.now());
-        TimeDTO time3 = new TimeDTO(0, "2", Instant.now());
-        TimeDTO time4 = new TimeDTO(1, "1", Instant.now());
-        times.add(time1);
-        times.add(time2);
-        times.add(time3);
-        times.add(time4);
-        updateTimeTable(times);
-        return times;
-    }
 
     public void test(){
         ArrayList<TimeDTO> times = new ArrayList<>();
