@@ -1,56 +1,32 @@
 package result.model;
 
-//import static org.mockito.Mockito.times;
-
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
-import org.springframework.format.datetime.DateTimeFormatAnnotationFormatterFactory;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import result.view.AdminView;
+import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
-import result.util.Competitor;
-import java.util.function.Consumer;
-
 
 public class AdminModelImpl implements AdminModel {
+    private List<TimeDTO> times = new ArrayList<>();
+    private List<ParticipantDTO> participants = new ArrayList<>();
+    private List<AdminView> views = new ArrayList<>();
 
-    //Ska attributen vara final som i Register modellen?
-    private List<AdminView> views;
-    private Map<String, Competitor> competitors;
     private WebClient webClient;
-    private List<TimeDTO> times;
-
-
-    // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
-    // flyttas dit isf.
-    //private int nbrCompetitors;
-    //private int nbrStations;
-
-    //public AdminModelImpl(WebClient webClient) {
-    //    this.times = new ArrayList<>();
-    //    this.webClient = webClient;
-    //}
 
     public AdminModelImpl(WebClient webClient) {
-        this.views = new ArrayList<>();
-        this.competitors = new HashMap<>();
         this.webClient = webClient;
-        times = new ArrayList<>() ;
+        times = new ArrayList<>();
     }
 
     @Override
     public void addListener(AdminView view) {
         this.views.add(view);
+
+        view.onDataUpdated(this.times, this.participants);
     }
 
     @Override
@@ -58,85 +34,51 @@ public class AdminModelImpl implements AdminModel {
         this.views.remove(view);
     }
 
-    public void filterNewTimes(List<TimeDTO> times) {
-        if(this.times.size() != times.size()){
-            updateTimeTable(times.subList(this.times.size(), times.size()));
-            this.times = times; 
+    private void notifyListeners() {
+        for (AdminView view : this.views) {
+            view.onDataUpdated(this.times, this.participants);
         }
     }
 
     @Override
-    public void updateTimeTable(List<TimeDTO> times) {
-        for(TimeDTO time : times) {
-            String startNbr = time.getStartNbr();
-            if (!competitors.containsKey(startNbr)){
-                competitors.put(startNbr, new Competitor(startNbr));
-            }
-            Competitor competitor = competitors.get(startNbr);
-            competitor.addTimetoCompetitor(time.getStationId(), time.getTime());
-            for (AdminView view : this.views) {
-                view.onTimeAdded(time, competitor);
-            }
-        }
+    public List<TimeDTO> getAllTimes() {
+        return this.times;
     }
 
     @Override
-    public int getNbrCompetitors() {
-        return competitors.size();
+    public List<ParticipantDTO> getAllParticipants() {
+        return this.participants;
     }
 
-    public void test(){
+    public void fetchUpdates() {
+        this.times = syncGetAllTimesFromServer(1);
+        this.participants = syncGetAllParticipantsFromServer(1);
+
+        notifyListeners();
     }
 
-    /* 
-    @Override
-    public void startCompetition(int nbrCompetitors, int nbrStations) {
-        this.nbrCompetitors = nbrCompetitors;
-        this.nbrStations = nbrStations;
-    }
-
-    public int getNbrStations() {
-        return nbrStations;
-    } 
-    */
-    public List<TimeDTO> syncGetAllTimesFromServer(int raceID, Optional<Integer> station, Optional<Integer> startNbr) {
+    public List<TimeDTO> syncGetAllTimesFromServer(int raceID) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/races/{raceID}/times")
-                .queryParamIfPresent("startNbr", startNbr)
-                .queryParamIfPresent("station", station)
-                .build(raceID))
-            .accept(MediaType.APPLICATION_JSON)
-            .retrieve()
-            .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
-            })
-            .block(); // will wait here during network request
+                        .path("/races/{raceID}/times")
+                        .build(raceID))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
+                })
+                .block();
     }
 
-    public void getAllTimesFromServer(Consumer<List<TimeDTO>> responseHandler, int raceID, Optional<Integer> station, Optional<Integer> startNbr){
-        webClient.get()
-       .uri(uriBuilder -> uriBuilder
-       .path("/races/{raceID}/times")
-       .queryParamIfPresent("startNbr", startNbr)
-       .queryParamIfPresent("station", station)
-       .build(raceID))
-       .accept(MediaType.APPLICATION_JSON)
-       .retrieve()
-       .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
-       })
-       .subscribe(responseHandler);
+    public List<ParticipantDTO> syncGetAllParticipantsFromServer(int raceID) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/race/{raceID}/participants")
+                        .build(raceID))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<ParticipantDTO>>() {
+                })
+                .block();
     }
 
-
-//   public List<TimeDTO> getParticipantTimes(int raceID, Optional<Integer> station, Optional<Integer> startNbr) {
-//     return syncGetAllTimesFromServer(raceID, startNbr);
-//   }
-
-//   public List<TimeDTO> getStationTimes(int raceID, Optional<Integer> station) {
-//     return syncGetAllTimesFromServer(raceID, station);
-//   }
-
-//   public List<TimeDTO> getStationTimeForOneParticipant(int raceID, Integer station, Optional<Integer> startNbr) {
-//     return syncGetAllTimesFromServer(raceID, station, startNbr);
-//   }
 }

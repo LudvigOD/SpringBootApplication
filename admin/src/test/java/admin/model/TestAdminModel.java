@@ -1,14 +1,6 @@
 package admin.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,10 +15,8 @@ import shared.dto.TimeDTO;
 
 public class TestAdminModel {
 
-
     private AdminModelImpl model;
     private ArrayList<TimeDTO> times;
-
 
     @BeforeEach
     void setUp() throws Exception {
@@ -46,12 +36,12 @@ public class TestAdminModel {
         model.updateTimeTable(times);
     }
 
-    @Test 
+    @Test
     public void testGetNbrCompetitors() {
         assertEquals(model.getNbrCompetitors(), 3);
     }
 
-    @Test 
+    @Test
     public void testAddNewCompetitor() {
         List<TimeDTO> times2 = new ArrayList<>();
         TimeDTO time = new TimeDTO(0, "4", Instant.parse("2025-02-03T20:20:20.00Z"));
@@ -60,11 +50,9 @@ public class TestAdminModel {
         assertEquals(model.getNbrCompetitors(), 4);
     }
 
-    @Test 
+    @Test
     public void test2() {
 
-
-    } 
- 
+    }
 
 }
