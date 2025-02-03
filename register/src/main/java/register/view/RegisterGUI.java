@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 import javax.swing.table.DefaultTableModel;
@@ -71,8 +72,27 @@ public class RegisterGUI extends JFrame implements RegisterView {
     // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1
     // DECIMAL
     var utils = new shared.Utils();
-    tableModel.addRow(new Object[] { timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()),
+    if(timeTuple.getStartNbr().equals("000")) {
+      tableModel.addRow(new Object[] { "StartID?", utils.displayTimeInCorrectFormat(timeTuple.getTime()),
         selectedStation });
+        //Nedan är inte färdigt och behöver lösas för att hantera ändring av startID från register.
+        tableModel.addTableModelListener(e -> {
+          int row = e.getFirstRow();
+          int col = e.getColumn();
+
+          if(e.getType() == TableModelEvent.UPDATE && col == 0) {
+            String startID = tableModel.getValueAt(row, col).toString();
+            model.editRegisteredTime(startID, timeTuple);
+          }
+        });
+    } else {
+      tableModel.addRow(new Object[] { timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()),
+        selectedStation });
+    }
+    
+
+
+
   }
 
   private void initGUI() {
@@ -84,7 +104,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JPanel mainPanel = new JPanel(new BorderLayout());
     JTable registrationTable = new JTable(tableModel) {
       public boolean isCellEditable(int row, int col) {
-        return false;
+        Object value = getValueAt(row, col);
+        return value != null && value.equals("StartID?");
       }
     };
     registrationTable.setFont(defaultFont);
@@ -99,6 +120,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     // Filter för TextField så att man ej kan skriva in annat än siffror
     ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
+
+    startNumberField.setFont(defaultFont);
 
     registerButton = new JButton("Registrera tid");
     registerButton.setFont(defaultFont);
@@ -189,6 +212,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
       String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
         model.registerTime(startNumber, selectedStation.id());
+      } else {
+        model.registerTime("000", selectedStation.id());
       }
     });
 
