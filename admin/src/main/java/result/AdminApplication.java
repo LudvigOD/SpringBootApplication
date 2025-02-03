@@ -1,18 +1,19 @@
 package result;
 
-import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.SwingUtilities;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import result.model.AdminModelImpl;
 import result.view.AdminGUI;
 
-
 public class AdminApplication implements Runnable {
 
-
     private AdminModelImpl model;
+
     public static void main(String[] args) {
         AdminApplication example = new AdminApplication();
         SwingUtilities.invokeLater(example);
@@ -26,19 +27,12 @@ public class AdminApplication implements Runnable {
         AdminGUI gui = new AdminGUI(model);
         gui.setVisible(true);
         model.test();
-       
-        new Thread(() -> {
-            while (true) {
-                model.getAllTimesFromServer(times -> model.updateTimeTable(times), 1, Optional.empty(), Optional.empty());
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    System.err.println("Fetching thread interrupted.");
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-        }).start();
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            model.getAllTimesFromServer(times -> model.updateTimeTable(times), 1, Optional.empty(), Optional.empty())
+        }, 0, 3, java.util.concurrent.TimeUnit.SECONDS);
+
 
     }
 
