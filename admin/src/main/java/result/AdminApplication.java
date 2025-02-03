@@ -31,7 +31,7 @@ public class AdminApplication implements Runnable {
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
-            model.getAllTimesFromServer(times -> model.updateTimeTable(times), 1, Optional.empty(), Optional.empty());
+            model.getAllTimesFromServer(times -> model.filterNewTimes(times), 1, Optional.empty(), Optional.empty());
         }, 0, 3, java.util.concurrent.TimeUnit.SECONDS);
 
     }
