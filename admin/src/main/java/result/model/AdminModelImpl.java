@@ -72,13 +72,14 @@ public class AdminModelImpl implements AdminModel {
     public List<ParticipantDTO> syncGetAllParticipantsFromServer(int raceID) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/race/{raceID}/participants")
+                        .path("/races/{raceID}/participants")
                         .build(raceID))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<ParticipantDTO>>() {
                 })
                 .block();
+
     }
 
 }

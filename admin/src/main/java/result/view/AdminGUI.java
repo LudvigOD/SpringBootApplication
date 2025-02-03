@@ -284,7 +284,7 @@ class ParticipantsTable extends JTable implements AdminView {
                             long hours = t.toHours();
                             long minutes = t.toMinutes() % 60;
                             long seconds = t.getSeconds() % 60;
-                            long millis = t.toMillis() % 1000;
+                            long millis = (t.toMillis() % 1000) / 100;
 
                             return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds, millis);
                         }).orElse("--:--:--"));
@@ -373,9 +373,9 @@ class ResultsTable extends JTable implements AdminView {
                             long hours = t.toHours();
                             long minutes = t.toMinutes() % 60;
                             long seconds = t.getSeconds() % 60;
-                            long millis = t.toMillis() % 1000;
+                            long millis = (t.toMillis() % 1000) / 100;
 
-                            return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds, millis);
+                            return String.format("%02d:%02d:%02d.%01d", hours, minutes, seconds, millis);
                         }).orElse("--:--:--"));
                         break;
                     }

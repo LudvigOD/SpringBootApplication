@@ -5,11 +5,10 @@ public abstract class StationModel {
     protected int id;
 
     public StationModel() {
-        id = ++nbrStations;
+        id = nbrStations++;
     }
 
     public int id() {
         return id;
     }
 }
-
