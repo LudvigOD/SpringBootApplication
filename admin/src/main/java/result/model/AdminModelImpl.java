@@ -22,6 +22,7 @@ import shared.dto.TimeDTO;
 import result.util.Competitor;
 import java.util.function.Consumer;
 
+@EnableScheduling
 public class AdminModelImpl implements AdminModel {
 
     //Ska attributen vara final som i Register modellen?
@@ -30,6 +31,8 @@ public class AdminModelImpl implements AdminModel {
     private WebClient webClient;
     private int currentRaceID = 1;
     private List<TimeDTO> times;
+    private long delayMillis = 2000;
+    private boolean quit = false;
 
     // Ändra så att man kan ha fler tävlingar i senare skede, dessa attribut får
     // flyttas dit isf.
@@ -133,6 +136,25 @@ public class AdminModelImpl implements AdminModel {
             .block(); // will wait here during network request
     }
 
+    @Scheduled(fixedRate =  2000)
+    public void getTimesAndUpdateView(){
+        System.out.println("update");
+        getAllTimesFromServer(times -> updateTimeTable(times), 1, Optional.empty(), Optional.empty());
+    }
+
+    // public void updateLoop(){
+    //     while(!quit){
+    //      //   long t0 = System.currentTimeMillis();
+    //         getAllTimesFromServer(times -> updateTimeTable(times), 1, Optional.empty(), Optional.empty());
+    //         Thread.sleep(2000);
+    //    //     long elapsedMillis = System.currentTimeMillis()-t0;
+    //  //       long delayMinusElapsed = delayMillis-elapsedMillis;
+    //   //      if(delayMinusElapsed > 0){
+    //     //        Thread.sleep(delayMinusElapsed);
+    //         }
+    //     }
+
+/* 
     public void getLatestTimesAndUpdateView() {
         List<TimeDTO> updatedTimes = syncGetAllTimesFromServer(currentRaceID, Optional.empty(), Optional.empty());
         System.out.println("innan if statement");
@@ -147,7 +169,7 @@ public class AdminModelImpl implements AdminModel {
                 }
             }, currentRaceID, Optional.empty(), Optional.empty());
         }
-    }
+    }*/
 
     public void getAllTimesFromServer(Consumer<List<TimeDTO>> responseHandler, int raceID, Optional<Integer> station, Optional<Integer> startNbr){
         webClient.get()
