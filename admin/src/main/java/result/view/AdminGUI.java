@@ -1,5 +1,6 @@
 package result.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -8,89 +9,67 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.sql.Date;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import result.model.AdminModel;
-import result.util.Competitor;
+import result.model.AdminView;
+import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
-public class AdminGUI extends JFrame implements AdminView {
-
-    private final AdminModel model;
-    private Map<String, Integer> startNbrRows;
-
-    //private Object[][] data;
-
-    private final DefaultTableModel timesTableModel = new DefaultTableModel(new String[] { "Station", "Nr.", "Tid" },
-            0);
-    private DefaultTableModel resultsTableModel = new DefaultTableModel(new String[]{ "Nr.", "Namn", "Start", "Mål", "Totalt" }, 0);
-
+public class AdminGUI extends JFrame {
     public AdminGUI(AdminModel model) {
-        this.model = model;
-        this.model.addListener(this);
-        startNbrRows = new HashMap<>();
-
-        //String[] columnNames = { "Nr.", "Namn", "Start", "Mål", "Totalt" };
-        //data = new Object[model.getNbrCompetitors()][columnNames.length];
-        //this.resultsTableModel = new DefaultTableModel(data, columnNames);
-
-        initGUI();
-    }
-
-    @Override
-    public void onTimeAdded(TimeDTO time, Competitor competitor) {
-        var utils = new shared.Utils();
-        Object[] row = {time.getStationId(), time.getStartNbr(), utils.displayTimeInCorrectFormat(time.getTime()) };
-        timesTableModel.addRow(row);
-        if(resultsTableModel.getRowCount() < model.getNbrCompetitors()) {
-            resultsTableModel.addRow(new Object[]{});
-            startNbrRows.put(competitor.getStartNbr(), resultsTableModel.getRowCount()-1);
-        }
-        updateRow(competitor);
-    }
-
-    private void updateRow(Competitor competitor) {
-        //int rowNbr = Integer.valueOf(result.getStartNbr()) - 1;
-        int rowNbr = startNbrRows.get(competitor.getStartNbr());
-        //data[rowNbr] = new Object[]{result.getStartNbr(), "-", result.getStartTime(), result.getFinishTime(), result.getTotal()};
-        Object[] data = new Object[]{competitor.getStartNbr(), "-", competitor.getStartTime(), competitor.getFinishTime(), competitor.getTotalTime()};
-        editRow(resultsTableModel, rowNbr, data);
-    }
-
-    private void editRow(DefaultTableModel model, int rowIndex, Object[] newRowData) {
-        for (int col = 0; col < newRowData.length; col++) {
-            model.setValueAt(newRowData[col], rowIndex, col);
-        }
-    }
-
-    public void initGUI() {
         setTitle("Adminverktyg");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1600, 1133);
 
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBackground(new Color(165, 165, 165));
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
-        JTable leftTable = createTimesTable();
-        JTable rightTable = createResultsTable();
+        JPanel tablesPanel = new JPanel(new GridBagLayout());
+        tablesPanel.setBackground(new Color(165, 165, 165));
 
-        JScrollPane leftScrollPane = new JScrollPane(leftTable);
-        JScrollPane rightScrollPane = new JScrollPane(rightTable);
+        TimesTable timesTable = new TimesTable();
+        ParticipantsTable participantsTable = new ParticipantsTable();
+        ResultsTable resultsTable = new ResultsTable();
+
+        model.addListener(timesTable);
+        model.addListener(participantsTable);
+        model.addListener(resultsTable);
+
+        JScrollPane leftScrollPane = new JScrollPane(timesTable);
+        JScrollPane rightScrollPane = new JScrollPane(participantsTable);
+
+        JButton selectParticipantsTableButton = new JButton("Deltagare");
+        selectParticipantsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        selectParticipantsTableButton.setBackground(new Color(112, 173, 71));
+        selectParticipantsTableButton.setForeground(Color.WHITE);
+        selectParticipantsTableButton.setPreferredSize(new Dimension(200, 50));
+        selectParticipantsTableButton.addActionListener(event -> {
+            rightScrollPane.setViewportView(participantsTable);
+        });
+
+        JButton selectResultsTableButton = new JButton("Resultat");
+        selectResultsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        selectResultsTableButton.setBackground(new Color(112, 173, 71));
+        selectResultsTableButton.setForeground(Color.WHITE);
+        selectResultsTableButton.setPreferredSize(new Dimension(200, 50));
+        selectResultsTableButton.addActionListener(event -> {
+            rightScrollPane.setViewportView(resultsTable);
+        });
 
         leftScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         rightScrollPane.getViewport().setBackground(new Color(156, 202, 124));
@@ -110,34 +89,50 @@ public class AdminGUI extends JFrame implements AdminView {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
+        JPanel inputPanel = new JPanel();
+        inputPanel.setBackground(new Color(165, 165, 165));
+        inputPanel.add(selectParticipantsTableButton);
+        inputPanel.add(selectResultsTableButton);
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.2;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(20, 20, 20, 10);
-        mainPanel.add(leftScrollPane, gbc);
+        tablesPanel.add(leftScrollPane, gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 0.6;
         gbc.insets = new Insets(20, 10, 20, 20);
-        mainPanel.add(rightScrollPane, gbc);
+        tablesPanel.add(rightScrollPane, gbc);
+
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+        mainPanel.add(tablesPanel, BorderLayout.CENTER);
 
         add(mainPanel);
     }
+}
 
-    private JTable createTimesTable() {
-        JTable table = new JTable(timesTableModel);
-        table.setShowGrid(true);
-        table.setGridColor(Color.WHITE);
+class TimesTable extends JTable implements AdminView {
+    private static final String PATTERN_FORMAT = "hh:mm:ss.S";
 
-        table.setBackground(new Color(129, 178, 223));
-        table.setRowHeight(40);
-        table.setFont(new Font("Arial", Font.PLAIN, 20));
-        table.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        table.setFillsViewportHeight(false);
+    public TimesTable() {
+        super(new DefaultTableModel(new String[] { "Station", "Nr.", "Tid" }, 0));
 
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault());
+
+        setShowGrid(true);
+        setGridColor(Color.WHITE);
+
+        setBackground(new Color(129, 178, 223));
+        setRowHeight(40);
+        setFont(new Font("Arial", Font.PLAIN, 20));
+        setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        setFillsViewportHeight(false);
+
+        setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                     boolean hasFocus, int row, int column) {
@@ -158,15 +153,46 @@ public class AdminGUI extends JFrame implements AdminView {
                 // c.setBackground(new Color(100, 149, 237));
                 // }
 
-                if (row == 4 && column == 1) {
-                    c.setForeground(new Color(255, 99, 71));
+                // if (row == 4 && column == 1) {
+                // c.setForeground(new Color(255, 99, 71));
+                // }
+
+                switch (column) {
+                    case 0: {
+                        // Station ID
+                        int stationId = (int) value;
+
+                        switch (stationId) {
+                            case 1:
+                                setText("Start");
+                                break;
+                            case 2:
+                                setText("Mål");
+                                break;
+                            default:
+                                setText("Mellanstation " + stationId);
+                                break;
+                        }
+                        break;
+                    }
+                    case 1: {
+                        // Start number
+                        break;
+                    }
+                    case 2: {
+                        // Time
+                        Instant time = (Instant) value;
+
+                        setText(formatter.format(time));
+                        break;
+                    }
                 }
 
                 return c;
             }
         });
 
-        var header = table.getTableHeader();
+        var header = getTableHeader();
 
         header.setBackground(new Color(91, 155, 213));
         header.setForeground(Color.WHITE);
@@ -174,29 +200,38 @@ public class AdminGUI extends JFrame implements AdminView {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-/* 
-        model.getAllTimes().forEach(time -> {
-            Object[] row = { time.getStationId(), time.getStartNbr(), time.getTime() };
-            timesTableModel.addRow(row);
-        }); 
-*/
-
-        return table;
     }
 
-    private JTable createResultsTable() {
+    @Override
+    public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
+        DefaultTableModel model = (DefaultTableModel) getModel();
+        model.setRowCount(0);
 
-        JTable table = new JTable(resultsTableModel);
-        table.setShowGrid(true);
-        table.setGridColor(Color.WHITE);
+        for (TimeDTO time : times) {
+            model.addRow(new Object[] { time.getStationId(), time.getStartNbr(), time.getTime() });
+        }
+    }
+}
 
-        table.setBackground(new Color(156, 202, 124));
-        table.setRowHeight(40);
-        table.setFont(new Font("Arial", Font.PLAIN, 20));
-        table.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        table.setFillsViewportHeight(false);
+class ParticipantsTable extends JTable implements AdminView {
+    private static final String PATTERN_FORMAT = "hh:mm:ss.S";
 
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+    public ParticipantsTable() {
+        super(new ParticipantsTableModel());
+
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault());
+
+        setShowGrid(true);
+        setGridColor(Color.WHITE);
+
+        setBackground(new Color(156, 202, 124));
+        setRowHeight(40);
+        setFont(new Font("Arial", Font.PLAIN, 20));
+        setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        setFillsViewportHeight(false);
+
+        setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                     boolean hasFocus, int row, int column) {
@@ -215,11 +250,53 @@ public class AdminGUI extends JFrame implements AdminView {
                 // c.setBackground(new Color(100, 149, 237));
                 // }
 
+                switch (column) {
+                    case 0: {
+                        // Start number
+                        break;
+                    }
+                    case 1: {
+                        // Name
+                        break;
+                    }
+                    case 2: {
+                        // Start time
+                        @SuppressWarnings("unchecked")
+                        Optional<Instant> startTime = (Optional<Instant>) value;
+
+                        setText(startTime.map(formatter::format).orElse("--:--:--"));
+                        break;
+                    }
+                    case 3: {
+                        // Finish time
+                        @SuppressWarnings("unchecked")
+                        Optional<Instant> finishTime = (Optional<Instant>) value;
+
+                        setText(finishTime.map(formatter::format).orElse("--:--:--"));
+                        break;
+                    }
+                    case 4: {
+                        @SuppressWarnings("unchecked")
+                        Optional<Duration> totalTime = (Optional<Duration>) value;
+
+                        setText(totalTime.map(t -> {
+                            // Format to HH:mm:ss.S
+                            long hours = t.toHours();
+                            long minutes = t.toMinutes() % 60;
+                            long seconds = t.getSeconds() % 60;
+                            long millis = (t.toMillis() % 1000) / 100;
+
+                            return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds, millis);
+                        }).orElse("--:--:--"));
+                        break;
+                    }
+                }
+
                 return c;
             }
         });
 
-        var header = table.getTableHeader();
+        var header = getTableHeader();
 
         header.setBackground(new Color(112, 173, 71));
         header.setForeground(Color.WHITE);
@@ -227,8 +304,99 @@ public class AdminGUI extends JFrame implements AdminView {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-        return table;
     }
 
+    @Override
+    public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
+        ((ParticipantsTableModel) getModel()).onDataUpdated(times, participants);
+    }
+}
 
+class ResultsTable extends JTable implements AdminView {
+    public ResultsTable() {
+        super(new ResultsTableModel());
+
+        setShowGrid(true);
+        setGridColor(Color.WHITE);
+
+        setBackground(new Color(156, 202, 124));
+        setRowHeight(40);
+        setFont(new Font("Arial", Font.PLAIN, 20));
+        setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        setFillsViewportHeight(false);
+
+        setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+                setHorizontalAlignment(SwingConstants.LEFT);
+
+                if (row % 2 == 0) {
+                    c.setBackground(new Color(213, 227, 207));
+                } else {
+                    c.setBackground(new Color(235, 241, 233));
+                }
+
+                // if (isSelected) {
+                // c.setBackground(new Color(100, 149, 237));
+                // }
+
+                switch (column) {
+                    case 0: {
+                        // Place
+                        @SuppressWarnings("unchecked")
+                        Optional<Integer> place = (Optional<Integer>) value;
+
+                        setText(place.map(Object::toString).orElse("-"));
+                        break;
+                    }
+                    case 1: {
+                        // Start number
+                        setText(value.toString());
+                        break;
+                    }
+                    case 2: {
+                        // Name
+                        setText(value.toString());
+                        break;
+                    }
+                    case 3: {
+                        // Total Time
+                        @SuppressWarnings("unchecked")
+                        Optional<Duration> totalTime = (Optional<Duration>) value;
+
+                        setText(totalTime.map(t -> {
+                            // Format to HH:mm:ss.S
+                            long hours = t.toHours();
+                            long minutes = t.toMinutes() % 60;
+                            long seconds = t.getSeconds() % 60;
+                            long millis = (t.toMillis() % 1000) / 100;
+
+                            return String.format("%02d:%02d:%02d.%01d", hours, minutes, seconds, millis);
+                        }).orElse("--:--:--"));
+                        break;
+                    }
+                }
+
+                return c;
+            }
+        });
+
+        var header = getTableHeader();
+
+        header.setBackground(new Color(112, 173, 71));
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("Arial", Font.BOLD, 24));
+        header.setPreferredSize(new Dimension(5, 40));
+        header.setReorderingAllowed(false);
+        header.setResizingAllowed(false);
+    }
+
+    @Override
+    public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
+        ((ResultsTableModel) getModel()).onDataUpdated(times, participants);
+    }
 }

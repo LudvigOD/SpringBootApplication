@@ -17,13 +17,7 @@ public class Utils {
 
     public String displayTimeInCorrectFormat(Instant instant) {
         LocalTime localTime = convertInstantToLocalTime(instant);
-        // int nanoTime = localTime.getNano();
-        // int milliseconds = nanoTime / 1_000_000;
-        // int firstDecimal = milliseconds / 10;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss:S");
-        // String formattedTime = localTime.format(dateTimeFormatter);
-        // return formattedTime + ":" + firstDecimal;
-
         return localTime.format(dateTimeFormatter);
     }
 }
