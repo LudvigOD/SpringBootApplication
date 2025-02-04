@@ -6,19 +6,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import shared.Utils;
+
 import java.util.ArrayList;
 
 public class Competitor {
     
     private String startNbr;
     private Map<Integer, List<Instant>> stationIDAndTimes;
-    private DateTimeFormatter formatter;
-    private static final String PATTERN_FORMAT = "hh:mm:ss:S";
 
     public Competitor(String startNbr){
         this.startNbr = startNbr;
         stationIDAndTimes = new HashMap<Integer, List<Instant>>();
-        formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT).withZone(ZoneId.systemDefault());
     }
 
     public String getStartNbr() {
@@ -37,14 +37,16 @@ public class Competitor {
 
     public String getStartTime() {
         if(stationIDAndTimes.containsKey(1)){
-            return formatter.format(stationIDAndTimes.get(1).get(0));
+            var utils = new Utils();
+            return utils.displayTimeInCorrectFormat(stationIDAndTimes.get(1).get(0));
         }
         return "-";
     }
 
     public String getFinishTime() {
         if(stationIDAndTimes.containsKey(2)){
-            return formatter.format(stationIDAndTimes.get(2).get(0));
+            var utils = new Utils();
+            return utils.displayTimeInCorrectFormat(stationIDAndTimes.get(2).get(0));
         }
         return "-";
     }
