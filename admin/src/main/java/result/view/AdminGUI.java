@@ -33,8 +33,6 @@ public class AdminGUI extends JFrame implements AdminView {
 
     private final AdminModel model;
     private Map<String, Integer> startNbrRows;
-    private static final String PATTERN_FORMAT = "hh:mm:ss:S";
-    private DateTimeFormatter formatter;
 
     //private Object[][] data;
 
@@ -46,7 +44,6 @@ public class AdminGUI extends JFrame implements AdminView {
         this.model = model;
         this.model.addListener(this);
         startNbrRows = new HashMap<>();
-        formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT).withZone(ZoneId.systemDefault());
 
         //String[] columnNames = { "Nr.", "Namn", "Start", "Mål", "Totalt" };
         //data = new Object[model.getNbrCompetitors()][columnNames.length];
@@ -57,7 +54,8 @@ public class AdminGUI extends JFrame implements AdminView {
 
     @Override
     public void onTimeAdded(TimeDTO time, Competitor competitor) {
-        Object[] row = {time.getStationId(), time.getStartNbr(), formatter.format(time.getTime()) };
+        var utils = new shared.Utils();
+        Object[] row = {time.getStationId(), time.getStartNbr(), utils.displayTimeInCorrectFormat(time.getTime()) };
         timesTableModel.addRow(row);
         if(resultsTableModel.getRowCount() < model.getNbrCompetitors()) {
             resultsTableModel.addRow(new Object[]{});
