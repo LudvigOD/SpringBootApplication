@@ -35,16 +35,14 @@ public class Competitor {
 
     public String getStartTime() {
         if(stationIDAndTimes.containsKey(1)){
-            var utils = new Utils();
-            return utils.displayTimeInCorrectFormat(stationIDAndTimes.get(1).get(0));
+            return Utils.displayTimeInCorrectFormat(stationIDAndTimes.get(1).get(0));
         }
         return "-";
     }
 
     public String getFinishTime() {
         if(stationIDAndTimes.containsKey(2)){
-            var utils = new Utils();
-            return utils.displayTimeInCorrectFormat(stationIDAndTimes.get(2).get(0));
+            return Utils.displayTimeInCorrectFormat(stationIDAndTimes.get(2).get(0));
         }
         return "-";
     }
