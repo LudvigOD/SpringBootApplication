@@ -11,7 +11,6 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +25,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import result.model.AdminModel;
-import result.model.AdminView;
+import result.model.AdminModelObserver;
+import result.model.CompetitorsTableModel;
+import result.model.ResultsTableModel;
 import shared.Utils;
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
@@ -43,23 +44,23 @@ public class AdminGUI extends JFrame {
         tablesPanel.setBackground(new Color(165, 165, 165));
 
         TimesTable timesTable = new TimesTable();
-        ParticipantsTable participantsTable = new ParticipantsTable();
+        CompetitorsTable competitorsTable = new CompetitorsTable();
         ResultsTable resultsTable = new ResultsTable();
 
         model.addListener(timesTable);
-        model.addListener(participantsTable);
+        model.addListener(competitorsTable);
         model.addListener(resultsTable);
 
         JScrollPane leftScrollPane = new JScrollPane(timesTable);
-        JScrollPane rightScrollPane = new JScrollPane(participantsTable);
+        JScrollPane rightScrollPane = new JScrollPane(competitorsTable);
 
-        JButton selectParticipantsTableButton = new JButton("Deltagare");
-        selectParticipantsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        selectParticipantsTableButton.setBackground(new Color(112, 173, 71));
-        selectParticipantsTableButton.setForeground(Color.WHITE);
-        selectParticipantsTableButton.setPreferredSize(new Dimension(200, 50));
-        selectParticipantsTableButton.addActionListener(event -> {
-            rightScrollPane.setViewportView(participantsTable);
+        JButton selectCompetitorsTableButton = new JButton("Deltagare");
+        selectCompetitorsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        selectCompetitorsTableButton.setBackground(new Color(112, 173, 71));
+        selectCompetitorsTableButton.setForeground(Color.WHITE);
+        selectCompetitorsTableButton.setPreferredSize(new Dimension(200, 50));
+        selectCompetitorsTableButton.addActionListener(event -> {
+            rightScrollPane.setViewportView(competitorsTable);
         });
 
         JButton selectResultsTableButton = new JButton("Resultat");
@@ -91,7 +92,7 @@ public class AdminGUI extends JFrame {
 
         JPanel inputPanel = new JPanel();
         inputPanel.setBackground(new Color(165, 165, 165));
-        inputPanel.add(selectParticipantsTableButton);
+        inputPanel.add(selectCompetitorsTableButton);
         inputPanel.add(selectResultsTableButton);
 
         gbc.gridx = 0;
@@ -114,12 +115,13 @@ public class AdminGUI extends JFrame {
     }
 }
 
-class TimesTable extends JTable implements AdminView {
+class TimesTable extends JTable implements AdminModelObserver {
+    private static final String PATTERN_FORMAT = "hh:mm:ss.S";
 
     public TimesTable() {
         super(new DefaultTableModel(new String[] { "Station", "Nr.", "Tid" }, 0));
 
-        
+
 
         setShowGrid(true);
         setGridColor(Color.WHITE);
@@ -211,10 +213,9 @@ class TimesTable extends JTable implements AdminView {
     }
 }
 
-class ParticipantsTable extends JTable implements AdminView {
-
-    public ParticipantsTable() {
-        super(new ParticipantsTableModel());
+class CompetitorsTable extends JTable implements AdminModelObserver {
+    public CompetitorsTable() {
+        super(new CompetitorsTableModel());
 
 
         setShowGrid(true);
@@ -247,15 +248,15 @@ class ParticipantsTable extends JTable implements AdminView {
 
                 switch (column) {
                     case 0: {
-                        // Start number
+                        // Start number: String
                         break;
                     }
                     case 1: {
-                        // Name
+                        // Name: String
                         break;
                     }
                     case 2: {
-                        // Start time
+                        // Start time: Optional<Instant>
                         @SuppressWarnings("unchecked")
                         Optional<Instant> startTime = (Optional<Instant>) value;
                         if(startTime.isPresent()) {
@@ -266,7 +267,7 @@ class ParticipantsTable extends JTable implements AdminView {
                         break;
                     }
                     case 3: {
-                        // Finish time
+                        // Finish time: Optional<Instant>
                         @SuppressWarnings("unchecked")
                         Optional<Instant> finishTime = (Optional<Instant>) value;
                         if(finishTime.isPresent()) {
@@ -277,6 +278,7 @@ class ParticipantsTable extends JTable implements AdminView {
                         break;
                     }
                     case 4: {
+                        // Total time: Optional<Duration>
                         @SuppressWarnings("unchecked")
                         Optional<Duration> totalTime = (Optional<Duration>) value;
 
@@ -309,11 +311,11 @@ class ParticipantsTable extends JTable implements AdminView {
 
     @Override
     public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
-        ((ParticipantsTableModel) getModel()).onDataUpdated(times, participants);
+        ((CompetitorsTableModel) getModel()).onDataUpdated(times, participants);
     }
 }
 
-class ResultsTable extends JTable implements AdminView {
+class ResultsTable extends JTable implements AdminModelObserver {
     public ResultsTable() {
         super(new ResultsTableModel());
 
@@ -347,7 +349,7 @@ class ResultsTable extends JTable implements AdminView {
 
                 switch (column) {
                     case 0: {
-                        // Place
+                        // Place: Optional<Integer>
                         @SuppressWarnings("unchecked")
                         Optional<Integer> place = (Optional<Integer>) value;
 
@@ -355,17 +357,17 @@ class ResultsTable extends JTable implements AdminView {
                         break;
                     }
                     case 1: {
-                        // Start number
+                        // Start number: String
                         setText(value.toString());
                         break;
                     }
                     case 2: {
-                        // Name
+                        // Name: String
                         setText(value.toString());
                         break;
                     }
                     case 3: {
-                        // Total Time
+                        // Total time: Optional<Duration>
                         @SuppressWarnings("unchecked")
                         Optional<Duration> totalTime = (Optional<Duration>) value;
 
