@@ -1,4 +1,4 @@
-Välkommen Michael Kund! Hoppas denna readMe finner dig väl. 
+Välkommen Michael Kund! Hoppas denna readMe finner dig väl.
 
 Get ready to rumble!
 
@@ -21,7 +21,7 @@ Get ready to rumble!
 4. Start the registration interface:
 ```bash
 ./gradlew register:bootRun
-```   
+```
 
 ## Directory Overview
 ```
