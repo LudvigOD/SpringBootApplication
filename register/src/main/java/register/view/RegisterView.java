@@ -8,19 +8,13 @@ import register.util.TimeTuple;
  */
 public interface RegisterView {
 
-  /**
-   * Updates the view with a new list of time tuples.
-   * Edit: Not needed?
-   * 
-   * @param timeTuples
-   */
-  void update(Iterable<TimeTuple> timeTuples);
+ 
 
   /**
    * Notifies the view that a time was registered.
    * 
    * @param timeTuple
    */
-  void timeWasRegistered(TimeTuple timeTuple);
+  void timeWasRegistered();
 
 }
