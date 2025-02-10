@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -23,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
@@ -63,7 +65,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     tableModel.setRowCount(0);
     Consumer<List<TimeDTO>> responseHandler = response -> {
       response.forEach(timeDTO -> {
-        if(timeDTO.getStartNbr().equals("00")) {
+        if(timeDTO.getStartNbr().equals("000")) {
           tableModel.addRow(new Object[] { "StartID?", Utils.formatInstant(timeDTO.getTime()),
             selectedStation });
         } else {
@@ -186,18 +188,22 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JScrollPane scrollPane = new JScrollPane(registrationTable);
     mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-    
+    registerButton.addActionListener((e) -> timeRegistering());
+    startNumberField.addActionListener((e) -> timeRegistering());
 
-    registerButton.addActionListener((e) -> {
-      String startNumber = startNumberField.getText();
+    add(mainPanel);
+    SwingUtilities.invokeLater(() -> startNumberField.requestFocusInWindow());
+  }
+
+  private void timeRegistering() {
+    String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
         model.registerTime(startNumber, selectedStation.id());
       } else {
         model.registerTime("0", selectedStation.id());
       }
-    });
-
-    add(mainPanel);
+      startNumberField.setText("");
+      SwingUtilities.invokeLater(() -> startNumberField.requestFocusInWindow());
   }
 
 }
