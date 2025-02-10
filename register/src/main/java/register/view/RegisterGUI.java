@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -115,8 +116,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
         public void componentResized(ComponentEvent e) {
             if (getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
                 inputPanel.setLayout(verticalLayout);
+                inputPanel.setPreferredSize(new Dimension(200 , 200));
             } else {
                 inputPanel.setLayout(gridLayout); // annars används gridlayout (bredvid varandra)
+                inputPanel.setPreferredSize(new Dimension(700,60));
             }
             inputPanel.revalidate(); // berättar för komponenterna att de ska ändra form/layout
             inputPanel.repaint(); // ritar ut den nya layouten
@@ -142,13 +145,20 @@ public class RegisterGUI extends JFrame implements RegisterView {
     startNumberField.setAlignmentX(Component.CENTER_ALIGNMENT);
     startNum.setAlignmentX(Component.CENTER_ALIGNMENT);
     stationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    registerButton.setMaximumSize(new Dimension(200, 40));
     registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
     inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    inputPanel.setPreferredSize(new Dimension(700,60));
 
     inputPanel.add(stationLabel);
+    inputPanel.add(Box.createHorizontalStrut(5));
     inputPanel.add(chooseStation);
+    inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(startNum);
+    inputPanel.add(Box.createHorizontalStrut(5));
     inputPanel.add(startNumberField);
+    inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(registerButton);
 
     // Temporary test, fetch times from the server
