@@ -99,21 +99,4 @@ public class TestTimesController {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].startNbr", is("02")));
     }
-
-    // TODO
-    // @Test
-    // public void updateTime() throws Exception {
-    // TimeDTO timeDTO = new TimeDTO(1, "01", Instant.ofEpochSecond(123));
-    // String timeDTOJson = objectMapper.writeValueAsString(timeDTO);
-
-    // mockMvc.perform(post("/api/races/1/times")
-    // .contentType(MediaType.APPLICATION_JSON)
-    // .content(timeDTOJson))
-    // .andExpect(status().isOk());
-
-    // // verify that timeService.registerTime was called with the expected
-    // parameters
-    // // (this is a Mockito verification)
-    // verify(timeService).registerTime(1, 1, "01", Instant.ofEpochSecond(123));
-    // }
 }

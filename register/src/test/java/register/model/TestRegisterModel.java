@@ -153,5 +153,4 @@ public class TestRegisterModel {
                 verify(exchangeFunction).exchange(any(ClientRequest.class));
                 // Additional verifications or assertions as needed
         }
-
 }

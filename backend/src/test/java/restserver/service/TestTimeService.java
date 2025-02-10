@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -159,5 +161,102 @@ public class TestTimeService {
         assertArrayEquals(mockTimes, result.toArray());
 
         verify(timeRepository).findByRaceIdAndStationIdAndStartNbr(1, 1, "01");
+    }
+
+    @Test
+    public void testGetAllTimesEmpty() {
+        Time[] mockTimes = new Time[] {
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
+        };
+        when(timeRepository.findByRaceId(1)).thenReturn(Arrays.asList(mockTimes));
+
+        List<Time> result = timeService.getAllTimes(1, Optional.empty(), Optional.empty());
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(mockTimes.length, result.size());
+        assertArrayEquals(mockTimes, result.toArray());
+
+        verify(timeRepository).findByRaceId(1);
+    }
+
+    @Test
+    public void testGetAllTimesEmptyStationId() {
+        Time[] mockTimes = new Time[] {
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
+        };
+        when(timeRepository.findByRaceId(1)).thenReturn(Arrays.asList(mockTimes));
+
+        List<Time> result = timeService.getAllTimes(1, Optional.empty(), Optional.empty());
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(mockTimes.length, result.size());
+        assertArrayEquals(mockTimes, result.toArray());
+
+        verify(timeRepository).findByRaceId(1);
+    }
+
+    @Test
+    public void testGetAllTimesEmptyStartNbr() {
+        Time[] mockTimes = new Time[] {
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
+        };
+        when(timeRepository.findByRaceId(1)).thenReturn(Arrays.asList(mockTimes));
+
+        List<Time> result = timeService.getAllTimes(1, Optional.empty(), Optional.empty());
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(mockTimes.length, result.size());
+        assertArrayEquals(mockTimes, result.toArray());
+
+        verify(timeRepository).findByRaceId(1);
+    }
+
+    @Test
+    public void testGetAllTimesEmptyStationIdAndStartNbr() {
+        Time[] mockTimes = new Time[] {
+                new Time(1, 1, "01", Instant.ofEpochSecond(123)),
+        };
+        when(timeRepository.findByRaceId(1)).thenReturn(Arrays.asList(mockTimes));
+
+        List<Time> result = timeService.getAllTimes(1, Optional.empty(), Optional.empty());
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(mockTimes.length, result.size());
+        assertArrayEquals(mockTimes, result.toArray());
+
+        verify(timeRepository).findByRaceId(1);
+    }
+
+    @Test
+    public void testUpdateTimeEntity() {
+        Time firstEntity = new Time(1, 1, "1002", Instant.ofEpochSecond(123));
+        firstEntity.setId(1L);
+    
+        when(timeRepository.findById(1L)).thenReturn(Optional.of(firstEntity));
+        when(timeRepository.save(any(Time.class))).thenAnswer(invocation -> invocation.getArgument(0)); // Ensure save returns the modified entity
+    
+        // Act: Update the entity
+        timeService.updateTimeEntity(1, 2, "1015", Instant.ofEpochSecond(231), 1L);
+    
+        // Assert: Ensure values were updated
+        verify(timeRepository).save(any(Time.class)); // Ensure save() was called
+        assertEquals(2, firstEntity.getStationId());
+        assertEquals("1015", firstEntity.getStartNbr());
+        assertEquals(Instant.ofEpochSecond(231), firstEntity.getTime());
+    }
+
+    @Test
+    public void testUpdateTimeEntityNoEntity() {
+        when(timeRepository.findById(1L)).thenReturn(Optional.empty());
+    
+        // Act: Update the entity
+        timeService.updateTimeEntity(1, 2, "1015", Instant.ofEpochSecond(231), 1L);
+    
+        // Assert: Ensure values were not updated
+        verify(timeRepository, never()).save(any(Time.class)); // Ensure save() was not called
     }
 }

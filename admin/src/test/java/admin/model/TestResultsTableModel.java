@@ -61,4 +61,9 @@ public class TestResultsTableModel {
         assertFalse(tableModel.isCellEditable(0, 0));
         assertFalse(tableModel.isCellEditable(5, 2));
     }
+
+    @Test
+    void testGetRowCount_InitiallyZero() {
+        assertEquals(0, tableModel.getRowCount());
+    }
 }

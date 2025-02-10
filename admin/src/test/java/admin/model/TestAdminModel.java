@@ -179,4 +179,69 @@ public class TestAdminModel {
         assertEquals("03", capturedParticipants.get(2).getStartNbr());
         assertEquals("Charlie", capturedParticipants.get(2).getName());
     }
+
+    @Test
+    void testFetchUpdates_WithEmptyData() {
+        when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {}))
+            .thenReturn(Mono.just(List.of())); // Empty list for times
+
+        when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<ParticipantDTO>>() {}))
+            .thenReturn(Mono.just(List.of())); // Empty list for participants
+
+        model.fetchUpdates();
+
+        assertEquals(0, model.getAllTimes().size());
+        assertEquals(0, model.getAllParticipants().size());
+    }
+
+    @Test
+    void testFetchUpdates_OnlyTimes() {
+        List<TimeDTO> mockTimes = List.of(
+            new TimeDTO(1, "01", Instant.ofEpochSecond(123), 1L),
+            new TimeDTO(1, "02", Instant.ofEpochSecond(456), 2L)
+        );
+
+        when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {}))
+            .thenReturn(Mono.just(mockTimes));
+
+        when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<ParticipantDTO>>() {}))
+            .thenReturn(Mono.just(List.of())); // No participants
+
+        model.fetchUpdates();
+
+        assertEquals(2, model.getAllTimes().size());
+        assertEquals(0, model.getAllParticipants().size());
+    }
+
+    @Test
+    void testFetchUpdates_OnlyParticipants() {
+        List<ParticipantDTO> mockParticipants = List.of(
+            new ParticipantDTO("01", "Alice"),
+            new ParticipantDTO("02", "Bob")
+        );
+
+        when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {}))
+            .thenReturn(Mono.just(List.of())); // No times
+
+        when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<ParticipantDTO>>() {}))
+            .thenReturn(Mono.just(mockParticipants));
+
+        model.fetchUpdates();
+
+        assertEquals(0, model.getAllTimes().size());
+        assertEquals(2, model.getAllParticipants().size());
+    }
+    @Test
+    void testMultipleListenersReceiveUpdates() {
+        CompetitorsTableModel mockView1 = mock(CompetitorsTableModel.class);
+        ResultsTableModel mockView2 = mock(ResultsTableModel.class);
+
+        model.addListener(mockView1);
+        model.addListener(mockView2);
+
+        model.fetchUpdates();
+
+        verify(mockView1, times(2)).onDataUpdated(any(), any());
+        verify(mockView2, times(2)).onDataUpdated(any(), any());
+    }
 }
