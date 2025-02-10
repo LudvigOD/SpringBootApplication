@@ -11,14 +11,18 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import result.model.AdminModel;
 
@@ -50,6 +54,27 @@ public class AdminGUI extends JFrame {
         JButton selectResultsTableButton = new JButton("Resultat");
         formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
+        JButton selectFileButton = new JButton("Ladda fil...");
+        
+        selectFileButton.addActionListener( (e)-> {        
+            JFileChooser fileChooser = new JFileChooser();
+            // Skapa och sätt en filter för att bara visa txt-filer
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+            fileChooser.setFileFilter(filter);
+            // Öppna dialogrutan
+            int returnValue = fileChooser.showOpenDialog(null);
+            // Hantera filval
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                System.out.println("Vald fil: " + selectedFile.getAbsolutePath());
+            } else {
+                System.out.println("Ingen fil valdes.");
+            }
+
+        });
+
+
+
         leftScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         rightScrollPane.getViewport().setBackground(new Color(156, 202, 124));
 
@@ -76,6 +101,7 @@ public class AdminGUI extends JFrame {
 
         buttonPanel.add(selectCompetitorsTableButton);
         buttonPanel.add(selectResultsTableButton);
+        buttonPanel.add(selectFileButton);
 
         inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         inputPanel.add(buttonPanel);
