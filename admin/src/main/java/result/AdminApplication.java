@@ -7,12 +7,12 @@ import javax.swing.SwingUtilities;
 
 import org.springframework.web.reactive.function.client.WebClient;
 
-import result.model.AdminModel;
+import result.model.AdminModelImpl;
 import result.view.AdminGUI;
 
 public class AdminApplication implements Runnable {
 
-    private AdminModel model;
+    private AdminModelImpl model;
 
     public static void main(String[] args) {
         AdminApplication example = new AdminApplication();
@@ -23,7 +23,7 @@ public class AdminApplication implements Runnable {
         WebClient webClient = WebClient.builder()
                 .baseUrl("http://localhost:8080/api")
                 .build();
-        model = new AdminModel(webClient);
+        model = new AdminModelImpl(webClient);
         AdminGUI gui = new AdminGUI(model);
         gui.setVisible(true);
 
