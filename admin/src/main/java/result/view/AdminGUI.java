@@ -63,35 +63,8 @@ public class AdminGUI extends JFrame {
         selectFileButton.setPreferredSize(new Dimension(200, 50));
 
         selectFileButton.addActionListener( (f)-> {        
-            JFileChooser fileChooser = new JFileChooser();
-            // Skapa och sätt en filter för att bara visa txt-filer
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
-            fileChooser.setFileFilter(filter);
-            // Öppna dialogrutan
-            int returnValue = fileChooser.showOpenDialog(null);
-            // Hantera filval
-            try {
-                //RACEID, STARTNUMMER, NAMN
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    Scanner s = new Scanner(selectedFile);
-
-                    while(s.hasNextLine()) {
-                        String[] l = s.nextLine().split(",");
-                        model.sendPostRequest(new ParticipantDTO(l[0], l[1]),1);
-                    }
-    
-                    //System.out.println("Vald fil: " + selectedFile.getAbsolutePath());
-                } else {
-                    System.out.println("Ingen fil valdes.");
-                }
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-
+            parseFile(model);
         });
-
-
 
         leftScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         rightScrollPane.getViewport().setBackground(new Color(156, 202, 124));
@@ -181,6 +154,30 @@ public class AdminGUI extends JFrame {
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
 
         add(mainPanel);
+    }
+
+    private void parseFile(AdminModel model) {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
+        int returnValue = fileChooser.showOpenDialog(null);
+        try {
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                Scanner s = new Scanner(selectedFile);
+
+                while(s.hasNextLine()) {
+                    String[] l = s.nextLine().split(",");
+                    model.sendPostRequest(new ParticipantDTO(l[0], l[1]),1);
+                }
+                
+                s.close();
+            } else {
+                System.out.println("Ingen fil valdes.");
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     private void formatButton(JTable table, JScrollPane rightScrollPane, JButton selectCompetitorsTableButton) {
