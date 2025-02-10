@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -108,6 +107,38 @@ public class RegisterModelImpl implements RegisterModel {
   // denna verkar fungera
   public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
+        .uri("/races/{raceId}/times", raceId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(dto)
+        .retrieve()
+        .toBodilessEntity()
+        .block();
+  }
+
+  
+
+  public void updateTime(TimeDTO dto, int raceId) {
+    webClient.put()
+        .uri("/races/{raceId}/times", raceId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(dto)
+        .retrieve()
+        .toBodilessEntity()
+        .subscribe(response -> {
+          // Note to self: This makes an asynchronous POST request to the server meaning
+          // that this method returns immediately, and the response will be handled by
+          // this lambda expression in the future, by some other thread.
+          System.out.println("POST Response Status: " + response.getStatusCode());
+        });
+  }
+
+  @Override
+  public void editRegisteredTime(String startNbr, TimeTuple timeTuple) {
+    //Denna behöver implementeras för att skicka en PUT request.
+  }
+
+  public void sendPutRequest(TimeDTO dto, int raceId) {
+    webClient.put()
         .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(dto)
