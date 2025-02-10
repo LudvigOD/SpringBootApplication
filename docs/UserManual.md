@@ -39,9 +39,12 @@ Följande är ett rekommenderat tillvägagångssätt:
 
 
 ### Instruktioner för tävlingsledning (adminverktyg)
-I adminverktyget så kan tävlingsledningen se inrapporterade tider, där vänstra sidan visar alla utförda registreringar i kronologisk
-ordning, och högra sidan visar ihopparade tider, alltså alla förarnummer (i storleksordning) tillsammans med sin start- och måltid, och eventuellt beräknad totaltid. Om någonting behöver korrigeras så kan man klicka på cellen och ändra innehållet. Den första kolumnen visar respektive rads start ID. Den andra kolumnen visar förarens namn om det har registrerats. Den tredje visar förarens starttid om den har registrerats, annars "-". Den fjärde kolumnen visar förarens måltid om den har registrerats, annars "-". Sista kolumnen visar den totala tiden mellan start och mål, om de båda har registrerats.  
-![](https://i.imgur.com/at1dIql.png)
+ Om någonting behöver korrigeras så kan man klicka på cellen och ändra innehållet. Den första kolumnen visar respektive rads start ID. Den andra kolumnen visar förarens namn om det har registrerats. Den tredje visar förarens starttid om den har registrerats, annars "-". Den fjärde kolumnen visar förarens måltid om den har registrerats, annars "-". Sista kolumnen visar den totala tiden mellan start och mål, om de båda har registrerats.
+
+I adminverktyget kan tävlingsledningen se inrapporterade tider. Den vänstra tabellen visar alla utförda registreringar i kronologisk
+ordning och den högra tabellen alla ihopparade tider, det vill säga alla förarnummer (i storleksordning) tillsammans med sin start- och måltid, och eventuellt beräknad totaltid. 
+  I den vänstra tabellen visas startnumret i rött om det finns mer än en registrerad tid för föraren vid samma station. I den högra tabellen står om en tid saknas för föraren eller om mer än en tid är registrerad för mål/start-stationen. Ledningen kan i efterhand ändra vilken förare en tid tillhör. Detta görs genom att i den vänstra tabellen dubbelklicka på förarnumret, skriva in det nya förarnumret och trycka på enter. Ledningen kan också, vid flera tider för en station, välja att trycka på felmeddelandet i den högra tabellen. Då visas en ny tabell med alla registrerade tider för föraren vid stationen. Denna tabell kan också visas utan att det står ett felmedellande genom att trycka på tiden i den högra tabellen. I nuläget kan inte tider raderas. För att istället få bort den registrerade tiden från föraren behöver ett annat nummer skrivas in. Detta görs genom att i den nya tabellen dubbelklicka på förarnumret, skriva in ett annat nummer och därefter enter. När det endast finns en tid kvar på stationen kommer denna automatiskt att räknas som tidpunkten för föraren på stationen. 
+![](https://i.imgur.com/zJ9NzfI.png)
 
 ### Instruktioner för resultatsvisning
 När servern är igång kommer tiderna att registreras på den. Tiderna med all övrig information, som stationsid och startnummer, finns att se på url:en:
