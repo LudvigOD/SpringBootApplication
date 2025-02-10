@@ -29,13 +29,13 @@ Konfigurationen kommer att ske i adminverktyget. Där ska ledningen kunna lägga
 Nedan följer instruktioner för hur de olika applikationerna används.
 
 ### Instruktioner för tidtagare (registrering)
-I registreringsverktyget registrerar varje station när en förare passerar. Registreringen innehåller tre kolumner. Varje rad består av ett startnummer, tidpunkt och en station. Startnummer visar vilket startnummer som har skrivits in vid tryck på "registrera tid"-knappen. Tid visar tidpunkten som knapptrycket registrerades avrundat till en tiondels millisekund. Station visar vilken station som registreringsverktyget representerar vid registrering.
+I registreringsverktyget registrerar varje station när en förare passerar. Registreringen innehåller tre kolumner. Varje rad består av ett startnummer, tidpunkt och en station. Startnumret i ruta 1 visar vilket startnummer som har skrivits in vid tryck på "registrera tid"-knappen. Tiden i ruta 2 visar tidpunkten som knapptrycket registrerades avrundat till en tiondels millisekund. Stationen i ruta 3 visar vilken station som registrerade tidpunkten.
 Följande är ett rekommenderat tillvägagångssätt:  
-1. Välj aktuell station i drop-down menyn i ruta 1.  
-2. Skriv in förarens startnummer i ruta 2.  
-3. Tryck därefter på knappen "Registrera tid" i ruta 3. Tiden har nu registrerats till servern.
-![](https://i.imgur.com/vO060tt.png)
+1. Välj aktuell station i drop-down menyn i ruta 4.  
+2. Skriv in förarens startnummer i ruta 5.  
+3. Tryck därefter på knappen "Registrera tid" i ruta 6. Tiden har nu registrerats till servern.
 ![](https://i.imgur.com/aKLu89j.png)
+![]()
 
 
 ### Instruktioner för tävlingsledning (adminverktyg)
