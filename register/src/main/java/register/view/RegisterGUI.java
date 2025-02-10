@@ -7,8 +7,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
-import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -22,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 import javax.swing.table.DefaultTableModel;
@@ -33,6 +39,7 @@ import register.model.RegisterModelImpl;
 import register.model.StartStation;
 import register.model.StationModel;
 import register.util.TimeTuple;
+import shared.Utils;
 import shared.dto.TimeDTO;
 import shared.gui.PlaceholderTextField;
 
@@ -59,20 +66,32 @@ public class RegisterGUI extends JFrame implements RegisterView {
     initGUI();
   }
 
-  // ??
-  // ??
-  @Override
-  public void update(Iterable<TimeTuple> timeTuples) {
-  }
 
   @Override
-  public void timeWasRegistered(TimeTuple timeTuple) {
-    System.out.println("Time was registered: " + timeTuple);
+  public void timeWasRegistered() {
+    //System.out.println("Time was registered: " + timeTuple);
     // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1
     // DECIMAL
-    var utils = new shared.Utils();
-    tableModel.addRow(new Object[] { timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()),
-        selectedStation });
+    // if(timeTuple.getStartNbr().equals("000")) {
+    //   tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeTuple.getTime()),
+    //     selectedStation });
+    // } else {
+    //   tableModel.addRow(new Object[] { timeTuple.getStartNbr(), Utils.displayTimeInCorrectFormat(timeTuple.getTime()),
+    //     selectedStation });
+    // }
+    tableModel.setRowCount(0);
+    Consumer<List<TimeDTO>> responseHandler = response -> {
+      response.forEach(timeDTO -> {
+        if(timeDTO.getStartNbr().equals("00")) {
+          tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+            selectedStation });
+        } else {
+          tableModel.addRow(new Object[] { timeDTO.getStartNbr(), Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+            selectedStation });
+        }
+      });
+    };
+    model.asyncReloadTimes(responseHandler, selectedStation.id());
   }
 
   private void initGUI() {
@@ -84,9 +103,28 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JPanel mainPanel = new JPanel(new BorderLayout());
     JTable registrationTable = new JTable(tableModel) {
       public boolean isCellEditable(int row, int col) {
-        return false;
+        Object value = getValueAt(row, col);
+        return value instanceof String;
       }
     };
+    tableModel.addTableModelListener(e -> {
+      if(e.getType() == TableModelEvent.UPDATE) {
+        int row = e.getFirstRow();
+        int column = e.getColumn();
+
+        if(column == 0) {
+          Object newValueObj = tableModel.getValueAt(row, column);
+          String newStartNbr = (newValueObj != null) ? newValueObj.toString() : "";
+          try{
+            TimeDTO time = model.syncReloadTimes(Optional.of(selectedStation.id())).get(row);
+            time.setStartNbr(newStartNbr);
+            model.updateTime(time, 1);
+          } catch(Exception x) {
+            x.printStackTrace();
+          }
+        }
+      }
+    });
     registrationTable.setFont(defaultFont);
     registrationTable.setRowHeight(34);
     registrationTable.setShowHorizontalLines(true);
@@ -99,6 +137,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     // Filter för TextField så att man ej kan skriva in annat än siffror
     ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
+
+    startNumberField.setFont(defaultFont);
 
     registerButton = new JButton("Registrera tid");
     registerButton.setFont(defaultFont);
@@ -161,23 +201,23 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(registerButton);
 
-    // Temporary test, fetch times from the server
-    // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
-    // Denna ska tas bort sen och ersättas med bara register-knappen
-    // Denna ska tas bort sen och ersättas med bara register-knappen
-    JButton fetchTimesButton = new JButton("Test: Fetch times");
-    fetchTimesButton.setFont(defaultFont);
+    // // Temporary test, fetch times from the server
+    // // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
+    // // Denna ska tas bort sen och ersättas med bara register-knappen
+    // // Denna ska tas bort sen och ersättas med bara register-knappen
+    // JButton fetchTimesButton = new JButton("Test: Fetch times");
+    // fetchTimesButton.setFont(defaultFont);
 
-    fetchTimesButton.setFont(defaultFont);
+    // fetchTimesButton.setFont(defaultFont);
 
-    fetchTimesButton.addActionListener((e) -> {
-      ((RegisterModelImpl) model).asyncReloadTimes(timeList -> {
-        System.out.println("Received " + timeList.size() + " times from server");
-        for (TimeDTO time : timeList) {
-          System.out.println(time);
-        }
-      }, startNumberField.getText());
-    });
+    // fetchTimesButton.addActionListener((e) -> {
+    //   ((RegisterModelImpl) model).asyncReloadTimes(timeList -> {
+    //     System.out.println("Received " + timeList.size() + " times from server");
+    //     for (TimeDTO time : timeList) {
+    //       System.out.println(time);
+    //     }
+    //   }, Integer.valueOf(startNumberField.getText()));
+    // });
 
     // inputPanel.add(fetchTimesButton);
     mainPanel.add(inputPanel, BorderLayout.NORTH);
@@ -189,6 +229,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
       String startNumber = startNumberField.getText();
       if (!startNumber.isEmpty()) {
         model.registerTime(startNumber, selectedStation.id());
+      } else {
+        model.registerTime("0", selectedStation.id());
       }
     });
 
