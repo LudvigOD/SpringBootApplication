@@ -4,17 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -87,7 +91,7 @@ public class AdminGUI extends JFrame {
         int totalHeight = (int) (screenSize.height * 0.9);
         leftScrollPane.setPreferredSize(new Dimension((int) (screenSize.width * 0.2), totalHeight));
         rightScrollPane.setPreferredSize(new Dimension((int) (screenSize.width * 0.6), totalHeight));
-
+/* 
         GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel inputPanel = new JPanel();
@@ -107,6 +111,98 @@ public class AdminGUI extends JFrame {
         gbc.weightx = 0.6;
         gbc.insets = new Insets(20, 10, 20, 20);
         tablesPanel.add(rightScrollPane, gbc);
+*/      
+        // Lägger till en buttonPanel för att kunna centrera knapparna när fönstret minskas
+        JPanel inputPanel = new JPanel();
+        inputPanel.setBackground(new Color(165, 165, 165));
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(165, 165, 165));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        buttonPanel.add(selectCompetitorsTableButton);
+        buttonPanel.add(selectResultsTableButton);
+
+        inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        inputPanel.add(buttonPanel);
+
+        GridBagLayout gridLayout = new GridBagLayout();
+        //gBoxLayout verticalLayout = new BoxLayout(inputPanel, BoxLayout.Y_AXIS);
+        inputPanel.setLayout(gridLayout);
+
+        JFrame frame = this;
+        GridBagLayout gridLayoutInput = new GridBagLayout();
+        BoxLayout verticalLayoutInput = new BoxLayout(buttonPanel, BoxLayout.Y_AXIS);
+        inputPanel.setLayout(gridLayout);
+
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (frame.getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
+                    buttonPanel.setLayout(verticalLayoutInput);
+                } else {
+                    buttonPanel.setLayout(gridLayoutInput); // annars används gridlayout (bredvid varandra)
+                }
+                buttonPanel.revalidate(); // berättar för komponenterna att de ska ändra form/layout
+                buttonPanel.repaint(); // ritar ut den nya layouten
+            }
+        });
+
+            BoxLayout verticalLayoutTable = new BoxLayout(tablesPanel, BoxLayout.Y_AXIS);
+
+            tablesPanel.setLayout(gridLayout);
+
+            // GridBagConstraints för att placera tabellerna bredvid varandra
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.weightx = 0.2;
+            gbc.weighty = 1.0;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.insets = new Insets(20, 20, 20, 10);
+            tablesPanel.add(leftScrollPane, gbc);
+
+            gbc.gridx = 1;
+            //gbc.gridy = 0,6;
+            gbc.weightx = 0.;
+            gbc.insets = new Insets(20, 10, 20, 20);
+            tablesPanel.add(rightScrollPane, gbc);
+
+            // Lägg till en lyssnare som byter layout baserat på fönsterbredd
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    tablesPanel.removeAll(); // Ta bort allt innehåll innan byte
+
+                    if (getWidth() < 900) { // Om skärmen är mindre än 900 pixlar hamnar tabellerna ovanför varandra
+                        tablesPanel.setLayout(verticalLayoutTable);
+                        tablesPanel.add(leftScrollPane);
+                        tablesPanel.add(rightScrollPane);
+                    } else { // Om det är fullskärm ritas tabellerna ut bredvid varandra som innan
+                        tablesPanel.setLayout(gridLayout);
+
+                        gbc.gridx = 0;
+                        gbc.gridy = 0;
+                        gbc.weightx = 0.2;
+                        gbc.weighty = 1.0;
+                        gbc.insets = new Insets(20, 20, 20, 10);
+                        tablesPanel.add(leftScrollPane, gbc);
+
+                        gbc.gridx = 1;
+                        gbc.weightx = 0.6;
+                        gbc.insets = new Insets(20, 10, 20, 20);
+                        tablesPanel.add(rightScrollPane, gbc);
+
+
+                    }
+
+                    tablesPanel.revalidate(); // Uppdatera layout
+                    tablesPanel.repaint(); // Rita ut fönstret på nytt
+                }
+            });
+
+        selectResultsTableButton.setMaximumSize(new Dimension(200, 50));
+        selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
 
         mainPanel.add(inputPanel, BorderLayout.NORTH);
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
