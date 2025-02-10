@@ -2,9 +2,16 @@ package register.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComboBox;
@@ -93,11 +100,6 @@ public class RegisterGUI extends JFrame implements RegisterView {
     // Filter för TextField så att man ej kan skriva in annat än siffror
     ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
 
-    startNumberField.setFont(defaultFont);
-
-    // Filter för TextField så att man ej kan skriva in annat än siffror
-    ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
-
     registerButton = new JButton("Registrera tid");
     registerButton.setFont(defaultFont);
     registerButton.setBackground(Color.RED);
@@ -105,23 +107,58 @@ public class RegisterGUI extends JFrame implements RegisterView {
     registerButton.setBackground(Color.RED);
 
     JPanel inputPanel = new JPanel();
+    GridBagLayout gridLayout = new GridBagLayout();
+    BoxLayout verticalLayout = new BoxLayout(inputPanel, BoxLayout.Y_AXIS);
+    inputPanel.setLayout(gridLayout);
+
+    addComponentListener(new ComponentAdapter() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            if (getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
+                inputPanel.setLayout(verticalLayout);
+                inputPanel.setPreferredSize(new Dimension(200 , 200));
+            } else {
+                inputPanel.setLayout(gridLayout); // annars används gridlayout (bredvid varandra)
+                inputPanel.setPreferredSize(new Dimension(700,60));
+            }
+            inputPanel.revalidate(); // berättar för komponenterna att de ska ändra form/layout
+            inputPanel.repaint(); // ritar ut den nya layouten
+        }
+    });
+
 
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
-
 
     chooseStation.setFont(new Font("SANS_SERIF", Font.PLAIN, 20));
     chooseStation.addActionListener(event -> {
       selectedStation = (StationModel) chooseStation.getSelectedItem();
     });
+    chooseStation.setMaximumSize(new Dimension(75,25));
+
+    startNumberField.setMaximumSize(new Dimension(175,40));
 
     JLabel stationLabel = new JLabel("Station:");
     stationLabel.setFont(defaultFont);
 
+    chooseStation.setAlignmentX(Component.CENTER_ALIGNMENT);
+    startNumberField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    startNum.setAlignmentX(Component.CENTER_ALIGNMENT);
+    stationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    registerButton.setMaximumSize(new Dimension(200, 40));
+    registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    inputPanel.setPreferredSize(new Dimension(700,60));
+
     inputPanel.add(stationLabel);
+    inputPanel.add(Box.createHorizontalStrut(5));
     inputPanel.add(chooseStation);
+    inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(startNum);
+    inputPanel.add(Box.createHorizontalStrut(5));
     inputPanel.add(startNumberField);
+    inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(registerButton);
 
     // Temporary test, fetch times from the server
