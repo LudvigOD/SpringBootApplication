@@ -1,6 +1,5 @@
-package register.view;
+package register.utils;
 
-//import javax.swing.JOptionPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
