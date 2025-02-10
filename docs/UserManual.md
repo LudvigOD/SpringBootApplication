@@ -40,15 +40,14 @@ Följande är ett rekommenderat tillvägagångssätt:
 
 ### Instruktioner för tävlingsledning (adminverktyg)
 I adminverktyget kan tävlingsledningen se inrapporterade tider. Den vänstra tabellen visar alla utförda registreringar i kronologisk
-ordning och den högra tabellen alla ihopparade tider, det vill säga alla förarnummer (i storleksordning) tillsammans med sin start- och måltid, och eventuellt beräknad totaltid.  
+ordning och den högra tabellen har två olika vyer.
+Den första vyn, som visas som default, kallas för "Deltagar"-vyn **(1)**. I denna vy visas startnummer, namn, starttid, måltid och totaltid. I denna vy skrivs felmeddelanden ut vid duplicerade tider för stationerna. Den andra vyn är stället en resultatvisare och kallas för "Resultat"-vyn **(2)**. I resultatvyn visas inga felmeddelanden eller specifika stationstider, utan endast förarens placering, startnummer, namn och totaltid.
+![](https://i.imgur.com/V48TQcV.png)
 
-I den vänstra tabellen visas startnumret i rött om det finns mer än en registrerad tid för föraren vid samma station. I den högra tabellen står det om en tid saknas för föraren eller om mer än en tid är registrerad för mål/start-stationen. Ledningen kan i efterhand ändra vilken förare en tid tillhör. Detta görs genom att i den vänstra tabellen dubbelklicka på förarnumret, skriva in det nya förarnumret och trycka på enter. 
+I den vänstra tabellen visas startnumret i rött om det finns mer än en registrerad tid för föraren vid samma station. I den högra tabellen står om en tid saknas för föraren eller om mer än en tid är registrerad för mål/start-stationen i "Deltagar"-vyn. Ledningen kan i efterhand ändra vilken förare en tid tillhör. Detta görs genom att i den vänstra tabellen dubbelklicka på förarnumret, skriva in det nya förarnumret och trycka på enter. 
 
-Ledningen kan också, vid flera tider för en station, välja att trycka på felmeddelandet i den högra tabellen. Då visas en ny tabell (1) med alla registrerade tider för föraren vid stationen. Denna tabell kan också visas utan att det står ett felmedellande genom att trycka på tiden i den högra tabellen. I nuläget kan inte tider raderas. För att istället få bort den registrerade tiden från föraren behöver ett annat nummer skrivas in. Detta görs genom att i den nya tabellen dubbelklicka på förarnumret (2), skriva in ett annat nummer (3) och därefter trycka på enter. När det endast finns en tid kvar på stationen kommer denna automatiskt att räknas som tidpunkten för föraren på stationen (4). 
-![](https://i.imgur.com/w46BLiC.png)
-
-Adminverktyget har två vyer för den högra tabellen. Den första, som visas som default, är som beskrivet ovan och kallas för "Deltagar"-vyn (5). Den andra är en resultatvisare och kallas för "Resultat"-vyn (6). I resultatvyn visas inga felmeddelanden, utan endast förarens placering, startnummer, namn och totaltid.
-![](https://i.imgur.com/RacBy59.png)
+Ledningen kan också, vid flera tider för en station, välja att trycka på felmeddelandet i den högra tabellen. Då visas en ny tabell **(3)** med alla registrerade tider för föraren vid stationen. Denna tabell kan också visas utan att det står ett felmedellande genom att trycka på tiden i den högra tabellen. I nuläget kan inte tider raderas. För att istället få bort den registrerade tiden från föraren behöver ett annat nummer skrivas in. Detta görs genom att i den nya tabellen dubbelklicka på förarnumret **(4)**, skriva in ett annat nummer **(5)** och därefter enter. När det endast finns en tid kvar på stationen kommer denna automatiskt att räknas som tidpunkten för föraren på stationen **(6)**. 
+![](https://i.imgur.com/CNHX9wZ.png)
 
 ### Instruktioner för resultatsvisning
 När servern är igång kommer tiderna att registreras på den. Tiderna med all övrig information, som stationsid och startnummer, finns att se på url:en:
