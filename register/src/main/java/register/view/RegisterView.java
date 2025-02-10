@@ -1,6 +1,5 @@
 package register.view;
 
-import register.util.TimeTuple;
 
 /*
  * A simple observer pattern interface. The view must implement this interface
@@ -8,12 +7,9 @@ import register.util.TimeTuple;
  */
 public interface RegisterView {
 
- 
-
   /**
    * Notifies the view that a time was registered.
    * 
-   * @param timeTuple
    */
   void timeWasRegistered();
 
