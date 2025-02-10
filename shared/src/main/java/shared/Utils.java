@@ -11,11 +11,11 @@ public class Utils {
         return "the helper";
     }
 
-    public LocalTime convertInstantToLocalTime(Instant instant) {
+    public static LocalTime convertInstantToLocalTime(Instant instant) {
         return instant.atZone(ZoneId.systemDefault()).toLocalTime();
     }
 
-    public String displayTimeInCorrectFormat(Instant instant) {
+    public static String displayTimeInCorrectFormat(Instant instant) {
         LocalTime localTime = convertInstantToLocalTime(instant);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss:S");
         return localTime.format(dateTimeFormatter);

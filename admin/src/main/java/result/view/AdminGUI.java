@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +27,7 @@ import javax.swing.table.DefaultTableModel;
 
 import result.model.AdminModel;
 import result.model.AdminView;
+import shared.Utils;
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
@@ -115,13 +115,11 @@ public class AdminGUI extends JFrame {
 }
 
 class TimesTable extends JTable implements AdminView {
-    private static final String PATTERN_FORMAT = "hh:mm:ss.S";
 
     public TimesTable() {
         super(new DefaultTableModel(new String[] { "Station", "Nr.", "Tid" }, 0));
 
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
-                .withZone(ZoneId.systemDefault());
+        
 
         setShowGrid(true);
         setGridColor(Color.WHITE);
@@ -183,7 +181,7 @@ class TimesTable extends JTable implements AdminView {
                         // Time
                         Instant time = (Instant) value;
 
-                        setText(formatter.format(time));
+                        setText(Utils.displayTimeInCorrectFormat(time));
                         break;
                     }
                 }
@@ -214,13 +212,10 @@ class TimesTable extends JTable implements AdminView {
 }
 
 class ParticipantsTable extends JTable implements AdminView {
-    private static final String PATTERN_FORMAT = "hh:mm:ss.S";
 
     public ParticipantsTable() {
         super(new ParticipantsTableModel());
 
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
-                .withZone(ZoneId.systemDefault());
 
         setShowGrid(true);
         setGridColor(Color.WHITE);
@@ -263,16 +258,22 @@ class ParticipantsTable extends JTable implements AdminView {
                         // Start time
                         @SuppressWarnings("unchecked")
                         Optional<Instant> startTime = (Optional<Instant>) value;
-
-                        setText(startTime.map(formatter::format).orElse("--:--:--"));
+                        if(startTime.isPresent()) {
+                            setText(Utils.displayTimeInCorrectFormat(startTime.get()));
+                        } else {
+                            setText("--:--:--");
+                        }
                         break;
                     }
                     case 3: {
                         // Finish time
                         @SuppressWarnings("unchecked")
                         Optional<Instant> finishTime = (Optional<Instant>) value;
-
-                        setText(finishTime.map(formatter::format).orElse("--:--:--"));
+                        if(finishTime.isPresent()) {
+                            setText(Utils.displayTimeInCorrectFormat(finishTime.get()));
+                        } else {
+                            setText("--:--:--");
+                        }
                         break;
                     }
                     case 4: {
