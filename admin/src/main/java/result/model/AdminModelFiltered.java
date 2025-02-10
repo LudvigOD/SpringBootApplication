@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
+
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
@@ -61,5 +63,8 @@ public class AdminModelFiltered implements AdminModel {
 
   private boolean filterParticipant(ParticipantDTO participant) {
     return participant.getStartNbr().equals(this.startNbr);
+  }
+
+  public void sendPostRequest(ParticipantDTO dto, int raceId) {
   }
 }

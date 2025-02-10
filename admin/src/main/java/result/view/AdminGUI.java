@@ -26,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import result.model.AdminModel;
+import shared.dto.ParticipantDTO;
 
 public class AdminGUI extends JFrame {
     public AdminGUI(AdminModel model) {
@@ -77,7 +78,7 @@ public class AdminGUI extends JFrame {
 
                     while(s.hasNextLine()) {
                         String[] l = s.nextLine().split(",");
-                        System.out.println(l[0] + l[1]);
+                        model.sendPostRequest(new ParticipantDTO(l[0], l[1]),1);
                     }
     
                     //System.out.println("Vald fil: " + selectedFile.getAbsolutePath());
