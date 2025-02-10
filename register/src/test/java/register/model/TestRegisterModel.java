@@ -19,6 +19,8 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +31,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Mono;
 import shared.dto.TimeDTO;
+
 
 public class TestRegisterModel {
 
@@ -43,6 +46,7 @@ public class TestRegisterModel {
         private WebClient.RequestHeadersSpec requestHeadersSpecMock;
         private WebClient.ResponseSpec responseSpecMock;
 
+
         @BeforeEach
         void setUp() throws Exception {
                 // Mock WebClient and its method chain, i.e. the same chain that is used in the
@@ -51,7 +55,6 @@ public class TestRegisterModel {
                 requestHeadersUriSpecMock = mock(WebClient.RequestHeadersUriSpec.class);
                 requestHeadersSpecMock = mock(WebClient.RequestHeadersSpec.class);
                 responseSpecMock = mock(WebClient.ResponseSpec.class);
-
                 when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
                 when(requestHeadersUriSpecMock.uri(any(String.class))).thenReturn(requestHeadersSpecMock);
                 when(requestHeadersUriSpecMock.uri(any(Function.class))).thenReturn(requestHeadersSpecMock);
@@ -77,6 +80,19 @@ public class TestRegisterModel {
                 System.out.println("Hello, Spring!");
                 assertEquals(1, 1);
         }
+
+/*         @Test
+        void emptyStartNbr_GivesValueZeroPOSTrequest() {
+                TimeDTO testTimeDTO = new TimeDTO(1, "", Instant.ofEpochSecond(123));
+                assertEquals(0, testTimeDTO.getStartNbr());
+        }
+
+        @Test
+        void nullStartNbr_GivesValueZeroPOSTrequest() {
+                TimeDTO testTimeDTO = new TimeDTO(null, "", Instant.ofEpochSecond(123));
+                assertEquals(0, testTimeDTO.getStartNbr());
+        } */
+
 
         @Test
         void testSendNonBlockingGetRequest() throws InterruptedException {
@@ -137,5 +153,4 @@ public class TestRegisterModel {
                 verify(exchangeFunction).exchange(any(ClientRequest.class));
                 // Additional verifications or assertions as needed
         }
-
 }
