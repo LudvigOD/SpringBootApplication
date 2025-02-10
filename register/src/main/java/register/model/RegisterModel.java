@@ -21,12 +21,12 @@ public interface RegisterModel {
    */
   void registerTime(String startNbr, Integer station);
 
-
   /**
-   * Edits a registered time.
-   * @param timeTuple
+   * Updates a time using the timeDTO
+   * @param timeDTO
+   * @param raceID
    */
-  void editRegisteredTime(String startNbr, TimeTuple timeTuple);
+  void updateTime(TimeDTO timeDTO, int raceID);
 
   List<TimeDTO> syncReloadTimes(Optional<Integer> stationId);
 
