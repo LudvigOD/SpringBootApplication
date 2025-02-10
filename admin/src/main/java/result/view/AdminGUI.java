@@ -11,16 +11,22 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import result.model.AdminModel;
+import shared.dto.ParticipantDTO;
 
 public class AdminGUI extends JFrame {
     public AdminGUI(AdminModel model) {
@@ -50,6 +56,16 @@ public class AdminGUI extends JFrame {
         JButton selectResultsTableButton = new JButton("Resultat");
         formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
+        JButton selectFileButton = new JButton("Ladda fil...");
+        selectFileButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        selectFileButton.setBackground(new Color(112, 173, 71));
+        selectFileButton.setForeground(Color.WHITE);
+        selectFileButton.setPreferredSize(new Dimension(200, 50));
+
+        selectFileButton.addActionListener( (f)-> {        
+            parseFile(model);
+        });
+
         leftScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         rightScrollPane.getViewport().setBackground(new Color(156, 202, 124));
 
@@ -76,6 +92,7 @@ public class AdminGUI extends JFrame {
 
         buttonPanel.add(selectCompetitorsTableButton);
         buttonPanel.add(selectResultsTableButton);
+        buttonPanel.add(selectFileButton);
 
         inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         inputPanel.add(buttonPanel);
@@ -132,11 +149,36 @@ public class AdminGUI extends JFrame {
 
         selectResultsTableButton.setMaximumSize(new Dimension(200, 50));
         selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
+        selectFileButton.setMaximumSize(new Dimension(200, 50));
 
         mainPanel.add(inputPanel, BorderLayout.NORTH);
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
 
         add(mainPanel);
+    }
+
+    private void parseFile(AdminModel model) {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
+        int returnValue = fileChooser.showOpenDialog(null);
+        try {
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                Scanner s = new Scanner(selectedFile);
+
+                while(s.hasNextLine()) {
+                    String[] l = s.nextLine().split(",");
+                    model.sendPostRequest(new ParticipantDTO(l[0], l[1]),1);
+                }
+                
+                s.close();
+            } else {
+                System.out.println("Ingen fil valdes.");
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     private void formatButton(JTable table, JScrollPane rightScrollPane, JButton selectCompetitorsTableButton) {
