@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -107,42 +108,6 @@ public class RegisterModelImpl implements RegisterModel {
   // denna verkar fungera
   public void sendPostRequest(TimeDTO dto, int raceId) {
     webClient.post()
-        .uri("/races/{raceId}/times", raceId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(dto)
-        .retrieve()
-        .toBodilessEntity()
-        .block();
-  }
-
-  
-
-  public void updateTime(TimeDTO dto, int raceId) {
-    webClient.put()
-        .uri("/races/{raceId}/times", raceId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(dto)
-        .retrieve()
-        .toBodilessEntity()
-        .block();
-  }
-
-  
-
-  public void updateTime(TimeDTO dto, int raceId) {
-    webClient.put()
-        .uri("/races/{raceId}/times", raceId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(dto)
-        .retrieve()
-        .toBodilessEntity()
-        .block();
-  }
-
-  
-
-  public void updateTime(TimeDTO dto, int raceId) {
-    webClient.put()
         .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(dto)
