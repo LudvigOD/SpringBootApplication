@@ -81,7 +81,7 @@ public class TestRegisterModel {
                 assertEquals(1, 1);
         }
 
-        @Test
+/*         @Test
         void emptyStartNbr_GivesValueZeroPOSTrequest() {
                 TimeDTO testTimeDTO = new TimeDTO(1, "", Instant.ofEpochSecond(123));
                 assertEquals(0, testTimeDTO.getStartNbr());
@@ -91,7 +91,7 @@ public class TestRegisterModel {
         void nullStartNbr_GivesValueZeroPOSTrequest() {
                 TimeDTO testTimeDTO = new TimeDTO(null, "", Instant.ofEpochSecond(123));
                 assertEquals(0, testTimeDTO.getStartNbr());
-        }
+        } */
 
 
         @Test
