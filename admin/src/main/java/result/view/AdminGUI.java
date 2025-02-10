@@ -119,6 +119,19 @@ public class AdminGUI extends JFrame {
 
         BoxLayout verticalLayoutTable = new BoxLayout(tablesPanel, BoxLayout.Y_AXIS);
 
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
+                    buttonPanel.setLayout(verticalLayoutInput);
+                } else {
+                    buttonPanel.setLayout(gridLayoutInput); // annars används gridlayout (bredvid varandra)
+                }
+                buttonPanel.revalidate(); // berättar för komponenterna att de ska ändra form/layout
+                buttonPanel.repaint(); // ritar ut den nya layouten
+            }
+        });
+
         tablesPanel.setLayout(gridLayout);
 
         GridBagConstraints gbc = new GridBagConstraints();
