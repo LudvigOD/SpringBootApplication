@@ -99,4 +99,14 @@ public class AdminModelImpl implements AdminModel {
 
         fetchUpdates();
     }
+
+    public void sendPostRequest(ParticipantDTO dto, int raceId) {
+        webClient.post()
+            .uri("/races/{raceId}/participants", raceId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(dto)
+            .retrieve()
+            .toBodilessEntity()
+            .block();
+      }
 }

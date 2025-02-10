@@ -15,4 +15,6 @@ public interface AdminModel {
   List<ParticipantDTO> getAllParticipants();
 
   public void updateTime(int raceID, TimeDTO timeDTO);
+
+  public void sendPostRequest(ParticipantDTO dto, int raceId);
 }
