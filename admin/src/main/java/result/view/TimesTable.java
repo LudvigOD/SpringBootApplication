@@ -87,7 +87,7 @@ public class TimesTable extends JTable implements AdminModelObserver {
                         // Time: Instant
                         Instant time = (Instant) value;
 
-                        setText(Utils.displayTimeInCorrectFormat(time));
+                        setText(Utils.formatInstant(time));
                         break;
                     }
                 }
