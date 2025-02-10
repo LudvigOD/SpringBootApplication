@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -163,7 +164,6 @@ public class AdminGUI extends JFrame {
             tablesPanel.add(leftScrollPane, gbc);
 
             gbc.gridx = 1;
-            //gbc.gridy = 0,6;
             gbc.weightx = 0.;
             gbc.insets = new Insets(20, 10, 20, 20);
             tablesPanel.add(rightScrollPane, gbc);
@@ -192,7 +192,6 @@ public class AdminGUI extends JFrame {
                         gbc.weightx = 0.6;
                         gbc.insets = new Insets(20, 10, 20, 20);
                         tablesPanel.add(rightScrollPane, gbc);
-
 
                     }
 
