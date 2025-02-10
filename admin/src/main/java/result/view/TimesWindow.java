@@ -7,14 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 import result.model.AdminModel;
-import result.model.AdminModelFiltered;
+import result.model.AdminModelFilteredResult;
 
 public class TimesWindow {
   public static void openTimesDialog(AdminModel model, int stationId, String startNbr) {
     JFrame newWindow = new JFrame("Filtered Times");
     newWindow.setSize(600, 600);
 
-    AdminModelFiltered filteredAdminModel = new AdminModelFiltered(model, stationId, startNbr);
+    AdminModelFilteredResult filteredAdminModel = new AdminModelFilteredResult(model, stationId, startNbr);
 
     TimesTable filteredTimesTable = new TimesTable(filteredAdminModel);
     filteredAdminModel.addListener(filteredTimesTable);
