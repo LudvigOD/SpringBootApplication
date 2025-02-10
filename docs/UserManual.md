@@ -34,6 +34,7 @@ Följande är ett rekommenderat tillvägagångssätt:
 1. Välj aktuell station i drop-down menyn i **ruta 4**.  
 2. Skriv in förarens startnummer i **ruta 5**.  
 3. Tryck därefter på knappen "Registrera tid" i **ruta 6**. Tiden har nu registrerats till servern.
+4. Det är möjligt att registrera en tid utan att ange förarens startnummer. Tiden tilldelas då startnumret 00. I vyn syns tiden med startnumret: "StartID?". För att ge en tid ett tillhörande startnummer, klicka på fältet för startnummer och ange det korrekta startnumret.
 ![](https://i.imgur.com/aKLu89j.png)
 ![](https://i.imgur.com/HZKPLwT.png)
 

@@ -63,10 +63,10 @@ public class TimesTable extends JTable implements AdminModelObserver {
                         int stationId = (int) value;
 
                         switch (stationId) {
-                            case 0:
+                            case 1:
                                 setText("Start");
                                 break;
-                            case 1:
+                            case 2:
                                 setText("Mål");
                                 break;
                                 default:
