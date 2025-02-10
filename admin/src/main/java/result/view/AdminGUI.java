@@ -4,17 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -55,22 +59,10 @@ public class AdminGUI extends JFrame {
         JScrollPane rightScrollPane = new JScrollPane(competitorsTable);
 
         JButton selectCompetitorsTableButton = new JButton("Deltagare");
-        selectCompetitorsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        selectCompetitorsTableButton.setBackground(new Color(112, 173, 71));
-        selectCompetitorsTableButton.setForeground(Color.WHITE);
-        selectCompetitorsTableButton.setPreferredSize(new Dimension(200, 50));
-        selectCompetitorsTableButton.addActionListener(event -> {
-            rightScrollPane.setViewportView(competitorsTable);
-        });
+        formatButton(competitorsTable, rightScrollPane, selectCompetitorsTableButton);
 
         JButton selectResultsTableButton = new JButton("Resultat");
-        selectResultsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        selectResultsTableButton.setBackground(new Color(112, 173, 71));
-        selectResultsTableButton.setForeground(Color.WHITE);
-        selectResultsTableButton.setPreferredSize(new Dimension(200, 50));
-        selectResultsTableButton.addActionListener(event -> {
-            rightScrollPane.setViewportView(resultsTable);
-        });
+        formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
         leftScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         rightScrollPane.getViewport().setBackground(new Color(156, 202, 124));
@@ -88,13 +80,97 @@ public class AdminGUI extends JFrame {
         leftScrollPane.setPreferredSize(new Dimension((int) (screenSize.width * 0.2), totalHeight));
         rightScrollPane.setPreferredSize(new Dimension((int) (screenSize.width * 0.6), totalHeight));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-
+        // Lägger till en buttonPanel för att kunna centrera knapparna när fönstret minskas
         JPanel inputPanel = new JPanel();
         inputPanel.setBackground(new Color(165, 165, 165));
-        inputPanel.add(selectCompetitorsTableButton);
-        inputPanel.add(selectResultsTableButton);
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(165, 165, 165));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        buttonPanel.add(selectCompetitorsTableButton);
+        buttonPanel.add(selectResultsTableButton);
+
+        inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        inputPanel.add(buttonPanel);
+
+        GridBagLayout gridLayout = new GridBagLayout();
+        inputPanel.setLayout(gridLayout);
+
+        GridBagLayout gridLayoutInput = new GridBagLayout();
+        BoxLayout verticalLayoutInput = new BoxLayout(buttonPanel, BoxLayout.Y_AXIS);
+        inputPanel.setLayout(gridLayout);
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
+                    buttonPanel.setLayout(verticalLayoutInput);
+                } else {
+                    buttonPanel.setLayout(gridLayoutInput); // annars används gridlayout (bredvid varandra)
+                }
+                buttonPanel.revalidate(); // berättar för komponenterna att de ska ändra form/layout
+                buttonPanel.repaint(); // ritar ut den nya layouten
+            }
+        });
+
+        BoxLayout verticalLayoutTable = new BoxLayout(tablesPanel, BoxLayout.Y_AXIS);
+
+        tablesPanel.setLayout(gridLayout);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        formatTimeTable(tablesPanel, leftScrollPane, gbc);
+        formatResultTable(tablesPanel, rightScrollPane, gbc);
+
+        // Lägg till en lyssnare som byter layout baserat på fönsterbredd
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                tablesPanel.removeAll(); // Ta bort allt innehåll innan byte
+
+                if (getWidth() < 900) { // Om skärmen är mindre än 900 pixlar hamnar tabellerna ovanför varandra
+                    tablesPanel.setLayout(verticalLayoutTable);
+                    tablesPanel.add(leftScrollPane);
+                    tablesPanel.add(rightScrollPane);
+                } else { // Om det är fullskärm ritas tabellerna ut bredvid varandra som innan
+                    tablesPanel.setLayout(gridLayout);
+                    formatTimeTable(tablesPanel, leftScrollPane, gbc);
+                    formatResultTable(tablesPanel, rightScrollPane, gbc);
+                }
+
+                tablesPanel.revalidate(); // Uppdatera layout
+                tablesPanel.repaint(); // Rita ut fönstret på nytt
+            }
+        });
+
+        selectResultsTableButton.setMaximumSize(new Dimension(200, 50));
+        selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
+
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+        mainPanel.add(tablesPanel, BorderLayout.CENTER);
+
+        add(mainPanel);
+    }
+
+    private void formatButton(JTable table, JScrollPane rightScrollPane, JButton selectCompetitorsTableButton) {
+            selectCompetitorsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
+            selectCompetitorsTableButton.setBackground(new Color(112, 173, 71));
+            selectCompetitorsTableButton.setForeground(Color.WHITE);
+            selectCompetitorsTableButton.setPreferredSize(new Dimension(200, 50));
+            selectCompetitorsTableButton.addActionListener(event -> {
+                rightScrollPane.setViewportView(table);
+            });
+    }
+
+    private void formatResultTable(JPanel tablesPanel, JScrollPane rightScrollPane, GridBagConstraints gbc) {
+        gbc.gridx = 1;
+        gbc.weightx = 0.6;
+        gbc.insets = new Insets(20, 10, 20, 20);
+        tablesPanel.add(rightScrollPane, gbc);
+    }
+
+    private void formatTimeTable(JPanel tablesPanel, JScrollPane leftScrollPane, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.2;
@@ -102,16 +178,6 @@ public class AdminGUI extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(20, 20, 20, 10);
         tablesPanel.add(leftScrollPane, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.6;
-        gbc.insets = new Insets(20, 10, 20, 20);
-        tablesPanel.add(rightScrollPane, gbc);
-
-        mainPanel.add(inputPanel, BorderLayout.NORTH);
-        mainPanel.add(tablesPanel, BorderLayout.CENTER);
-
-        add(mainPanel);
     }
 }
 
