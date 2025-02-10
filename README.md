@@ -52,7 +52,7 @@ The race timing system consists of three main components:
 
 ### 2. Administration Application
 - **Purpose**: Displays and manages race results
-- **Design Pattern**: Observer Pattern, MVC
+- **Design Pattern**: Observer Pattern, MVC, Template Method
 - **Key Classes**:
   - `AdminGUI`: Main interface for result viewing
   - `AdminModel`: Data management and updates
