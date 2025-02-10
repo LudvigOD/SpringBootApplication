@@ -139,12 +139,9 @@ public class RegisterModelImpl implements RegisterModel {
         .block();
   }
 
-  @Override
-  public void editRegisteredTime(String startNbr, TimeTuple timeTuple) {
-    //Denna behöver implementeras för att skicka en PUT request.
-  }
+  
 
-  public void sendPutRequest(TimeDTO dto, int raceId) {
+  public void updateTime(TimeDTO dto, int raceId) {
     webClient.put()
         .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)

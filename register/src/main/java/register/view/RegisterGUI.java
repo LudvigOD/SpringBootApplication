@@ -82,7 +82,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     tableModel.setRowCount(0);
     Consumer<List<TimeDTO>> responseHandler = response -> {
       response.forEach(timeDTO -> {
-        if(timeDTO.getStartNbr().equals("0")) {
+        if(timeDTO.getStartNbr().equals("00")) {
           tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
             selectedStation });
         } else {

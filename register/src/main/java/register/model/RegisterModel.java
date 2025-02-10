@@ -32,8 +32,4 @@ public interface RegisterModel {
 
   void asyncReloadTimes(Consumer<List<TimeDTO>> responseHandler, int stationId);
 
-  List<TimeDTO> syncReloadTimes(Optional<Integer> stationId);
-
-  void asyncReloadTimes(Consumer<List<TimeDTO>> responseHandler, int stationId);
-
 }
