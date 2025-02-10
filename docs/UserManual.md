@@ -6,7 +6,7 @@ Programmet levereras i en ZIP-fil och innehåller ett admin verktyg, ett registr
 - Programmet kan installeras på enheten enligt följande: 
     1. Gå till hemsidan https://drive.google.com/drive/folders/16vBeigCoXEIRqUHhCfiq6oR4v9e-aAdi och ladda ned önskad zip-fil. 
         ![](https://imgur.com/yIbu6vz.png)
-    2. Flytta zip-filen till önskad mapp. Om den ska öppnas i Ubuntu kan kommandot cp /mnt/c/Users/DittAnvändarnamn/Path/Till/Filen.zip . användas efter att användaren navigerat till den mapp som den ska flyttas till.
+    2. Flytta zip-filen till önskad mapp. Om den ska öppnas i Ubuntu kan kommandot ```cp /mnt/c/Users/DittAnvändarnamn/Path/Till/Filen.zip``` . användas efter att användaren navigerat till den mapp som den ska flyttas till.
     3. Unzipa filen. Detta kan göras med kommandot ```unzip din_fil.zip -d /sökväg/till/mapp```. Därefter finns samtliga filer som behövs för att köra programmet i den valda mappen.
 - Nedan finns ett antal kommandon för att köra de olika delarna av programmet. Dessa kommandon förutsätter att användaren är inuti den mapp som den zippade-filen packades upp till.  
 - Innan programmen körs måste servern startas. Detta görs med hjälp av följande kommandon:  
