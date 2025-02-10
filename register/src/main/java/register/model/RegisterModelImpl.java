@@ -23,7 +23,6 @@ public class RegisterModelImpl implements RegisterModel {
 
   private int raceID;
 
-  private List<TimeDTO> times;
 
   public RegisterModelImpl(WebClient webClient) {
     this.timeTuples = new ArrayList<>();
@@ -50,7 +49,9 @@ public class RegisterModelImpl implements RegisterModel {
     this.timeTuples.add(timeTuple);
     // Send a POST request to the server with the time
     sendPostRequest(new TimeDTO(stationId, timeTuple.getStartNbr(), timeTuple.getTime(), Long.valueOf(1)), raceID);
-
+    for(RegisterView view : views) {
+      view.timeWasRegistered();
+    }
     // Test sending a GET request to the server. This is purely for testing and
     // should be removed later.
     // sendNonBlockingGetRequest(times -> {
@@ -85,6 +86,7 @@ public class RegisterModelImpl implements RegisterModel {
     // accordingly, i.e. Consumer<List<TimeDTO>> or Consumer<TimeDTO>.
   }
 
+
   public List<TimeDTO> syncReloadTimes(Optional<Integer> stationId) {
     // Note to self: block means that we make a synchronous GET request to the
     // server. That means that the program will be blocked and wait here until
@@ -115,9 +117,7 @@ public class RegisterModelImpl implements RegisterModel {
         .block();
   }
 
-  
-
-  public void updateTime(TimeDTO dto, int raceId) {
+  public void sendPutRequest(TimeDTO dto, int raceId) {
     webClient.put()
         .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
@@ -133,23 +133,8 @@ public class RegisterModelImpl implements RegisterModel {
   }
 
   @Override
-  public void editRegisteredTime(String startNbr, TimeTuple timeTuple) {
-    //Denna behöver implementeras för att skicka en PUT request.
-  }
-
-  public void sendPutRequest(TimeDTO dto, int raceId) {
-    webClient.put()
-        .uri("/races/{raceId}/times", raceId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(dto)
-        .retrieve()
-        .toBodilessEntity()
-        .subscribe(response -> {
-          // Note to self: This makes an asynchronous POST request to the server meaning
-          // that this method returns immediately, and the response will be handled by
-          // this lambda expression in the future, by some other thread.
-          System.out.println("POST Response Status: " + response.getStatusCode());
-        });
+  public void updateTime(TimeDTO timeDTO, int raceID) {
+    sendPutRequest(timeDTO, raceID);
   }
 
 }

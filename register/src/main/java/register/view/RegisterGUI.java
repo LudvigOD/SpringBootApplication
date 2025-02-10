@@ -115,15 +115,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
         if(column == 0) {
           Object newValueObj = tableModel.getValueAt(row, column);
           String newStartNbr = (newValueObj != null) ? newValueObj.toString() : "";
-          try{
-            TimeDTO time = model.syncReloadTimes(Optional.of(selectedStation.id())).get(row);
-            time.setStartNbr(newStartNbr);
-            model.updateTime(time, 1);
-          } catch(Exception x) {
-            x.printStackTrace();
-          }
-          
-
+          TimeDTO time = model.syncReloadTimes(Optional.of(selectedStation.id())).get(row);
+          time.setStartNbr(newStartNbr);
+          model.updateTime(time, 1);
         }
       }
     });
