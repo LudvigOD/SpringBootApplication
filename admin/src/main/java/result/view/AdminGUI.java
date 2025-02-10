@@ -14,6 +14,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -48,6 +50,7 @@ public class AdminGUI extends JFrame {
         tablesPanel.setBackground(new Color(165, 165, 165));
 
         TimesTable timesTable = new TimesTable();
+        timesTable.setAdminModel(model);
         CompetitorsTable competitorsTable = new CompetitorsTable();
         ResultsTable resultsTable = new ResultsTable();
 
@@ -184,6 +187,12 @@ public class AdminGUI extends JFrame {
 class TimesTable extends JTable implements AdminModelObserver {
     private static final String PATTERN_FORMAT = "hh:mm:ss.S";
 
+    private AdminModel adminModel;
+
+    public void setAdminModel(AdminModel adminModel) {
+        this.adminModel = adminModel;
+    }
+
     public TimesTable() {
         super(new DefaultTableModel(new String[] { "Station", "Nr.", "Tid" }, 0));
 
@@ -266,7 +275,40 @@ class TimesTable extends JTable implements AdminModelObserver {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-    }
+
+        DefaultTableModel model = (DefaultTableModel) getModel();
+        model.addTableModelListener(e -> {
+            //we only want update events
+            if (e.getType() == TableModelEvent.UPDATE) {
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+
+                //this makes it so you can only change startNumbers
+                if (column == 1) {
+                    Object newValueObj = model.getValueAt(row, column);
+                    String newStartNbr = (newValueObj != null) ? newValueObj.toString() : "";
+                    
+                
+                    try {
+                        TimeDTO timeDTO = adminModel.getTimeDTOForRow(row);
+                        if (timeDTO == null) {
+                            System.err.println("No TimeDTO found for row " + row);
+                            return;
+                        }
+                        
+                        // Update the DTO with the new time.
+                        timeDTO.setStartNbr(newStartNbr);
+                        
+                    
+                        adminModel.updateTime(timeDTO, 1);
+                    } catch (DateTimeParseException ex) {
+                       // keep logic in we want to be able to edit times later
+                        System.err.println("brr");
+                    }
+                }
+            }
+        });
+}
 
     @Override
     public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
@@ -385,7 +427,7 @@ class ResultsTable extends JTable implements AdminModelObserver {
     public ResultsTable() {
         super(new ResultsTableModel());
 
-        setShowGrid(true);
+        setShowGrid(true); 
         setGridColor(Color.WHITE);
 
         setBackground(new Color(156, 202, 124));

@@ -22,39 +22,34 @@ import shared.dto.TimeDTO;
 @RequestMapping("/api/races/{raceId}/times")
 public class TimesController {
 
-  @Autowired
-  private TimeService timeService;
+    @Autowired
+    private TimeService timeService;
 
-  @PostMapping()
-  public void registerTime(
-      @PathVariable("raceId") int raceId,
-      @RequestBody TimeDTO timeDTO) {
-    timeService.registerTime(raceId, timeDTO.getStationId(), timeDTO.getStartNbr(), timeDTO.getTime());
-  }
+    @PostMapping()
+    public void registerTime(
+            @PathVariable("raceId") int raceId,
+            @RequestBody TimeDTO timeDTO) {
+        timeService.registerTime(raceId, timeDTO.getStationId(), timeDTO.getStartNbr(), timeDTO.getTime());
+    }
 
-  @GetMapping()
-  public List<TimeDTO> fetchAllTimes(
-      @PathVariable("raceId") int raceId,
-      @RequestParam("stationId") Optional<Integer> stationId,
-      @RequestParam("startNbr") Optional<String> startNbr) {
-    List<Time> times = timeService.getAllTimes(raceId, stationId, startNbr);
+    @GetMapping()
+    public List<TimeDTO> fetchAllTimes(
+            @PathVariable("raceId") int raceId,
+            @RequestParam("stationId") Optional<Integer> stationId,
+            @RequestParam("startNbr") Optional<String> startNbr) {
+        List<Time> times = timeService.getAllTimes(raceId, stationId, startNbr);
 
-    List<TimeDTO> timeDTOs = times.stream()
-        .map(time -> new TimeDTO(time.getStationId(), time.getStartNbr(), time.getTime()))
-        .collect(Collectors.toList());
+        List<TimeDTO> timeDTOs = times.stream()
+                .map(time -> new TimeDTO(time.getStationId(), time.getStartNbr(), time.getTime(), time.getId()))
+                .collect(Collectors.toList());
 
-    return timeDTOs;
-  }
+        return timeDTOs;
+    }
 
-  // @PutMapping()
-  // public void editStartNbr (
-  //   @PathVariable("raceId") int raceId,
-  //   @RequestParam("stationId") Optional<Integer> stationId,
-  //   @RequestParam("oldStartNbr") Optional<String> oldStartNbr,
-  //   @RequestParam("newStartNbr") Optional<String> newStartNbr){
-  //   timeService.editStartNbr(raceId, stationId, oldStartNbr, newStartNbr);
-  // }
-
+    @PutMapping()
+    public void updateTime(@PathVariable("raceId") int raceId, @RequestBody TimeDTO timeDTO) {
+        timeService.updateTimeEntity(raceId, timeDTO.getStationId(), timeDTO.getStartNbr(), timeDTO.getTime(),
+                timeDTO.getTimeId());
+    }
 
 }
-

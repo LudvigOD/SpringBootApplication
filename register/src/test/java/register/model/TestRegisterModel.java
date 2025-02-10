@@ -59,7 +59,7 @@ public class TestRegisterModel {
                 when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
                 // Prepare our mock response
-                List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123)));
+                List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123), Long.valueOf(1)));
 
                 // Setup the mock to return a response with our JSON body
                 when(responseSpecMock.bodyToMono(

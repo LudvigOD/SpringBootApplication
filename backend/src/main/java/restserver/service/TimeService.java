@@ -3,15 +3,13 @@ package restserver.service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import shared.dto.*;
 
-import org.hibernate.sql.ast.tree.predicate.BooleanExpressionPredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import restserver.entity.Time;
 import restserver.repository.TimeRepository;
-
-import org.springframework.data.domain.Sort;
 
 @Service
 public class TimeService {
@@ -38,6 +36,21 @@ public class TimeService {
     }
 
     return timeRepository.findByRaceId(raceId);
+  }
+
+  // TODO: handle bad ID
+  public void updateTimeEntity(int raceId, int stationId, String startNbr, Instant time, long id) {
+    Optional<Time> tmpOp = timeRepository.findById(id);
+    if (tmpOp.isPresent()) {
+      Time tmp = tmpOp.get();
+      tmp.setRaceId(raceId);
+      tmp.setStartNbr(startNbr);
+      tmp.setStationId(stationId);
+      tmp.setTime(time);
+      timeRepository.save(tmp);
+    } else {
+      System.out.println("No entity of " + id + "was found (nothing was changed)");
+    }
   }
 
   private String cleanStartNbr(String startNbr) {

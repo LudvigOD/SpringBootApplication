@@ -2,6 +2,7 @@ package result.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -76,5 +77,23 @@ public class AdminModel  {
                 })
                 .block();
 
+    }
+
+    public void updateTime(TimeDTO timeDTO, int raceID) {
+        webClient.put()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/races/{raceID}/times")
+                        .build(raceID)) 
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(timeDTO)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+
+        fetchUpdates();
+    }
+
+    public TimeDTO getTimeDTOForRow(int row) {
+        return (row >= 0 && row < times.size()) ? times.get(row) : null;
     }
 }
