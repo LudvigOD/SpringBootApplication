@@ -82,7 +82,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     tableModel.setRowCount(0);
     Consumer<List<TimeDTO>> responseHandler = response -> {
       response.forEach(timeDTO -> {
-        if(timeDTO.getStartNbr().equals("0")) {
+        if(timeDTO.getStartNbr().equals("00")) {
           tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
             selectedStation });
         } else {
@@ -107,6 +107,26 @@ public class RegisterGUI extends JFrame implements RegisterView {
         return value instanceof String;
       }
     };
+    tableModel.addTableModelListener(e -> {
+      if(e.getType() == TableModelEvent.UPDATE) {
+        int row = e.getFirstRow();
+        int column = e.getColumn();
+
+        if(column == 0) {
+          Object newValueObj = tableModel.getValueAt(row, column);
+          String newStartNbr = (newValueObj != null) ? newValueObj.toString() : "";
+          try{
+            TimeDTO time = model.syncReloadTimes(Optional.of(selectedStation.id())).get(row);
+            time.setStartNbr(newStartNbr);
+            model.updateTime(time, 1);
+          } catch(Exception x) {
+            x.printStackTrace();
+          }
+          
+
+        }
+      }
+    });
     registrationTable.setFont(defaultFont);
     registrationTable.setRowHeight(34);
     registrationTable.setShowHorizontalLines(true);
