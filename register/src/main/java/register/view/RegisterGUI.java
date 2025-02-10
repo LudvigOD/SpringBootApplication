@@ -9,6 +9,8 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -34,6 +36,7 @@ import register.model.RegisterModelImpl;
 import register.model.StartStation;
 import register.model.StationModel;
 import register.util.TimeTuple;
+import shared.Utils;
 import shared.dto.TimeDTO;
 import shared.gui.PlaceholderTextField;
 
