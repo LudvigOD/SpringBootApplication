@@ -31,6 +31,10 @@ public class TimeDTO {
     return startNbr;
   }
 
+  public void setStartNbr(String s) {
+    startNbr = s;
+  }
+
   public Instant getTime() {
     return time;
   }

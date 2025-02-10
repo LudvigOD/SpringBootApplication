@@ -23,6 +23,8 @@ public class RegisterModelImpl implements RegisterModel {
 
   private int raceID;
 
+  private List<TimeDTO> times;
+
   public RegisterModelImpl(WebClient webClient) {
     this.timeTuples = new ArrayList<>();
     this.views = new ArrayList<>();
@@ -51,7 +53,6 @@ public class RegisterModelImpl implements RegisterModel {
     for (RegisterView view : this.views) {
       view.timeWasRegistered();
     }
-
     
 
     // Test sending a GET request to the server. This is purely for testing and
@@ -118,12 +119,9 @@ public class RegisterModelImpl implements RegisterModel {
         .block();
   }
 
-  @Override
-  public void editRegisteredTime(String startNbr, TimeTuple timeTuple) {
-    //Denna behöver implementeras för att skicka en PUT request.
-  }
+  
 
-  public void sendPutRequest(TimeDTO dto, int raceId) {
+  public void updateTime(TimeDTO dto, int raceId) {
     webClient.put()
         .uri("/races/{raceId}/times", raceId)
         .contentType(MediaType.APPLICATION_JSON)
