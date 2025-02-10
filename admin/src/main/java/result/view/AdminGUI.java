@@ -149,6 +149,7 @@ public class AdminGUI extends JFrame {
 
         selectResultsTableButton.setMaximumSize(new Dimension(200, 50));
         selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
+        selectFileButton.setMaximumSize(new Dimension(200, 50));
 
         mainPanel.add(inputPanel, BorderLayout.NORTH);
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
