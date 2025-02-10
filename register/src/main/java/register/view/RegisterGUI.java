@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
-import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentAdapter;
 import java.util.List;
 import java.util.Optional;
@@ -64,10 +63,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
     Consumer<List<TimeDTO>> responseHandler = response -> {
       response.forEach(timeDTO -> {
         if(timeDTO.getStartNbr().equals("00")) {
-          tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+          tableModel.addRow(new Object[] { "StartID?", Utils.formatInstant(timeDTO.getTime()),
             selectedStation });
         } else {
-          tableModel.addRow(new Object[] { timeDTO.getStartNbr(), Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+          tableModel.addRow(new Object[] { timeDTO.getStartNbr(), Utils.formatInstant(timeDTO.getTime()),
             selectedStation });
         }
       });
