@@ -39,10 +39,10 @@ public class CompetitorsTableModel extends AbstractTableModel implements AdminMo
   }
 
   @Override
-  public Object getValueAt(int rowIndex, int columnIndex) {
-    CompetitorDTO competitor = competitors.get(rowIndex);
+  public Object getValueAt(int row, int index) {
+    CompetitorDTO competitor = competitors.get(row);
 
-    switch (columnIndex) {
+    switch (index) {
       case 0:
         // Start number: String
         return competitor.getParticipant().getStartNbr();
@@ -50,16 +50,25 @@ public class CompetitorsTableModel extends AbstractTableModel implements AdminMo
         // Name: String
         return competitor.getParticipant().getName();
       case 2:
-        // Start time: Optional<Instant>
-        return competitor.getOnlyTimeForStation(0);
       case 3:
-        // Finish time: Optional<Instant>
-        return competitor.getOnlyTimeForStation(1);
+        // Start time: List<Instant>
+        return competitor.getTimesForStation(getStationId(index));
       case 4:
         // Total time: Optional<Duration>
         return competitor.getTotalTime();
       default:
         return null;
+    }
+  }
+
+  public int getStationId(int column) {
+    switch (column) {
+      case 2:
+        return 0;
+      case 3:
+        return 1;
+      default:
+        return -1;
     }
   }
 
