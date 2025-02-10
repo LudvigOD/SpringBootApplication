@@ -26,9 +26,9 @@ public class TestCompetitorsCalculator {
   @DisplayName("It should group times by participant.")
   public void testGroupTimesByParticipant() {
     List<TimeDTO> times = List.of(
-        new TimeDTO(0, "01", Instant.ofEpochSecond(123)),
-        new TimeDTO(1, "01", Instant.ofEpochSecond(456)),
-        new TimeDTO(0, "02", Instant.ofEpochSecond(789)));
+        new TimeDTO(0, "01", Instant.ofEpochSecond(123), Long.valueOf(1)),
+        new TimeDTO(1, "01", Instant.ofEpochSecond(456), Long.valueOf(2)),
+        new TimeDTO(0, "02", Instant.ofEpochSecond(789), Long.valueOf(3)));
 
     List<ParticipantDTO> participants = List.of(
         new ParticipantDTO("01", "Alice"),
@@ -50,9 +50,9 @@ public class TestCompetitorsCalculator {
   @DisplayName("It should handle duplicate times.")
   public void testDuplicate() {
     List<TimeDTO> times = List.of(
-        new TimeDTO(0, "01", Instant.ofEpochSecond(123)),
-        new TimeDTO(1, "01", Instant.ofEpochSecond(456)),
-        new TimeDTO(0, "01", Instant.ofEpochSecond(789)));
+        new TimeDTO(0, "01", Instant.ofEpochSecond(123), Long.valueOf(1)),
+        new TimeDTO(1, "01", Instant.ofEpochSecond(456), Long.valueOf(2)),
+        new TimeDTO(0, "01", Instant.ofEpochSecond(789), Long.valueOf(3)));
 
     List<ParticipantDTO> participants = List.of(
         new ParticipantDTO("01", "Alice"));
@@ -86,7 +86,7 @@ public class TestCompetitorsCalculator {
   @DisplayName("It should handle missing participants.")
   public void testMissingParticipant() {
     List<TimeDTO> times = List.of(
-        new TimeDTO(0, "01", Instant.ofEpochSecond(123)));
+        new TimeDTO(0, "01", Instant.ofEpochSecond(123), Long.valueOf(1)));
 
     List<ParticipantDTO> participants = List.of();
 
@@ -99,9 +99,9 @@ public class TestCompetitorsCalculator {
   @DisplayName("It should sort competitors by start number.")
   public void testSort() {
     List<TimeDTO> times = List.of(
-        new TimeDTO(0, "10", Instant.ofEpochSecond(123)),
-        new TimeDTO(1, "01", Instant.ofEpochSecond(456)),
-        new TimeDTO(0, "01", Instant.ofEpochSecond(789)));
+        new TimeDTO(0, "10", Instant.ofEpochSecond(123), Long.valueOf(1)),
+        new TimeDTO(1, "01", Instant.ofEpochSecond(456), Long.valueOf(2)),
+        new TimeDTO(0, "01", Instant.ofEpochSecond(789), Long.valueOf(3)));
 
     List<ParticipantDTO> participants = List.of(
         new ParticipantDTO("10", "Charlie"),

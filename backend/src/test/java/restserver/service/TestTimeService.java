@@ -160,5 +160,4 @@ public class TestTimeService {
 
         verify(timeRepository).findByRaceIdAndStationIdAndStartNbr(1, 1, "01");
     }
-
 }
