@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;

@@ -35,7 +35,7 @@ public class AdminGUI extends JFrame {
 
         TimesTable timesTable = new TimesTable(model);
         CompetitorsTable competitorsTable = new CompetitorsTable(model);
-        ResultsTable resultsTable = new ResultsTable();
+        ResultsTable resultsTable   = new ResultsTable();
 
         model.addListener(timesTable);
         model.addListener(competitorsTable);
