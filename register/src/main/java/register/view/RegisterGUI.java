@@ -71,28 +71,26 @@ public class RegisterGUI extends JFrame implements RegisterView {
     System.out.println("Time was registered: " + timeTuple);
     // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1
     // DECIMAL
-    var utils = new shared.Utils();
-    if(timeTuple.getStartNbr().equals("000")) {
-      tableModel.addRow(new Object[] { "StartID?", utils.displayTimeInCorrectFormat(timeTuple.getTime()),
-        selectedStation });
-        //Nedan är inte färdigt och behöver lösas för att hantera ändring av startID från register.
-        tableModel.addTableModelListener(e -> {
-          int row = e.getFirstRow();
-          int col = e.getColumn();
-
-          if(e.getType() == TableModelEvent.UPDATE && col == 0) {
-            String startID = tableModel.getValueAt(row, col).toString();
-            model.editRegisteredTime(startID, timeTuple);
-          }
-        });
-    } else {
-      tableModel.addRow(new Object[] { timeTuple.getStartNbr(), utils.displayTimeInCorrectFormat(timeTuple.getTime()),
-        selectedStation });
-    }
-    
-
-
-
+    // if(timeTuple.getStartNbr().equals("000")) {
+    //   tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeTuple.getTime()),
+    //     selectedStation });
+    // } else {
+    //   tableModel.addRow(new Object[] { timeTuple.getStartNbr(), Utils.displayTimeInCorrectFormat(timeTuple.getTime()),
+    //     selectedStation });
+    // }
+    tableModel.setRowCount(0);
+    Consumer<List<TimeDTO>> responseHandler = response -> {
+      response.forEach(timeDTO -> {
+        if(timeDTO.getStartNbr().equals("00")) {
+          tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+            selectedStation });
+        } else {
+          tableModel.addRow(new Object[] { timeDTO.getStartNbr(), Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+            selectedStation });
+        }
+      });
+    };
+    model.asyncReloadTimes(responseHandler, selectedStation.id());
   }
 
   private void initGUI() {
@@ -105,7 +103,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JTable registrationTable = new JTable(tableModel) {
       public boolean isCellEditable(int row, int col) {
         Object value = getValueAt(row, col);
-        return value != null && value.equals("StartID?");
+        return value instanceof String;
       }
     };
     registrationTable.setFont(defaultFont);
