@@ -35,6 +35,7 @@ Följande är ett rekommenderat tillvägagångssätt:
 2. Skriv in förarens startnummer i ruta 2.  
 3. Tryck därefter på knappen "Registrera tid" i ruta 3. Tiden har nu registrerats till servern.
 ![](https://i.imgur.com/vO060tt.png)
+![](https://i.imgur.com/UBDDxax.png)
 
 
 ### Instruktioner för tävlingsledning (adminverktyg)
