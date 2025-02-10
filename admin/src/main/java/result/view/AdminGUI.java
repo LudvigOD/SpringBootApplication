@@ -60,22 +60,10 @@ public class AdminGUI extends JFrame {
         JScrollPane rightScrollPane = new JScrollPane(competitorsTable);
 
         JButton selectCompetitorsTableButton = new JButton("Deltagare");
-        selectCompetitorsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        selectCompetitorsTableButton.setBackground(new Color(112, 173, 71));
-        selectCompetitorsTableButton.setForeground(Color.WHITE);
-        selectCompetitorsTableButton.setPreferredSize(new Dimension(200, 50));
-        selectCompetitorsTableButton.addActionListener(event -> {
-            rightScrollPane.setViewportView(competitorsTable);
-        });
+        formatButton(competitorsTable, rightScrollPane, selectCompetitorsTableButton);
 
         JButton selectResultsTableButton = new JButton("Resultat");
-        selectResultsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        selectResultsTableButton.setBackground(new Color(112, 173, 71));
-        selectResultsTableButton.setForeground(Color.WHITE);
-        selectResultsTableButton.setPreferredSize(new Dimension(200, 50));
-        selectResultsTableButton.addActionListener(event -> {
-            rightScrollPane.setViewportView(resultsTable);
-        });
+        formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
         leftScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         rightScrollPane.getViewport().setBackground(new Color(156, 202, 124));
@@ -110,15 +98,14 @@ public class AdminGUI extends JFrame {
         GridBagLayout gridLayout = new GridBagLayout();
         inputPanel.setLayout(gridLayout);
 
-        JFrame frame = this;
         GridBagLayout gridLayoutInput = new GridBagLayout();
         BoxLayout verticalLayoutInput = new BoxLayout(buttonPanel, BoxLayout.Y_AXIS);
         inputPanel.setLayout(gridLayout);
 
-        frame.addComponentListener(new ComponentAdapter() {
+        addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                if (frame.getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
+                if (getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
                     buttonPanel.setLayout(verticalLayoutInput);
                 } else {
                     buttonPanel.setLayout(gridLayoutInput); // annars används gridlayout (bredvid varandra)
@@ -128,36 +115,35 @@ public class AdminGUI extends JFrame {
             }
         });
 
-            BoxLayout verticalLayoutTable = new BoxLayout(tablesPanel, BoxLayout.Y_AXIS);
+        BoxLayout verticalLayoutTable = new BoxLayout(tablesPanel, BoxLayout.Y_AXIS);
 
-            tablesPanel.setLayout(gridLayout);
+        tablesPanel.setLayout(gridLayout);
 
-            // GridBagConstraints för att placera tabellerna bredvid varandra
-            GridBagConstraints gbc = new GridBagConstraints();
-            formatTimeTable(tablesPanel, leftScrollPane, gbc);
+        GridBagConstraints gbc = new GridBagConstraints();
 
-            formatResultTable(tablesPanel, rightScrollPane, gbc);
+        formatTimeTable(tablesPanel, leftScrollPane, gbc);
+        formatResultTable(tablesPanel, rightScrollPane, gbc);
 
-            // Lägg till en lyssnare som byter layout baserat på fönsterbredd
-            addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    tablesPanel.removeAll(); // Ta bort allt innehåll innan byte
+        // Lägg till en lyssnare som byter layout baserat på fönsterbredd
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                tablesPanel.removeAll(); // Ta bort allt innehåll innan byte
 
-                    if (getWidth() < 900) { // Om skärmen är mindre än 900 pixlar hamnar tabellerna ovanför varandra
-                        tablesPanel.setLayout(verticalLayoutTable);
-                        tablesPanel.add(leftScrollPane);
-                        tablesPanel.add(rightScrollPane);
-                    } else { // Om det är fullskärm ritas tabellerna ut bredvid varandra som innan
-                        tablesPanel.setLayout(gridLayout);
-                        formatTimeTable(tablesPanel, leftScrollPane, gbc);
-                        formatResultTable(tablesPanel, rightScrollPane, gbc);
-                    }
-
-                    tablesPanel.revalidate(); // Uppdatera layout
-                    tablesPanel.repaint(); // Rita ut fönstret på nytt
+                if (getWidth() < 900) { // Om skärmen är mindre än 900 pixlar hamnar tabellerna ovanför varandra
+                    tablesPanel.setLayout(verticalLayoutTable);
+                    tablesPanel.add(leftScrollPane);
+                    tablesPanel.add(rightScrollPane);
+                } else { // Om det är fullskärm ritas tabellerna ut bredvid varandra som innan
+                    tablesPanel.setLayout(gridLayout);
+                    formatTimeTable(tablesPanel, leftScrollPane, gbc);
+                    formatResultTable(tablesPanel, rightScrollPane, gbc);
                 }
-            });
+
+                tablesPanel.revalidate(); // Uppdatera layout
+                tablesPanel.repaint(); // Rita ut fönstret på nytt
+            }
+        });
 
         selectResultsTableButton.setMaximumSize(new Dimension(200, 50));
         selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
@@ -166,6 +152,16 @@ public class AdminGUI extends JFrame {
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
 
         add(mainPanel);
+    }
+
+    private void formatButton(JTable table, JScrollPane rightScrollPane, JButton selectCompetitorsTableButton) {
+            selectCompetitorsTableButton.setFont(new Font("Arial", Font.PLAIN, 20));
+            selectCompetitorsTableButton.setBackground(new Color(112, 173, 71));
+            selectCompetitorsTableButton.setForeground(Color.WHITE);
+            selectCompetitorsTableButton.setPreferredSize(new Dimension(200, 50));
+            selectCompetitorsTableButton.addActionListener(event -> {
+                rightScrollPane.setViewportView(table);
+            });
     }
 
     private void formatResultTable(JPanel tablesPanel, JScrollPane rightScrollPane, GridBagConstraints gbc) {
