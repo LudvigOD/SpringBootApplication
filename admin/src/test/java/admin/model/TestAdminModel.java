@@ -16,26 +16,22 @@ import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import reactor.core.publisher.Mono;
-import result.model.AdminModel;
+import result.model.AdminModelImpl;
 import result.model.CompetitorsTableModel;
 import result.model.ResultsTableModel;
-import result.view.AdminGUI;
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
 
 public class TestAdminModel {
 
-    private AdminModel model;
+    private AdminModelImpl model;
     private ArrayList<TimeDTO> times;
     private WebClient webClientMock;
     private WebClient.RequestHeadersUriSpec requestHeadersUriSpecMock;
@@ -57,7 +53,7 @@ public class TestAdminModel {
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
         // Prepare our mock response
-        List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123)));
+        List<TimeDTO> mockResponse = List.of(new TimeDTO(1, "01", Instant.ofEpochSecond(123), Long.valueOf(1)));
 
         // Setup the mock to return a response with our JSON body
         when(responseSpecMock.bodyToMono(
@@ -68,9 +64,9 @@ public class TestAdminModel {
 
         // Mock response for syncGetAllTimesFromServer()
         List<TimeDTO> mockTimesResponse = List.of(        
-            new TimeDTO(1, "01", Instant.ofEpochSecond(123)),
-            new TimeDTO(1, "02", Instant.ofEpochSecond(456)),
-            new TimeDTO(2, "03", Instant.ofEpochSecond(789))
+            new TimeDTO(1, "01", Instant.ofEpochSecond(123), Long.valueOf(1)),
+            new TimeDTO(1, "02", Instant.ofEpochSecond(456),Long.valueOf(2)),
+            new TimeDTO(2, "03", Instant.ofEpochSecond(789), Long.valueOf(3))
         );
         when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {}))
             .thenReturn(Mono.just(mockTimesResponse));
@@ -83,7 +79,7 @@ public class TestAdminModel {
         when(responseSpecMock.bodyToMono(new ParameterizedTypeReference<List<ParticipantDTO>>() {}))
             .thenReturn(Mono.just(mockParticipantsResponse));
 
-        model = new AdminModel(webClientMock);
+        model = new AdminModelImpl(webClientMock);
 
         
     }
