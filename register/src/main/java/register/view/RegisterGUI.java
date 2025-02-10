@@ -7,9 +7,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
-import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
 import javax.swing.Box;
@@ -63,15 +66,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
     initGUI();
   }
 
-  // ??
-  // ??
-  @Override
-  public void update(Iterable<TimeTuple> timeTuples) {
-  }
 
   @Override
-  public void timeWasRegistered(TimeTuple timeTuple) {
-    System.out.println("Time was registered: " + timeTuple);
+  public void timeWasRegistered() {
+    //System.out.println("Time was registered: " + timeTuple);
     // FIXA GÄRNA OM NI HITTAR BÄTTRE LÖSNING PÅ HUR VI AVRUNDAR OCH PLOCKAR UT 1
     // DECIMAL
     // if(timeTuple.getStartNbr().equals("000")) {
@@ -84,7 +82,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
     tableModel.setRowCount(0);
     Consumer<List<TimeDTO>> responseHandler = response -> {
       response.forEach(timeDTO -> {
-        if(timeDTO.getStartNbr().equals("00")) {
+        if(timeDTO.getStartNbr().equals("0")) {
           tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
             selectedStation });
         } else {
@@ -185,23 +183,23 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(registerButton);
 
-    // Temporary test, fetch times from the server
-    // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
-    // Denna ska tas bort sen och ersättas med bara register-knappen
-    // Denna ska tas bort sen och ersättas med bara register-knappen
-    JButton fetchTimesButton = new JButton("Test: Fetch times");
-    fetchTimesButton.setFont(defaultFont);
+    // // Temporary test, fetch times from the server
+    // // Super hacky, DO NOT DO THIS IN A REAL APPLICATION!
+    // // Denna ska tas bort sen och ersättas med bara register-knappen
+    // // Denna ska tas bort sen och ersättas med bara register-knappen
+    // JButton fetchTimesButton = new JButton("Test: Fetch times");
+    // fetchTimesButton.setFont(defaultFont);
 
-    fetchTimesButton.setFont(defaultFont);
+    // fetchTimesButton.setFont(defaultFont);
 
-    fetchTimesButton.addActionListener((e) -> {
-      ((RegisterModelImpl) model).asyncReloadTimes(timeList -> {
-        System.out.println("Received " + timeList.size() + " times from server");
-        for (TimeDTO time : timeList) {
-          System.out.println(time);
-        }
-      }, startNumberField.getText());
-    });
+    // fetchTimesButton.addActionListener((e) -> {
+    //   ((RegisterModelImpl) model).asyncReloadTimes(timeList -> {
+    //     System.out.println("Received " + timeList.size() + " times from server");
+    //     for (TimeDTO time : timeList) {
+    //       System.out.println(time);
+    //     }
+    //   }, Integer.valueOf(startNumberField.getText()));
+    // });
 
     // inputPanel.add(fetchTimesButton);
     mainPanel.add(inputPanel, BorderLayout.NORTH);
@@ -214,7 +212,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
       if (!startNumber.isEmpty()) {
         model.registerTime(startNumber, selectedStation.id());
       } else {
-        model.registerTime("000", selectedStation.id());
+        model.registerTime("0", selectedStation.id());
       }
     });
 
