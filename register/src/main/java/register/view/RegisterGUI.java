@@ -7,38 +7,30 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
-import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentAdapter;
-import java.util.ArrayList;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.text.AbstractDocument;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
 import register.model.EndStation;
 import register.model.RegisterModel;
-import register.model.RegisterModelImpl;
 import register.model.StartStation;
 import register.model.StationModel;
-import register.util.TimeTuple;
 import shared.Utils;
 import shared.dto.TimeDTO;
 import shared.gui.PlaceholderTextField;
@@ -83,10 +75,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
     Consumer<List<TimeDTO>> responseHandler = response -> {
       response.forEach(timeDTO -> {
         if(timeDTO.getStartNbr().equals("00")) {
-          tableModel.addRow(new Object[] { "StartID?", Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+          tableModel.addRow(new Object[] { "StartID?", Utils.formatInstant(timeDTO.getTime()),
             selectedStation });
         } else {
-          tableModel.addRow(new Object[] { timeDTO.getStartNbr(), Utils.displayTimeInCorrectFormat(timeDTO.getTime()),
+          tableModel.addRow(new Object[] { timeDTO.getStartNbr(), Utils.formatInstant(timeDTO.getTime()),
             selectedStation });
         }
       });

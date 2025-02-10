@@ -1,23 +1,28 @@
 package shared;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class Utils {
+    private static String TIME_FORMAT = "HH:mm:ss:S";
 
-    public String helper() {
-        return "the helper";
+    public static String formatInstant(Instant instant) {
+        return instant.atZone(ZoneId.systemDefault()).toLocalTime().format(DateTimeFormatter.ofPattern(TIME_FORMAT));
     }
 
-    public static LocalTime convertInstantToLocalTime(Instant instant) {
-        return instant.atZone(ZoneId.systemDefault()).toLocalTime();
-    }
+    public static String formatDuration(Duration duration) {
+        if(duration.isNegative()) {
+            return "-" + formatDuration(duration.negated());
+        }
 
-    public static String displayTimeInCorrectFormat(Instant instant) {
-        LocalTime localTime = convertInstantToLocalTime(instant);
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss:S");
-        return localTime.format(dateTimeFormatter);
+        // Format to HH:mm:ss.S
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.getSeconds() % 60;
+        long millis = (duration.toMillis() % 1000) / 100;
+
+        return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds, millis);
     }
 }

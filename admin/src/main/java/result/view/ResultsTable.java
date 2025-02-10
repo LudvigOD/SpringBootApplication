@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import result.model.AdminModelObserver;
 import result.model.ResultsTableModel;
+import shared.Utils;
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
@@ -74,15 +75,7 @@ public class ResultsTable extends JTable implements AdminModelObserver {
                         @SuppressWarnings("unchecked")
                         Optional<Duration> totalTime = (Optional<Duration>) value;
 
-                        setText(totalTime.map(t -> {
-                            // Format to HH:mm:ss.S
-                            long hours = t.toHours();
-                            long minutes = t.toMinutes() % 60;
-                            long seconds = t.getSeconds() % 60;
-                            long millis = (t.toMillis() % 1000) / 100;
-
-                            return String.format("%02d:%02d:%02d.%01d", hours, minutes, seconds, millis);
-                        }).orElse("--:--:--"));
+                        setText(totalTime.map(Utils::formatDuration).orElse("--:--:--"));
                         break;
                     }
                 }

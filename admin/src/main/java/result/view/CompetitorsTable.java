@@ -75,7 +75,7 @@ public class CompetitorsTable extends JTable implements AdminModelObserver {
                                 c.setForeground(new Color(255, 99, 71));
                                 break;
                             case 1:
-                                setText(Utils.displayTimeInCorrectFormat(startTimes.get(0)));
+                                setText(Utils.formatInstant(startTimes.get(0)));
                                 break;
                             default:
                                 setText("Flera starttider");
@@ -97,7 +97,7 @@ public class CompetitorsTable extends JTable implements AdminModelObserver {
                                 break;
 
                             case 1:
-                                setText(Utils.displayTimeInCorrectFormat(finishTime.get(0)));
+                                setText(Utils.formatInstant(finishTime.get(0)));
                                 break;
 
                             default:
@@ -113,15 +113,7 @@ public class CompetitorsTable extends JTable implements AdminModelObserver {
                         @SuppressWarnings("unchecked")
                         Optional<Duration> totalTime = (Optional<Duration>) value;
 
-                        setText(totalTime.map(t -> {
-                            // Format to HH:mm:ss.S
-                            long hours = t.toHours();
-                            long minutes = t.toMinutes() % 60;
-                            long seconds = t.getSeconds() % 60;
-                            long millis = (t.toMillis() % 1000) / 100;
-
-                            return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds, millis);
-                        }).orElse("--:--:--"));
+                        setText(totalTime.map(Utils::formatDuration).orElse("--:--:--"));
                         break;
                     }
                 }

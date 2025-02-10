@@ -54,11 +54,11 @@ public class TimeService {
   }
 
   private String cleanStartNbr(String startNbr) {
-    int desiredLength = 2;
+    int desiredLength = 3;
 
     String cleanedStartNbr = Integer.toString(Integer.parseInt(startNbr));
 
-    int missingZeros = desiredLength - startNbr.length();
+    int missingZeros = desiredLength - cleanedStartNbr.length();
 
     for (int i = 0; i < missingZeros; i++) {
       cleanedStartNbr = "0" + cleanedStartNbr;
