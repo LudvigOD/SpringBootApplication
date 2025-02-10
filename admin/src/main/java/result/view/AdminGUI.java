@@ -13,6 +13,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -55,8 +56,12 @@ public class AdminGUI extends JFrame {
         formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
         JButton selectFileButton = new JButton("Ladda fil...");
-        
-        selectFileButton.addActionListener( (e)-> {        
+        selectFileButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        selectFileButton.setBackground(new Color(112, 173, 71));
+        selectFileButton.setForeground(Color.WHITE);
+        selectFileButton.setPreferredSize(new Dimension(200, 50));
+
+        selectFileButton.addActionListener( (f)-> {        
             JFileChooser fileChooser = new JFileChooser();
             // Skapa och sätt en filter för att bara visa txt-filer
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
@@ -64,11 +69,23 @@ public class AdminGUI extends JFrame {
             // Öppna dialogrutan
             int returnValue = fileChooser.showOpenDialog(null);
             // Hantera filval
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                System.out.println("Vald fil: " + selectedFile.getAbsolutePath());
-            } else {
-                System.out.println("Ingen fil valdes.");
+            try {
+                //RACEID, STARTNUMMER, NAMN
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    Scanner s = new Scanner(selectedFile);
+
+                    while(s.hasNextLine()) {
+                        String[] l = s.nextLine().split(",");
+                        System.out.println(l[0] + l[1]);
+                    }
+    
+                    //System.out.println("Vald fil: " + selectedFile.getAbsolutePath());
+                } else {
+                    System.out.println("Ingen fil valdes.");
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
 
         });
