@@ -124,12 +124,19 @@ public class RegisterModelImpl implements RegisterModel {
         .bodyValue(dto)
         .retrieve()
         .toBodilessEntity()
-        .subscribe(response -> {
-          // Note to self: This makes an asynchronous POST request to the server meaning
-          // that this method returns immediately, and the response will be handled by
-          // this lambda expression in the future, by some other thread.
-          System.out.println("POST Response Status: " + response.getStatusCode());
-        });
+        .block();
+  }
+
+  
+
+  public void updateTime(TimeDTO dto, int raceId) {
+    webClient.put()
+        .uri("/races/{raceId}/times", raceId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(dto)
+        .retrieve()
+        .toBodilessEntity()
+        .block();
   }
 
   @Override
