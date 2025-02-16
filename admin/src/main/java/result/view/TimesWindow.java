@@ -7,17 +7,16 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 import result.model.AdminModel;
-import result.model.AdminModelFilteredResult;
 
 public class TimesWindow {
-  public static void openTimesDialog(AdminModel model, int stationId, String startNbr) {
+  public static void openTimesDialog(AdminModel model) {
     JFrame newWindow = new JFrame("Filtered Times");
     newWindow.setSize(600, 600);
 
-    AdminModelFilteredResult filteredAdminModel = new AdminModelFilteredResult(model, stationId, startNbr);
+    TimesTableModel timesTableModel = new TimesTableModel(model);
+    model.addObserver(timesTableModel);
 
-    TimesTable filteredTimesTable = new TimesTable(filteredAdminModel);
-    filteredAdminModel.addListener(filteredTimesTable);
+    TimesTable filteredTimesTable = new TimesTable(timesTableModel);
 
     JScrollPane scrollPane = new JScrollPane(filteredTimesTable);
     newWindow.add(scrollPane);
@@ -29,7 +28,7 @@ public class TimesWindow {
     newWindow.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent windowEvent) {
-        filteredAdminModel.removeListener(filteredTimesTable);
+        model.removeObserver(timesTableModel);
       }
     });
   }

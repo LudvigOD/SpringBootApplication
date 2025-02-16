@@ -1,4 +1,4 @@
-package result.model;
+package result.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,11 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
+import result.dto.CompetitorDTO;
 import result.dto.ResultDTO;
+import result.model.AdminModelObserver;
+import result.model.CompetitorsCalculator;
+import result.model.ResultsCalculator;
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
@@ -69,8 +73,8 @@ public class ResultsTableModel extends AbstractTableModel implements AdminModelO
 
   public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
     SwingUtilities.invokeLater(() -> {
-      results = resultsCalculator.aggregateResultsByCompetitor(
-          competitorsCalculator.aggregateTimesByParticipant(times, participants));
+      List<CompetitorDTO> competitors = competitorsCalculator.aggregateCompetitors(times, participants);
+      this.results = resultsCalculator.aggregateResults(competitors);
 
       fireTableDataChanged();
     });

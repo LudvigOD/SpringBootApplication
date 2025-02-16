@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.time.Duration;
-import java.util.List;
 import java.util.Optional;
 
 import javax.swing.BorderFactory;
@@ -13,15 +12,11 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import result.model.AdminModelObserver;
-import result.model.ResultsTableModel;
 import shared.Utils;
-import shared.dto.ParticipantDTO;
-import shared.dto.TimeDTO;
 
-public class ResultsTable extends JTable implements AdminModelObserver {
-    public ResultsTable() {
-        super(new ResultsTableModel());
+public class ResultsTable extends JTable  {
+    public ResultsTable(ResultsTableModel model) {
+        super(model);
 
         setShowGrid(true);
         setGridColor(Color.WHITE);
@@ -92,10 +87,5 @@ public class ResultsTable extends JTable implements AdminModelObserver {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-    }
-
-    @Override
-    public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
-        ((ResultsTableModel) getModel()).onDataUpdated(times, participants);
     }
 }

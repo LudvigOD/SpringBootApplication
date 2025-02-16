@@ -5,23 +5,17 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.time.Instant;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import result.model.AdminModel;
-import result.model.AdminModelObserver;
-import result.model.TimesTableModel;
 import shared.Utils;
-import shared.dto.ParticipantDTO;
-import shared.dto.TimeDTO;
 
-public class TimesTable extends JTable implements AdminModelObserver {
-    public TimesTable(AdminModel adminModel) {
-        super(new TimesTableModel(adminModel));
+public class TimesTable extends JTable {
+    public TimesTable(TimesTableModel model) {
+        super(model);
 
         setShowGrid(true);
         setGridColor(Color.WHITE);
@@ -104,10 +98,5 @@ public class TimesTable extends JTable implements AdminModelObserver {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-    }
-
-    @Override
-    public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
-        ((TimesTableModel) getModel()).onDataUpdated(times, participants);
     }
 }
