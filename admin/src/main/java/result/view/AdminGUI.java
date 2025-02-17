@@ -1,9 +1,11 @@
 package result.view;
 
+import shared.gui.RegisterFilter;
+
+import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,7 +32,6 @@ import javax.swing.text.AbstractDocument;
 import result.model.AdminModel;
 import result.model.OnlyValidTimesAdminModel;
 import shared.dto.ParticipantDTO;
-import shared.gui.RegisterFilter;
 
 public class AdminGUI extends JFrame {
     public AdminGUI(AdminModel adminModel) {
@@ -77,7 +78,7 @@ public class AdminGUI extends JFrame {
         formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
         JButton setRaceIDButton = new JButton("RaceID");
-        JTextField raceIDField = new JTextField();
+        JTextField raceIDField = new JTextField("1");
         ((AbstractDocument) raceIDField.getDocument()).setDocumentFilter(new RegisterFilter());
         raceIDField.setFont(new Font("Arial", Font.PLAIN, 20));
         raceIDField.setPreferredSize(new Dimension(50, 50));
@@ -123,7 +124,8 @@ public class AdminGUI extends JFrame {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(165, 165, 165));
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        // buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         // få det att funka op mac?
         selectCompetitorsTableButton.setOpaque(true);
@@ -137,19 +139,23 @@ public class AdminGUI extends JFrame {
         buttonPanel.add(selectCompetitorsTableButton);
         buttonPanel.add(selectResultsTableButton);
         buttonPanel.add(selectFileButton);
-        buttonPanel.add(Box.createHorizontalStrut(10));
-        buttonPanel.add(raceIDField);
-        buttonPanel.add(setRaceIDButton);
 
-        inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        inputPanel.add(buttonPanel);
+        selectCompetitorsTableButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        selectResultsTableButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        setRaceIDButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        selectFileButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        raceIDField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        GridBagLayout gridLayout = new GridBagLayout();
-        inputPanel.setLayout(gridLayout);
+        Box raceIdBox = Box.createHorizontalBox();
+        raceIdBox.setAlignmentX(CENTER_ALIGNMENT);
+
+        raceIdBox.add(setRaceIDButton);
+        raceIdBox.add(raceIDField);
+        buttonPanel.add(raceIdBox);
 
         GridBagLayout gridLayoutInput = new GridBagLayout();
         BoxLayout verticalLayoutInput = new BoxLayout(buttonPanel, BoxLayout.Y_AXIS);
-        inputPanel.setLayout(gridLayout);
+        inputPanel.setLayout(gridLayoutInput);
 
         BoxLayout verticalLayoutTable = new BoxLayout(tablesPanel, BoxLayout.Y_AXIS);
 
@@ -166,7 +172,7 @@ public class AdminGUI extends JFrame {
             }
         });
 
-        tablesPanel.setLayout(gridLayout);
+        tablesPanel.setLayout(gridLayoutInput);
 
         GridBagConstraints gbc = new GridBagConstraints();
         formatTimeTable(tablesPanel, leftTopScrollPane, leftBottomScrollPane, gbc);
@@ -184,7 +190,7 @@ public class AdminGUI extends JFrame {
                     tablesPanel.add(leftBottomScrollPane);
                     tablesPanel.add(rightScrollPane);
                 } else { // Om det är fullskärm ritas tabellerna ut bredvid varandra som innan
-                    tablesPanel.setLayout(gridLayout);
+                    tablesPanel.setLayout(gridLayoutInput);
                     formatTimeTable(tablesPanel, leftTopScrollPane, leftBottomScrollPane, gbc);
                     formatResultTable(tablesPanel, rightScrollPane, gbc);
                 }
@@ -197,9 +203,9 @@ public class AdminGUI extends JFrame {
         selectResultsTableButton.setMaximumSize(new Dimension(200, 50));
         selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
         selectFileButton.setMaximumSize(new Dimension(200, 50));
-        setRaceIDButton.setMaximumSize(new Dimension(200, 50));
+        setRaceIDButton.setMaximumSize(new Dimension(150, 50));
 
-        mainPanel.add(inputPanel, BorderLayout.NORTH);
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
 
         add(mainPanel);
@@ -246,7 +252,9 @@ public class AdminGUI extends JFrame {
         selectRaceIDButton.setForeground(Color.WHITE);
         selectRaceIDButton.setPreferredSize(new Dimension(200, 50));
         selectRaceIDButton.addActionListener(event -> {
-
+            if (textField.getText().isEmpty()) {
+                return;
+            }
             int raceID = Integer.parseInt(textField.getText());
             model.setRaceID(raceID);
 
