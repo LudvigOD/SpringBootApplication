@@ -40,8 +40,8 @@
     }
 
     async function loadRaceData(raceId) {
-      const timesUrl = `http://localhost:8080/api/races/${raceId}/times`;
-      const participantsUrl = `http://localhost:8080/api/races/${raceId}/participants`;
+      const timesUrl = `http://pvg-projekt.cs.lth.se:8005/api/races/${raceId}/times`;
+      const participantsUrl = `http://pvg-projekt.cs.lth.se/:8005/api/races/${raceId}/participants`;
 
       try {
         showLoading();
