@@ -62,3 +62,4 @@ När servern är igång kommer tiderna att registreras på den. Tiderna med all 
 **Obs!** Istället för {raceId} ska det aktuella raceId:t för racet skrivas in. I nuläget är raceId alltid 1.
 
 När admin anser att tidsregistreringana är korrekt kan resultatet av tiderna skickas genom att klicka på "Skicka resultat" i adminverktyget.
+> Lägg in bild på knappen här!
