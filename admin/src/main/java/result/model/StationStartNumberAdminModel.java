@@ -8,11 +8,11 @@ import shared.dto.TimeDTO;
  * values.
  */
 public class StationStartNumberAdminModel extends FilteredAdminModel {
-  private final int stationId;
+  private final long stationId;
   private final String startNumber;
   private final AdminModel adminModel;
 
-  public StationStartNumberAdminModel(AdminModel adminModel, int stationId, String startNumber) {
+  public StationStartNumberAdminModel(AdminModel adminModel, long stationId, String startNumber) {
     super(adminModel);
     this.stationId = stationId;
     this.startNumber = startNumber;

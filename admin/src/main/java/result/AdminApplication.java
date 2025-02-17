@@ -26,7 +26,6 @@ public class AdminApplication implements Runnable {
     }
 
     public void run() {
-
         WebClient webClient = WebClient.builder()
                 .baseUrl(url)
                 .build();

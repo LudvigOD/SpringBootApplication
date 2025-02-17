@@ -3,7 +3,6 @@ package restserver.service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import shared.dto.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public class TimeService {
   @Autowired
   private TimeRepository timeRepository;
 
-  public Time registerTime(int raceId, int stationId, String startNbr, Instant time) {
+  public Time registerTime(int raceId, long stationId, String startNbr, Instant time) {
     Time timeEntity = new Time(raceId, stationId, this.cleanStartNbr(startNbr), time);
     return timeRepository.save(timeEntity);
   }
@@ -39,7 +38,7 @@ public class TimeService {
   }
 
   // TODO: handle bad ID
-  public void updateTimeEntity(int raceId, int stationId, String startNbr, Instant time, long id) {
+  public void updateTimeEntity(int raceId, long stationId, String startNbr, Instant time, long id) {
     Optional<Time> tmpOp = timeRepository.findById(id);
     if (tmpOp.isPresent()) {
       Time tmp = tmpOp.get();
