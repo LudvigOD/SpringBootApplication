@@ -78,7 +78,7 @@ public class AdminGUI extends JFrame {
         formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
         JButton setRaceIDButton = new JButton("RaceID");
-        JTextField raceIDField = new JTextField("1");
+        JTextField raceIDField = new JTextField();
         ((AbstractDocument) raceIDField.getDocument()).setDocumentFilter(new RegisterFilter());
         raceIDField.setFont(new Font("Arial", Font.PLAIN, 20));
         raceIDField.setPreferredSize(new Dimension(50, 50));
@@ -252,12 +252,11 @@ public class AdminGUI extends JFrame {
         selectRaceIDButton.setForeground(Color.WHITE);
         selectRaceIDButton.setPreferredSize(new Dimension(200, 50));
         selectRaceIDButton.addActionListener(event -> {
-            if (textField.getText().isEmpty()) {
-                return;
+            int raceID = 1;
+            if (!textField.getText().isEmpty()) {
+                raceID = Integer.parseInt(textField.getText());
             }
-            int raceID = Integer.parseInt(textField.getText());
             model.setRaceID(raceID);
-
         });
     }
 
