@@ -7,6 +7,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import result.dto.AllFinalResultsDTO;
+import result.dto.FinalResultDTO;
+import result.dto.ResultDTO;
 import shared.dto.ParticipantDTO;
 import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
@@ -61,6 +64,14 @@ public class AdminModelImpl implements AdminModel {
                 .block();
     }
 
+    public void sendResults(List<ResultDTO> resultDTOs) {
+        List<FinalResultDTO> listOfResults = resultDTOs.stream().map(r -> new FinalResultDTO(r, 0, 1)).toList();
+        AllFinalResultsDTO results = new AllFinalResultsDTO("", listOfResults);
+        sendFinalResultPostRequest(results);
+    }
+
+
+
     public List<TimeDTO> syncGetAllTimesFromServer(int raceID) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -106,4 +117,18 @@ public class AdminModelImpl implements AdminModel {
         this.raceID = raceID;
         fetchUpdates();
     }
+
+    public void sendFinalResultPostRequest(AllFinalResultsDTO dto) {
+        WebClient webClientResults = WebClient.builder()
+        .baseUrl("http://lweb1142.cs.lth.se:8081")
+        .build();
+        webClientResults.post()
+            .uri("/api/results/submit")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(dto)
+            .retrieve()
+            .toBodilessEntity()
+            .block();
+    }
+
 }
