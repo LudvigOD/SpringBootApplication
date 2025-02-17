@@ -29,12 +29,16 @@ Konfigurationen kommer att ske i adminverktyget. Där ska ledningen kunna lägga
 Nedan följer instruktioner för hur de olika applikationerna används.
 
 ### Instruktioner för tidtagare (registrering)
-I registreringsverktyget registrerar varje station när en förare passerar. Registreringen innehåller tre kolumner. Varje rad består av ett startnummer, tidpunkt och en station. Startnumret i **ruta 1** visar vilket startnummer som har skrivits in vid tryck på "registrera tid"-knappen. Tiden i **ruta 2** visar tidpunkten som knapptrycket registrerades avrundat till en tiondels millisekund. Stationen i **ruta 3** visar vilken station som registrerade tidpunkten.
+I registreringsverktyget registrerar varje station när en förare passerar. Registreringen innehåller tre kolumner. Varje rad består av ett startnummer, tidpunkt och en station. Startnumret i **ruta 1** visar vilket startnummer som har skrivits in vid tryck på "registrera tid"-knappen. Tiden i **ruta 2** visar tidpunkten som knapptrycket registrerades avrundat till en tiondels millisekund. Stationen i **ruta 3** visar vilken station som registrerade tidpunkten.  
+
+Vid registrering ska raceID:t för tävlingen fyllas i i ruta **INSERT REFERENS**, eftersom flera tävlingar kan vara áktiva i servern samtidigt. I rutan fylls ett unikt raceID, i heltal, i för den aktuella tävlingen. Registreringen sker därefter för detta raceID och raceID:t ändras inte förrän användaren byter ut värdet. RaceID:t kan bytas ut mellan registreringar i applikationen genom att ta bort det gamla värdet och fylla i ett nytt. Om inget fylls i kommer raceID:t automatiskt att tolkas som 1.
+
 Följande är ett rekommenderat tillvägagångssätt:  
 1. Välj aktuell station i drop-down menyn i **ruta 4**.  
-2. Skriv in förarens startnummer i **ruta 5**.  
-3. Tryck därefter på knappen "Registrera tid" i **ruta 6**. Tiden har nu registrerats till servern.
-4. Det är möjligt att registrera en tid utan att ange förarens startnummer. Tiden tilldelas då startnumret 00. I vyn syns tiden med startnumret: "StartID?". För att ge en tid ett tillhörande startnummer, klicka på fältet för startnummer och ange det korrekta startnumret.
+2. Skriv in förarens startnummer i **ruta 5**.
+3. Fyll i aktuellt raceID i ruta **INSERT REFERENS**. 
+4. Tryck därefter på knappen "Registrera tid" i **ruta 6**. Tiden har nu registrerats till servern.
+5. Det är möjligt att registrera en tid utan att ange förarens startnummer. Tiden tilldelas då startnumret 00. I vyn syns tiden med startnumret: "StartID?". För att ge en tid ett tillhörande startnummer, klicka på fältet för startnummer och ange det korrekta startnumret.
 ![](https://i.imgur.com/aKLu89j.png)
 ![](https://i.imgur.com/HZKPLwT.png)
 
@@ -43,7 +47,9 @@ Följande är ett rekommenderat tillvägagångssätt:
 I adminverktyget kan tävlingsledningen se inrapporterade tider. Den vänstra tabellen visar alla utförda registreringar i kronologisk
 ordning och den högra tabellen har två olika vyer.
 Den första vyn, som visas som default, kallas för "Deltagar"-vyn **(1)**. I denna vy visas startnummer, namn, starttid, måltid och totaltid. I denna vy skrivs felmeddelanden ut vid duplicerade tider för stationerna. Den andra vyn är stället en resultatvisare och kallas för "Resultat"-vyn **(2)**. I resultatvyn visas inga felmeddelanden eller specifika stationstider, utan endast förarens placering, startnummer, namn och totaltid.
-![](https://i.imgur.com/V48TQcV.png)
+![](https://i.imgur.com/V48TQcV.png)    
+
+Det måste även anges ett raceID i ruta **INSERT REFERENS**, eftersom många tävlingar kan vara igång i servern. I rutan ska ett unikt raceID, i heltal, för den aktuella tävlingen anges. Därefter kommer all aktuell information från det valda racet att visas i admin-verktyget. Om ingenting fylls i rutan kommer adminverktyget automatiskt att visa all aktuell information från racet med raceID 1.
 
 I den vänstra tabellen visas startnumret i rött om det finns mer än en registrerad tid för föraren vid samma station. I den högra tabellen står det om en tid saknas för föraren eller om mer än en tid är registrerad för mål/start-stationen i "Deltagar"-vyn. Ledningen kan i efterhand ändra vilken förare en tid tillhör. Detta görs genom att i den vänstra tabellen dubbelklicka på förarnumret, skriva in det nya förarnumret och trycka på enter. 
 
