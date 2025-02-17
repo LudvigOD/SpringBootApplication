@@ -22,17 +22,12 @@ public class TestCompetitorsTableModel {
     }
 
     @Test
-    void testGetColumnCount_ReturnsCorrectValue() {
-        assertEquals(5, tableModel.getColumnCount());
-    }
-
-    @Test
-    void testGetColumnName_ReturnsCorrectColumnNames() {
+    void testGetColumnName_InitiallyDefault() {
         assertEquals("Startnummer", tableModel.getColumnName(0));
         assertEquals("Namn", tableModel.getColumnName(1));
-        assertEquals("Start", tableModel.getColumnName(2));
-        assertEquals("Mål", tableModel.getColumnName(3));
-        assertEquals("Totalt", tableModel.getColumnName(4));
+        assertEquals("Totaltid", tableModel.getColumnName(2));
+
+        assertEquals(3, tableModel.getColumnCount());
     }
 
     @Test

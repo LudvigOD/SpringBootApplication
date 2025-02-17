@@ -34,7 +34,7 @@ public class CompetitorsTableModel extends AbstractTableModel implements AdminMo
 
   @Override
   public int getColumnCount() {
-    return 3 + 2 * stations.size() - 1;
+    return 3 + Math.max(0, 2 * stations.size() - 1);
   }
 
   @Override

@@ -87,17 +87,22 @@ public class CompetitorsCalculator {
 
   private Optional<Duration> calculateTotalTime(List<StationDTO> stations, Map<Long, List<Instant>> timesPerStation) {
     boolean hasAllStationsOnce = stations.stream()
-        .allMatch(station -> Optional.ofNullable(timesPerStation.get(station.getStationId())).map(List::size).orElse(0) == 1);
+        .allMatch(
+            station -> Optional.ofNullable(timesPerStation.get(station.getStationId())).map(List::size).orElse(0) == 1);
 
     if (!hasAllStationsOnce) {
       return Optional.empty();
     }
 
-    long startStationIndex = stations.get(0).getStationId();
-    long finishStationIndex = stations.get(stations.size() - 1).getStationId();
+    Optional<Long> startStationIndex = stations.size() == 0 ? Optional.empty()
+        : Optional.of(stations.get(0).getStationId());
+    Optional<Long> finishStationIndex = stations.size() == 0 ? Optional.empty()
+        : Optional.of(stations.get(stations.size() - 1).getStationId());
 
-    Optional<Instant> startTime = Optional.ofNullable(timesPerStation.get(startStationIndex)).flatMap(Utils::getOnlyElement);
-    Optional<Instant> finishTime = Optional.ofNullable(timesPerStation.get(finishStationIndex)).flatMap(Utils::getOnlyElement);
+    Optional<Instant> startTime = startStationIndex.flatMap(i -> Optional.ofNullable(timesPerStation.get(i)))
+        .flatMap(Utils::getOnlyElement);
+    Optional<Instant> finishTime = finishStationIndex.flatMap(i -> Optional.ofNullable(timesPerStation.get(i)))
+        .flatMap(Utils::getOnlyElement);
 
     // Negative durations are considered invalid and should not be displayed.
     return startTime
