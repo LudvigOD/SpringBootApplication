@@ -171,6 +171,9 @@ java -jar register.jar
 java -jar admin.jar
 ```
 
+5. **Access the results webclient**
+Go to URL: pvg-projekt.cs.lth.se:8005/results.html
+
 # Race Timing System - Technical Architecture
 
 ## Component Details
@@ -217,7 +220,6 @@ java -jar admin.jar
 
 ### 3. Backend Application
 - **Purpose**: Central data storage and API
-- **Design Pattern**: 
 - **Key Classes**:
   - `ParticipantsController`: REST API endpoints for participants
   - `TimesController`: REST API endpoints for times
@@ -244,12 +246,14 @@ java -jar admin.jar
   - `FileUtils`: Methods for reading & writing files
   - `PlaceholderTextField`: A JTextField with a placeholder text that is displayed when the field is empty
   - `Utils`: Program utilities
+
+# Communication and interaction
   
 ## Network Communication
-- Backend runs on port 8080
+- Backend runs on port 8080 (configurable)
 - Applications communicate via REST API
 - WebClient used for HTTP requests
-- Real-time updates using intervall checking of the backend
+- Updates using intervall checking of the backend
 
 ## Data Flow
 1. Register app records times
@@ -257,9 +261,22 @@ java -jar admin.jar
 3. Admin app polls for updates
 4. Results calculated and displayed
 
-<!-- 
-- **Design Pattern**: Repository Pattern, Service Pattern
-- **Key Components**:
-  - REST API endpoints
-  - Business logic services
-  - Data persistence layer -->
+## Program and file interactions
+- Visualization of file interaction for admin: https://miro.com/app/board/uXjVIe94A1k=/?share_link_id=452366861689
+- Visualization of program interaction: https://miro.com/app/board/uXjVIeZ7XHE=/?share_link_id=289366039900
+
+### Text overview of communication between Register & Backend
+1. RegisterApplication creates RegisterView & RegisterModelImpl
+2. User registration input in RegisterView is sent through RegisterModelImpl to the controllers in the backend, in the form of TimeDTOs
+3. The controllers call the respective services in regards to operations, which in turn use the respective repositories
+
+### Text overview of communication between Admin & Backend
+1. AdminApplication creates AdminGUI & AdminModelImpl
+2. User input is sent through AdminGUI, which in turn switches to the corresponding table
+3. AdminApplication calls the AdminModelImpl in intervals to fetch data using a GET request from the restserver
+4. AdminModelImpl then updates AdminGUI with new data from the server 
+
+## Distribution of programs and files across multiple computers during a competition
+It is possible to run multiple stand-alone register applications at once, they all connect to the restserver.
+It is possible to run multiple stand-alone admin applications at once, they do not share the same states but are all connected to the restserver.
+The program allows for only one server to run at a time.
