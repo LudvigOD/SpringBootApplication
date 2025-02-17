@@ -12,6 +12,10 @@ public class Utils {
         return instant.atZone(ZoneId.systemDefault()).toLocalTime().format(DateTimeFormatter.ofPattern(TIME_FORMAT));
     }
 
+    public static String formatInstantServer(Instant instant) {
+        return instant.atZone(ZoneId.systemDefault()).toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    }
+
     public static String formatDuration(Duration duration) {
         if(duration.isNegative()) {
             return "-" + formatDuration(duration.negated());
