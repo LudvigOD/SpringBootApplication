@@ -31,7 +31,7 @@ public class Time {
   private Long id;
 
   private int raceId;
-  private int stationId;
+  private long stationId;
   private String startNbr;
   private Instant time;
 
@@ -39,7 +39,7 @@ public class Time {
     // The automatic JSON conversion requires a default constructor
   }
 
-  public Time(int raceId, int stationId, String startNbr, Instant time) {
+  public Time(int raceId, long stationId, String startNbr, Instant time) {
     this.raceId = raceId;
     this.stationId = stationId;
     this.startNbr = startNbr;
@@ -54,7 +54,7 @@ public class Time {
     return raceId;
   }
 
-  public int getStationId() {
+  public long getStationId() {
     return stationId;
   }
 
@@ -74,7 +74,7 @@ public class Time {
     this.raceId = raceId;
   }
 
-  public void setStationId(int stationId) {
+  public void setStationId(long stationId) {
     this.stationId = stationId;
   }
 

@@ -1,7 +1,10 @@
 package result.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
@@ -9,11 +12,16 @@ import javax.swing.table.AbstractTableModel;
 import result.model.AdminModel;
 import result.model.AdminModelObserver;
 import shared.dto.RaceConfigurationDTO;
+import shared.dto.StationDTO;
 import shared.dto.TimeDTO;
 
 public class TimesTableModel extends AbstractTableModel implements AdminModelObserver {
   private final String[] columnNames = { "Station", "Nr.", "Tid" };
   private List<TimeDTO> times = new ArrayList<>();
+  /**
+   * Key: Station ID, Value: StationDTO
+   */
+  private Map<Long, StationDTO> stations = new HashMap<>();
   private final AdminModel model;
 
   public TimesTableModel(AdminModel model) {
@@ -41,8 +49,8 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
 
     switch (columnIndex) {
       case 0:
-        // Station ID: int
-        return time.getStationId();
+        // Station name: Optional<String>
+        return Optional.ofNullable(stations.get(time.getStationId())).map(StationDTO::getName);
       case 1:
         // Start number: String
         return time.getStartNbr();
@@ -88,6 +96,8 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
   public void onDataUpdated(RaceConfigurationDTO raceConfig, List<TimeDTO> times) {
     SwingUtilities.invokeLater(() -> {
       this.times = times;
+      this.stations = raceConfig.getStations().stream().collect(HashMap::new,
+          (map, station) -> map.put(station.getStationId(), station), HashMap::putAll);
 
       fireTableDataChanged();
     });
