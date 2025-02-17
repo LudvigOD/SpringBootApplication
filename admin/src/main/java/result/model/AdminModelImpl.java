@@ -8,11 +8,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import shared.dto.ParticipantDTO;
+import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
 
 public class AdminModelImpl implements AdminModel {
+    RaceConfigurationDTO raceConfiguration = new RaceConfigurationDTO("", List.of(), List.of());
     private List<TimeDTO> times = new ArrayList<>();
-    private List<ParticipantDTO> participants = new ArrayList<>();
     private List<AdminModelObserver> observers = new ArrayList<>();
 
     private WebClient webClient;
@@ -28,7 +29,7 @@ public class AdminModelImpl implements AdminModel {
     public void addObserver(AdminModelObserver observer) {
         this.observers.add(observer);
 
-        observer.onDataUpdated(this.times, this.participants);
+        observer.onDataUpdated(this.raceConfiguration, this.times);
     }
 
     @Override
@@ -38,25 +39,26 @@ public class AdminModelImpl implements AdminModel {
 
     private void notifyObservers() {
         for (AdminModelObserver observer : this.observers) {
-            observer.onDataUpdated(this.times, this.participants);
+            observer.onDataUpdated(this.raceConfiguration, this.times);
         }
     }
 
-    @Override
-    public List<TimeDTO> getAllTimes() {
-        return this.times;
-    }
-
-    @Override
-    public List<ParticipantDTO> getAllParticipants() {
-        return this.participants;
-    }
-
     public void fetchUpdates() {
+        this.raceConfiguration = syncGetRaceConfigurationFromServer(raceID);
         this.times = syncGetAllTimesFromServer(raceID);
-        this.participants = syncGetAllParticipantsFromServer(raceID);
 
         notifyObservers();
+    }
+
+    public RaceConfigurationDTO syncGetRaceConfigurationFromServer(int raceID) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/races/{raceID}/configuration")
+                        .build(raceID))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(RaceConfigurationDTO.class)
+                .block();
     }
 
     public List<TimeDTO> syncGetAllTimesFromServer(int raceID) {
@@ -71,20 +73,7 @@ public class AdminModelImpl implements AdminModel {
                 .block();
     }
 
-    public List<ParticipantDTO> syncGetAllParticipantsFromServer(int raceID) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/races/{raceID}/participants")
-                        .build(raceID))
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<ParticipantDTO>>() {
-                })
-                .block();
-
-    }
-
-    public void updateTime(int raceID, TimeDTO timeDTO) {
+    public void updateTime(TimeDTO timeDTO) {
         // Since the timeDTO was mutated, notify observers to propagate the change to
         // all listeners.
         notifyObservers();
@@ -102,9 +91,9 @@ public class AdminModelImpl implements AdminModel {
         fetchUpdates();
     }
 
-    public void sendPostRequest(ParticipantDTO dto, int raceId) {
+    public void createParticipant(ParticipantDTO dto) {
         webClient.post()
-                .uri("/races/{raceId}/participants", raceId)
+                .uri("/races/{raceId}/participants", raceID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
                 .retrieve()
@@ -115,10 +104,6 @@ public class AdminModelImpl implements AdminModel {
     @Override
     public void setRaceID(int raceID) {
         this.raceID = raceID;
-    }
-
-    @Override
-    public int getRaceID() {
-        return this.raceID;
+        fetchUpdates();
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import result.util.ProxyObservable;
 import shared.dto.ParticipantDTO;
+import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
 
 public abstract class FilteredAdminModel extends ProxyObservable<AdminModelObserver, AdminModelObserver, AdminModel>
@@ -16,42 +17,26 @@ public abstract class FilteredAdminModel extends ProxyObservable<AdminModelObser
   }
 
   @Override
-  public List<TimeDTO> getAllTimes() {
-    return adminModel.getAllTimes();
+  public void updateTime(TimeDTO timeDTO) {
+    adminModel.updateTime(timeDTO);
   }
 
   @Override
-  public List<ParticipantDTO> getAllParticipants() {
-    return adminModel.getAllParticipants();
-  }
-
-  @Override
-  public void updateTime(int raceID, TimeDTO timeDTO) {
-    adminModel.updateTime(raceID, timeDTO);
-  }
-
-  @Override
-  public void sendPostRequest(ParticipantDTO dto, int raceId) {
-    adminModel.sendPostRequest(dto, raceId);
+  public void createParticipant(ParticipantDTO dto) {
+    adminModel.createParticipant(dto);
   }
 
   @Override
   protected AdminModelObserver createInternalObserver(AdminModelObserver observer) {
     return new AdminModelObserver() {
       @Override
-      public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
-        observer.onDataUpdated(times.stream().filter(time -> filterTime(time, participants)).toList(),
-            participants.stream().filter(participant -> filterParticipant(participant, times)).toList());
+      public void onDataUpdated(RaceConfigurationDTO raceConfig, List<TimeDTO> times) {
+        observer.onDataUpdated(raceConfig, times.stream().filter(time -> filterTime(time, raceConfig)).toList());
       }
     };
   }
 
-  protected boolean filterTime(TimeDTO time, List<ParticipantDTO> participants) {
+  protected boolean filterTime(TimeDTO time, RaceConfigurationDTO raceConfig) {
     return true;
   }
-
-  protected boolean filterParticipant(ParticipantDTO participant, List<TimeDTO> times) {
-    return true;
-  }
-
 }

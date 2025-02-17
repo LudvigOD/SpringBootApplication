@@ -2,6 +2,7 @@ package admin.view;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import result.view.ResultsTableModel;
+import shared.dto.RaceConfigurationDTO;
 
 public class TestResultsTableModel {
 
@@ -34,7 +36,7 @@ public class TestResultsTableModel {
 
     @Test
     void testOnDataUpdated_WithEmptyLists_ClearsTable() {
-        tableModel.onDataUpdated(List.of(), List.of());
+        tableModel.onDataUpdated(mock(RaceConfigurationDTO.class), List.of());
 
         assertEquals(0, tableModel.getRowCount());
     }

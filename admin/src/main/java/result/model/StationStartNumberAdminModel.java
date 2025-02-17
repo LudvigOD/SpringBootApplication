@@ -1,8 +1,6 @@
 package result.model;
 
-import java.util.List;
-
-import shared.dto.ParticipantDTO;
+import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
 
 /**
@@ -22,17 +20,12 @@ public class StationStartNumberAdminModel extends FilteredAdminModel {
   }
 
   @Override
-  protected boolean filterTime(TimeDTO time, List<ParticipantDTO> participants) {
+  protected boolean filterTime(TimeDTO time, RaceConfigurationDTO raceConfig) {
     return time.getStationId() == stationId && time.getStartNbr().equals(startNumber);
   }
 
   @Override
   public void setRaceID(int raceID) {
     adminModel.setRaceID(raceID);
-  }
-
-  @Override
-  public int getRaceID() {
-    return adminModel.getRaceID();
   }
 }

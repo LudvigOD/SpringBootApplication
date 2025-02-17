@@ -8,7 +8,7 @@ import javax.swing.table.AbstractTableModel;
 
 import result.model.AdminModel;
 import result.model.AdminModelObserver;
-import shared.dto.ParticipantDTO;
+import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
 
 public class TimesTableModel extends AbstractTableModel implements AdminModelObserver {
@@ -65,7 +65,7 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
 
         time.setStartNbr(startNbr);
 
-        model.updateTime(model.getRaceID(), time);
+        model.updateTime(time);
         break;
     }
   }
@@ -85,7 +85,7 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
     return column == 1;
   }
 
-  public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
+  public void onDataUpdated(RaceConfigurationDTO raceConfig, List<TimeDTO> times) {
     SwingUtilities.invokeLater(() -> {
       this.times = times;
 

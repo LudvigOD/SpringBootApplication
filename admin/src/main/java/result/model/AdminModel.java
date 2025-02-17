@@ -1,21 +1,13 @@
 package result.model;
 
-import java.util.List;
-
 import result.util.Observable;
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
 public interface AdminModel extends Observable<AdminModelObserver> {
-  List<TimeDTO> getAllTimes();
+  void setRaceID(int raceID);
 
-  List<ParticipantDTO> getAllParticipants();
+  void updateTime(TimeDTO timeDTO);
 
-  public void updateTime(int raceID, TimeDTO timeDTO);
-
-  public void sendPostRequest(ParticipantDTO dto, int raceId);
-
-  public void setRaceID(int raceID);
-
-  public int getRaceID();
+  void createParticipant(ParticipantDTO dto);
 }
