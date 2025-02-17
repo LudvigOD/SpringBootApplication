@@ -248,7 +248,7 @@ Go to URL: pvg-projekt.cs.lth.se:8005/results.html
   - `Utils`: Program utilities
 
 # Communication and interaction
-  
+
 ## Network Communication
 - Backend runs on port 8080 (configurable)
 - Applications communicate via REST API
@@ -263,6 +263,7 @@ Go to URL: pvg-projekt.cs.lth.se:8005/results.html
 
 ## Program and file interactions
 - Visualization of file interaction for admin: https://miro.com/app/board/uXjVIe94A1k=/?share_link_id=452366861689
+- Visualization of file interaction for register: https://miro.com/app/board/uXjVIdiOuC4=/?share_link_id=108372182156
 - Visualization of program interaction: https://miro.com/app/board/uXjVIeZ7XHE=/?share_link_id=289366039900
 
 ### Text overview of communication between Register & Backend
