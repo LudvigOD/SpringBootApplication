@@ -21,21 +21,6 @@
   </div>
 
   <script>
-    function formatTime(timeStr) {
-      const regex = /T(\d{2}):(\d{2}):(\d{2})\.(\d+?)Z/;
-      const match = timeStr.match(regex);
-      if (match) {
-        let [ , hh, mm, ss, frac ] = match;
-        let fracFloat = parseFloat("0." + frac);
-        let ms = Math.round(fracFloat * 1000);
-        if (ms >= 1000) ms = 999;
-        let msStr = ms.toString().padStart(3, '0');
-        return `${hh}:${mm}:${ss}.${msStr}`;
-      }
-      let dt = new Date(timeStr);
-      return dt.toISOString().slice(11, 23);
-    }
-	
     function formatDuration(ms) {
       const hours = Math.floor(ms / 3600000);
       const minutes = Math.floor((ms % 3600000) / 60000);
@@ -55,10 +40,11 @@
     }
 
     async function loadRaceData(raceId) {
-      const timesUrl = `http://pvg-projekt.cs.lth.se:8005/api/races/${raceId}/times`;
-      const participantsUrl = `http://pvg-projekt.cs.lth.se:8005/api/races/${raceId}/participants`;
+      const timesUrl = `http://localhost:8080/api/races/${raceId}/times`;
+      const participantsUrl = `http://localhost:8080/api/races/${raceId}/participants`;
 
       try {
+        showLoading();
         const [timesRes, participantsRes] = await Promise.all([
           fetch(timesUrl),
           fetch(participantsUrl)
@@ -84,115 +70,62 @@
           timesByParticipant[entry.startNbr][entry.stationId].push(entry.time);
         });
 
-        function getValidTimeForStation(participant, station) {
+        const validParticipants = [];
+        participantsData.forEach((participant) => {
           const pTimes = timesByParticipant[participant.startNbr] || {};
-          const arr = pTimes[station] || [];
-          if (arr.length === 1) {
-            return new Date(arr[0]).getTime();
+
+          const startTime = (pTimes[0] && pTimes[0].length === 1) ? new Date(pTimes[0][0]).getTime() : null;
+          const finishTime = (pTimes[maxStationId] && pTimes[maxStationId].length === 1) ? new Date(pTimes[maxStationId][0]).getTime() : null;
+
+          if (startTime !== null && finishTime !== null) {
+            validParticipants.push({
+              name: participant.name,
+              startNbr: participant.startNbr,
+              totalTime: finishTime - startTime
+            });
           }
-          return Infinity;
-        }
+        });
 
-        function compareParticipants(a, b) {
-          for (let station = maxStationId; station >= 0; station--) {
-            let timeA = getValidTimeForStation(a, station);
-            let timeB = getValidTimeForStation(b, station);
-            if (timeA !== timeB) {
-              return timeA - timeB;
-            }
-          }
-          return 0;
-        }
-
-        const sortedParticipants = participantsData.slice().sort(compareParticipants);
-
-        const thead = document.querySelector('#resultsTable thead');
-        thead.innerHTML = '';
-        const headerRow = document.createElement('tr');
-
-        const thPos = document.createElement('th');
-        thPos.textContent = 'Position';
-        headerRow.appendChild(thPos);
-
-        const thName = document.createElement('th');
-        thName.textContent = 'Name';
-        headerRow.appendChild(thName);
-
-        for (let station = 0; station <= maxStationId; station++) {
-          const thStation = document.createElement('th');
-          if (station === 0) {
-            thStation.textContent = 'Start';
-          } else if (station === maxStationId) {
-            thStation.textContent = 'Mål';
-          } else {
-            thStation.textContent = `Station ${station}`;
-          }
-          headerRow.appendChild(thStation);
-        }
-
-        const thTotal = document.createElement('th');
-        thTotal.textContent = 'Total';
-        headerRow.appendChild(thTotal);
-        thead.appendChild(headerRow);
+        // Sort by total time (shortest to longest)
+        validParticipants.sort((a, b) => a.totalTime - b.totalTime);
 
         const tbody = document.querySelector('#resultsTable tbody');
         tbody.innerHTML = '';
 
-        sortedParticipants.forEach((participant, index) => {
+        validParticipants.forEach((participant, index) => {
           const tr = document.createElement('tr');
-          const pTimes = timesByParticipant[participant.startNbr] || {};
 
-
-          const stationCells = [];
-          for (let station = 0; station <= maxStationId; station++) {
-            const timesArr = pTimes[station] || [];
-            let cell = { display: '', raw: null };
-
-            if (timesArr.length > 1) {
-              cell.display = "Fel med registrering!";
-            } else if (timesArr.length === 1) {
-              cell.display = formatTime(timesArr[0]);
-              cell.raw = timesArr[0];
-            } else {
-              let laterFound = false;
-              for (let j = station + 1; j <= maxStationId; j++) {
-                const laterArr = pTimes[j] || [];
-                if (laterArr.length > 0) {
-                  laterFound = true;
-                  break;
-                }
-              }
-              cell.display = laterFound ? "Fel med registrering!" : "-";
-            }
-            stationCells.push(cell);
-          }
-
-          
-          const tdPos = document.createElement('td');
-          tdPos.textContent = index + 1;
-          tr.appendChild(tdPos);
+          const tdPosition = document.createElement('td');
+          tdPosition.textContent = index + 1; // Placement starts from 1
+          tr.appendChild(tdPosition);
 
           const tdName = document.createElement('td');
           tdName.textContent = participant.name;
           tr.appendChild(tdName);
 
-          stationCells.forEach(cellInfo => {
-            const td = document.createElement('td');
-            td.textContent = cellInfo.display;
-            tr.appendChild(td);
-          });
+          const tdStartNbr = document.createElement('td');
+          tdStartNbr.textContent = participant.startNbr;
+          tr.appendChild(tdStartNbr);
 
-          const tdTotal = document.createElement('td');
-          let anyError = stationCells.some(cell => cell.display === "Fel med registrering!");
-          if (anyError || stationCells[0].raw === null || stationCells[maxStationId].raw === null) {
-            tdTotal.textContent = "-";
-          } else {
-            const diff = new Date(stationCells[maxStationId].raw) - new Date(stationCells[0].raw);
-            tdTotal.textContent = formatDuration(diff);
-          }
-          tr.appendChild(tdTotal);
+          const tdTotalTime = document.createElement('td');
+          tdTotalTime.textContent = formatDuration(participant.totalTime);
+          tr.appendChild(tdTotalTime);
+
           tbody.appendChild(tr);
         });
+
+        const thead = document.querySelector('#resultsTable thead');
+        thead.innerHTML = '';
+        const headerRow = document.createElement('tr');
+
+        ['Placement', 'Name', 'Start Number', 'Final Time'].forEach((text) => {
+          const th = document.createElement('th');
+          th.textContent = text;
+          headerRow.appendChild(th);
+        });
+
+        thead.appendChild(headerRow);
+
       } catch (error) {
         console.error('Error loading race data:', error);
         alert('Error fetching race data. Check console for details.');
@@ -204,35 +137,33 @@
     document.getElementById('loadData').addEventListener('click', () => {
       const raceId = document.getElementById('raceId').value;
       loadRaceData(raceId);
+      startAutoUpdate();
     });
 
     window.addEventListener('DOMContentLoaded', () => {
       const raceId = document.getElementById('raceId').value;
       loadRaceData(raceId);
+      startAutoUpdate();
     });
-  
+
     let autoUpdateInterval = null;
 
-function startAutoUpdate() {
-  if (autoUpdateInterval) clearInterval(autoUpdateInterval);
-  autoUpdateInterval = setInterval(() => {
-    const raceId = document.getElementById('raceId').value;
-    loadRaceData(raceId);
-  }, 5000);
-}
-
-document.getElementById('loadData').addEventListener('click', () => {
-  const raceId = document.getElementById('raceId').value;
-  loadRaceData(raceId);
-  startAutoUpdate();
-});
-
-window.addEventListener('DOMContentLoaded', () => {
-  const raceId = document.getElementById('raceId').value;
-  loadRaceData(raceId);
-  startAutoUpdate();
-});
+    function startAutoUpdate() {
+      if (autoUpdateInterval) clearInterval(autoUpdateInterval);
+      autoUpdateInterval = setInterval(() => {
+        const raceId = document.getElementById('raceId').value;
+        loadRaceData(raceId);
+      }, 5000);
+    }
 
   </script>
+  <div class="fire">
+    <div class="flame" style="left: 10%;"></div>
+    <div class="flame" style="left: 25%;"></div>
+    <div class="flame" style="left: 40%;"></div>
+    <div class="flame" style="left: 55%;"></div>
+    <div class="flame" style="left: 70%;"></div>
+    <div class="flame" style="left: 85%;"></div>
+  </div>  
 </body>
 </html>

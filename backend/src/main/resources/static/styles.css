@@ -1,99 +1,140 @@
-    body {
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
-    }
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  position: relative;
+}
 
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    }
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #007bff;
-    }
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #007bff;
+}
 
-    .controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
-    label {
-      font-size: 18px;
-    }
+label {
+  font-size: 18px;
+}
 
-    input[type="text"] {
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: 60px;
-      text-align: center;
-    }
+input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 60px;
+  text-align: center;
+}
 
-    button {
-      padding: 8px 16px;
-      font-size: 16px;
-      background-color: #007bff;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+button {
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
 
-    button:hover {
-      background-color: #0056b3;
-    }
+button:hover {
+  background-color: #0056b3;
+}
 
-    /* Loading Indicator */
-    #loading {
-      text-align: center;
-      font-size: 18px;
-      color: #007bff;
-      margin-bottom: 20px;
-      display: none;
-    }
+/* Loading Indicator */
+#loading {
+  text-align: center;
+  font-size: 18px;
+  color: #007bff;
+  margin-bottom: 20px;
+  display: none;
+}
 
-    /* Table Styles */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      animation: fadeIn 1s ease-in-out;
-    }
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  animation: spinIn 1s ease-in-out;
+}
 
-    thead {
-      background-color: #007bff;
-      color: #fff;
-    }
+thead {
+  background-color: #007bff;
+  color: #fff;
+}
 
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
+th, td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
 
-    tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
 
-    tbody tr:hover {
-      background-color: #f1f1f1;
-    }
+tbody tr:hover {
+  background-color: #f1f1f1;
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+/* Table Spin Animation */
+@keyframes spinIn {
+  from {
+    transform: rotate(-360deg) scale(0.1);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* 🔥 Fire Animation */
+.fire {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(rgba(255, 0, 0, 0.8), transparent);
+  overflow: hidden;
+  display: flex;
+  justify-content: space-around;
+}
+
+.flame {
+  width: 20px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(255, 165, 0, 1) 20%, rgba(255, 69, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  animation: flicker 0.4s infinite alternate ease-in-out, rise 2s infinite ease-in;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0.3; transform: scale(1.2); }
+}
+
+@keyframes rise {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100px); opacity: 0; }
+}
