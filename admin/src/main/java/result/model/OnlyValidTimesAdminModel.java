@@ -3,6 +3,7 @@ package result.model;
 import java.util.List;
 
 import shared.dto.ParticipantDTO;
+import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
 
 /**
@@ -24,7 +25,9 @@ public class OnlyValidTimesAdminModel extends FilteredAdminModel {
   }
 
   @Override
-  protected boolean filterTime(TimeDTO time, List<ParticipantDTO> participants) {
+  protected boolean filterTime(TimeDTO time, RaceConfigurationDTO raceConfig) {
+    List<ParticipantDTO> participants = raceConfig.getParticipants();
+
     return validTimes == participants.stream()
         .map(ParticipantDTO::getStartNbr)
         .anyMatch(n -> n.equals(time.getStartNbr()));
@@ -33,10 +36,5 @@ public class OnlyValidTimesAdminModel extends FilteredAdminModel {
   @Override
   public void setRaceID(int raceID) {
     adminModel.setRaceID(raceID);
-  }
-
-  @Override
-  public int getRaceID() {
-    return adminModel.getRaceID();
   }
 }

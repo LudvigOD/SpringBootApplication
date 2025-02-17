@@ -1,7 +1,5 @@
 package result.view;
 
-import shared.gui.RegisterFilter;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,10 +28,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AbstractDocument;
 
 import result.model.AdminModel;
-import result.model.AdminModelImpl;
 import result.model.OnlyValidTimesAdminModel;
 import shared.dto.ParticipantDTO;
-import result.model.AdminModelImpl;
+import shared.gui.RegisterFilter;
 
 public class AdminGUI extends JFrame {
     public AdminGUI(AdminModel adminModel) {
@@ -220,7 +217,7 @@ public class AdminGUI extends JFrame {
 
                 while (s.hasNextLine()) {
                     String[] l = s.nextLine().split(",");
-                    model.sendPostRequest(new ParticipantDTO(l[0], l[1]), model.getRaceID());
+                    model.createParticipant(new ParticipantDTO(l[0], l[1]));
                 }
 
                 s.close();
@@ -252,7 +249,6 @@ public class AdminGUI extends JFrame {
 
             int raceID = Integer.parseInt(textField.getText());
             model.setRaceID(raceID);
-            ((AdminModelImpl) model).fetchUpdates();
 
         });
     }

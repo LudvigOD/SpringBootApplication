@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 import result.dto.CompetitorDTO;
 import result.model.AdminModelObserver;
 import result.model.CompetitorsCalculator;
-import shared.dto.ParticipantDTO;
+import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
 
 public class CompetitorsTableModel extends AbstractTableModel implements AdminModelObserver {
@@ -79,9 +79,9 @@ public class CompetitorsTableModel extends AbstractTableModel implements AdminMo
     return false;
   }
 
-  public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
+  public void onDataUpdated(RaceConfigurationDTO raceConfig, List<TimeDTO> times) {
     SwingUtilities.invokeLater(() -> {
-      this.competitors = competitorsCalculator.aggregateCompetitors(times, participants);
+      this.competitors = competitorsCalculator.aggregateCompetitors(times, raceConfig.getParticipants());
 
       fireTableDataChanged();
     });

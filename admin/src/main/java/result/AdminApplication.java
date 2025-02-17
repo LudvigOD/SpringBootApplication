@@ -17,7 +17,7 @@ public class AdminApplication implements Runnable {
     private static String url;
 
     public static void main(String[] args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             System.out.println("No argument passed for which server to connect to, defaulting to localhost.");
         }
         url = args.length == 0 ? "http://localhost:8080/api" : "http://" + args[0] + "/api";
@@ -30,21 +30,20 @@ public class AdminApplication implements Runnable {
         WebClient webClient = WebClient.builder()
                 .baseUrl(url)
                 .build();
-        
+
         try {
-        webClient.get()
-            .uri(url)
-            .retrieve()
-            .toBodilessEntity()
-            .block(); 
-            }
-        catch (WebClientException e) {
-        if(!e.getMessage().contains("404")) {
+            webClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+        } catch (WebClientException e) {
+            if (!e.getMessage().contains("404")) {
                 System.out.println("Can't connect to server.");
                 System.exit(0);
             }
         }
-        
+
         model = new AdminModelImpl(webClient);
         AdminGUI gui = new AdminGUI(model);
         gui.setVisible(true);
