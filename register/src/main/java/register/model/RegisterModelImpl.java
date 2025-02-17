@@ -21,7 +21,6 @@ public class RegisterModelImpl implements RegisterModel {
 
   private int raceID;
 
-
   public RegisterModelImpl(WebClient webClient) {
     this.views = new ArrayList<>();
 
@@ -42,12 +41,12 @@ public class RegisterModelImpl implements RegisterModel {
 
   @Override
   public void registerTime(String startNbr, Integer stationId) {
-    
+
     sendPostRequest(new TimeDTO(stationId, startNbr, Instant.now(), Long.valueOf(1)), raceID);
-    for(RegisterView view : views) {
+    for (RegisterView view : views) {
       view.timeWasRegistered();
     }
-    
+
   }
 
   public void asyncReloadTimes(
@@ -64,7 +63,6 @@ public class RegisterModelImpl implements RegisterModel {
         .subscribe(responseHandler);
   }
 
-
   public List<TimeDTO> syncReloadTimes(Optional<Integer> stationId) {
     return webClient.get()
         .uri(uriBuilder -> uriBuilder
@@ -75,7 +73,7 @@ public class RegisterModelImpl implements RegisterModel {
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<TimeDTO>>() {
         })
-        .block(); 
+        .block();
   }
 
   @Override
@@ -103,6 +101,11 @@ public class RegisterModelImpl implements RegisterModel {
         .subscribe(response -> {
           System.out.println("PUT Response Status: " + response.getStatusCode());
         });
+  }
+
+  @Override
+  public void setRaceID(int raceId) {
+    this.raceID = raceId;
   }
 
 }
