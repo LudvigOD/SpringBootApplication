@@ -16,10 +16,12 @@ public class AdminModelImpl implements AdminModel {
     private List<AdminModelObserver> observers = new ArrayList<>();
 
     private WebClient webClient;
+    private int raceID;
 
     public AdminModelImpl(WebClient webClient) {
         this.webClient = webClient;
         times = new ArrayList<>();
+        raceID = 1;
     }
 
     @Override
@@ -51,8 +53,8 @@ public class AdminModelImpl implements AdminModel {
     }
 
     public void fetchUpdates() {
-        this.times = syncGetAllTimesFromServer(1);
-        this.participants = syncGetAllParticipantsFromServer(1);
+        this.times = syncGetAllTimesFromServer(raceID);
+        this.participants = syncGetAllParticipantsFromServer(raceID);
 
         notifyObservers();
     }
@@ -102,11 +104,21 @@ public class AdminModelImpl implements AdminModel {
 
     public void sendPostRequest(ParticipantDTO dto, int raceId) {
         webClient.post()
-            .uri("/races/{raceId}/participants", raceId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(dto)
-            .retrieve()
-            .toBodilessEntity()
-            .block();
-      }
+                .uri("/races/{raceId}/participants", raceId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(dto)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
+    @Override
+    public void setRaceID(int raceID) {
+        this.raceID = raceID;
+    }
+
+    @Override
+    public int getRaceID() {
+        return this.raceID;
+    }
 }

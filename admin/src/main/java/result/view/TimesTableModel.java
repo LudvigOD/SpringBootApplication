@@ -65,7 +65,7 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
 
         time.setStartNbr(startNbr);
 
-        model.updateTime(1, time);
+        model.updateTime(model.getRaceID(), time);
         break;
     }
   }
@@ -77,7 +77,7 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
         .filter(t -> t.getStationId() == time.getStationId() && t.getStartNbr().equals(time.getStartNbr()))
         .toList();
 
-      return duplicateTimes.size() > 1;
+    return duplicateTimes.size() > 1;
   }
 
   @Override

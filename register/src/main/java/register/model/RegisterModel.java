@@ -22,6 +22,7 @@ public interface RegisterModel {
 
   /**
    * Updates a time using the timeDTO
+   * 
    * @param timeDTO
    * @param raceID
    */
@@ -30,5 +31,7 @@ public interface RegisterModel {
   List<TimeDTO> syncReloadTimes(Optional<Integer> stationId);
 
   void asyncReloadTimes(Consumer<List<TimeDTO>> responseHandler, int stationId);
+
+  void setRaceID(int raceId);
 
 }

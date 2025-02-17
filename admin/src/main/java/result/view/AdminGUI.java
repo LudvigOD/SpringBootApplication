@@ -1,5 +1,7 @@
 package result.view;
 
+import shared.gui.RegisterFilter;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,6 +17,7 @@ import java.io.File;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -22,11 +25,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AbstractDocument;
 
 import result.model.AdminModel;
+import result.model.AdminModelImpl;
 import result.model.OnlyValidTimesAdminModel;
 import shared.dto.ParticipantDTO;
+import result.model.AdminModelImpl;
 
 public class AdminGUI extends JFrame {
     public AdminGUI(AdminModel adminModel) {
@@ -72,6 +79,18 @@ public class AdminGUI extends JFrame {
         JButton selectResultsTableButton = new JButton("Resultat");
         formatButton(resultsTable, rightScrollPane, selectResultsTableButton);
 
+        JButton setRaceIDButton = new JButton("RaceID");
+        JTextField raceIDField = new JTextField();
+        ((AbstractDocument) raceIDField.getDocument()).setDocumentFilter(new RegisterFilter());
+        raceIDField.setFont(new Font("Arial", Font.PLAIN, 20));
+        raceIDField.setPreferredSize(new Dimension(50, 50));
+        raceIDField.setMaximumSize(new Dimension(50, 50)); // Förhindrar att den blir större
+        raceIDField.setMinimumSize(new Dimension(50, 50));
+        raceIDField.setHorizontalAlignment(JTextField.CENTER); // Centrerar texten inuti fältet
+
+        raceIDField.setAlignmentX(CENTER_ALIGNMENT);
+        formatRaceIDButton(raceIDField, setRaceIDButton, adminModel);
+
         JButton selectFileButton = new JButton("Ladda fil...");
         selectFileButton.setFont(new Font("Arial", Font.PLAIN, 20));
         selectFileButton.setBackground(new Color(112, 173, 71));
@@ -109,9 +128,21 @@ public class AdminGUI extends JFrame {
         buttonPanel.setBackground(new Color(165, 165, 165));
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
+        // få det att funka op mac?
+        selectCompetitorsTableButton.setOpaque(true);
+        selectCompetitorsTableButton.setBorderPainted(false);
+        selectResultsTableButton.setOpaque(true);
+        selectResultsTableButton.setBorderPainted(false);
+        setRaceIDButton.setOpaque(true);
+        setRaceIDButton.setBorderPainted(false);
+        selectFileButton.setOpaque(true);
+        selectFileButton.setBorderPainted(false);
         buttonPanel.add(selectCompetitorsTableButton);
         buttonPanel.add(selectResultsTableButton);
         buttonPanel.add(selectFileButton);
+        buttonPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(raceIDField);
+        buttonPanel.add(setRaceIDButton);
 
         inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         inputPanel.add(buttonPanel);
@@ -128,7 +159,7 @@ public class AdminGUI extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                if (getWidth() < 900) { // när fönstret är under 900 pixlar används vertikal-layout
+                if (getWidth() < 950) { // när fönstret är under 900 pixlar används vertikal-layout
                     buttonPanel.setLayout(verticalLayoutInput);
                 } else {
                     buttonPanel.setLayout(gridLayoutInput); // annars används gridlayout (bredvid varandra)
@@ -150,7 +181,7 @@ public class AdminGUI extends JFrame {
             public void componentResized(ComponentEvent e) {
                 tablesPanel.removeAll(); // Ta bort allt innehåll innan byte
 
-                if (getWidth() < 900) { // Om skärmen är mindre än 900 pixlar hamnar tabellerna ovanför varandra
+                if (getWidth() < 950) { // Om skärmen är mindre än 900 pixlar hamnar tabellerna ovanför varandra
                     tablesPanel.setLayout(verticalLayoutTable);
                     tablesPanel.add(leftTopScrollPane);
                     tablesPanel.add(leftBottomScrollPane);
@@ -169,6 +200,7 @@ public class AdminGUI extends JFrame {
         selectResultsTableButton.setMaximumSize(new Dimension(200, 50));
         selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
         selectFileButton.setMaximumSize(new Dimension(200, 50));
+        setRaceIDButton.setMaximumSize(new Dimension(200, 50));
 
         mainPanel.add(inputPanel, BorderLayout.NORTH);
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
@@ -207,6 +239,21 @@ public class AdminGUI extends JFrame {
         selectCompetitorsTableButton.setPreferredSize(new Dimension(200, 50));
         selectCompetitorsTableButton.addActionListener(event -> {
             rightScrollPane.setViewportView(table);
+        });
+    }
+
+    private void formatRaceIDButton(JTextField textField, JButton selectRaceIDButton,
+            AdminModel model) {
+        selectRaceIDButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        selectRaceIDButton.setBackground(new Color(112, 173, 71));
+        selectRaceIDButton.setForeground(Color.WHITE);
+        selectRaceIDButton.setPreferredSize(new Dimension(200, 50));
+        selectRaceIDButton.addActionListener(event -> {
+
+            int raceID = Integer.parseInt(textField.getText());
+            model.setRaceID(raceID);
+            ((AdminModelImpl) model).fetchUpdates();
+
         });
     }
 

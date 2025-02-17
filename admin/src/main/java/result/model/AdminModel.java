@@ -14,4 +14,8 @@ public interface AdminModel extends Observable<AdminModelObserver> {
   public void updateTime(int raceID, TimeDTO timeDTO);
 
   public void sendPostRequest(ParticipantDTO dto, int raceId);
+
+  public void setRaceID(int raceID);
+
+  public int getRaceID();
 }
