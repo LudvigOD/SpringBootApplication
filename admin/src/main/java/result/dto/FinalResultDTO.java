@@ -2,7 +2,11 @@ package result.dto;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+
+import shared.Utils;
 
 public class FinalResultDTO {
     private String plac;
@@ -37,7 +41,7 @@ public class FinalResultDTO {
         if (totalTime.isEmpty()){
             this.totalTime = "--:--:--";
         } else {
-            this.totalTime = totalTime.get().toString();
+            this.totalTime = Utils.formatDurationServer(totalTime.get().plusNanos(500_000_000)).toString();
         }
     }
 
@@ -45,7 +49,7 @@ public class FinalResultDTO {
         if (startTime.isEmpty()){
             this.startTime = "--:--:--";
         } else {
-            this.startTime = startTime.get().toString();
+            this.startTime = Utils.formatInstantServer(startTime.get()).toString();
         }
     }
 
@@ -53,8 +57,32 @@ public class FinalResultDTO {
         if (endTime.isEmpty()){
             this.endTime = "--:--:--";
         } else {
-            this.endTime = endTime.get().toString();
+            this.endTime = Utils.formatInstantServer(endTime.get()).toString();
         }
+    }
+
+    public String getPlac(){
+        return plac;
+    }
+
+    public String getStartNbr(){
+        return startNbr;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public String getTotalTime(){
+        return totalTime;
+    }
+
+    public String getStartTime(){
+        return startTime;
+    }
+
+    public String getEndTime(){
+        return endTime;
     }
 
     @Override

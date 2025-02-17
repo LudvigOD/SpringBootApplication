@@ -65,7 +65,7 @@ public class AdminModelImpl implements AdminModel {
     }
 
     public void sendResults(List<ResultDTO> resultDTOs) {
-        List<FinalResultDTO> listOfResults = resultDTOs.stream().map(r -> new FinalResultDTO(r, 1, 2)).toList();
+        List<FinalResultDTO> listOfResults = resultDTOs.stream().map(r -> new FinalResultDTO(r, 0, 1)).toList();
         AllFinalResultsDTO results = new AllFinalResultsDTO("", listOfResults);
         sendFinalResultPostRequest(results);
     }

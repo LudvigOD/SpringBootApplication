@@ -41,6 +41,6 @@ public class Utils {
         long seconds = duration.getSeconds() % 60;
 
 
-        return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds);
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
