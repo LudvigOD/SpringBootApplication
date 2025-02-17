@@ -103,7 +103,6 @@ Get ready to rumble!
 For information about specific files view the technical documentation, i.e. the README.md in docs
 
 ## System Overview
-
 The race timing system consists of three main components:
 1. Registration Application (Register)
 2. Administration Application (Admin)
