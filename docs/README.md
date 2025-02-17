@@ -1,8 +1,3 @@
-Put all documentation in here. We'll probably need user manuals, for each
-seperate application. Probably also some technical design document and whatnot.
-Maybe we can also keep a planning document in here, and meeting notes. That sort
-of thing.
-
 # Technical documentation
 
 Welcome! This documentation explains the technical aspects of the program, such as:
@@ -172,27 +167,23 @@ If you follow these steps, you should be able to control the server without issu
 
 ### 3. Backend Application
 - **Purpose**: Central data storage and API
-- **Design Pattern**: Repository Pattern, Service Pattern
+- **Design Pattern**: 
 - **Key Classes**:
-  - 
+  - `ParticipantsController`: REST API endpoints for participants
+  - `TimesController`: REST API endpoints for times
+  - `Participant`: Represents participants in the database
+  - `Time`: Represents times in the database
+  - `ParticipantRepository`: Access point to database for the participant entity
+  - `TimeRepository`: Access point to database for the time entity
+  - `ParticipantService`: Adds logic to database operations and links ParticipantRepository with ParticipantsController 
+  - `TimeService`: Adds logic to database operations and links TimeRepository with TimesController 
 
 - **Other Classes**:
-  - `CustomConfig`:
-  - `SecurityConfig`:
-  - `ParticipantsController`: 
-  - `TimesController`: 
-  - `Participant`: 
-  - `Time`: 
-  - `InvalidTimeFormat`: 
-  - `ParticipantRepository`: 
-  - `TimeRepository`: 
-  - `ParticipantService`: 
-  - `TimeService`: 
-
-
-
+  - `CustomConfig`: Custom configurations
+  - `SecurityConfig`: Security configuration for testing
+  - `InvalidTimeFormat`: Custom time exceptions
+  
 ## Network Communication
-
 - Backend runs on port 8080
 - Applications communicate via REST API
 - WebClient used for HTTP requests
