@@ -8,6 +8,9 @@ Welcome! This documentation explains the technical aspects of the program, such 
     - Internal structure of each subprogram 
     - Design patterns
 
+## Prerequisites
+- Java 17 or higher
+
 ## Starting and Stopping the Server
 
 To interact with the server, you’ll use a command-line script that controls when the server is on or off.
@@ -120,6 +123,54 @@ If you follow these steps, you should be able to control the server without issu
 ./gradlew register:bootRun
 ```
 
+## Building the Project
+
+Build and package the entire system:
+```bash
+./gradlew assembleAll
+```
+This will create `release/project-bundle.zip` containing all necessary components.
+
+The zip file will be placed in `release/project-bundle.zip`. If you unpack it,
+you should be able to run the backend server with the included `runner` script,
+and the registration application is a runnable jar file. So:
+
+```bash
+# Unpack the release zip file
+cd release
+unzip project-bundle.zip
+cd project-bundle
+
+# Start the backend server
+./runner start
+
+# Run the registration application
+java -jar register.jar
+
+## Running the System
+
+1. **Unpack the release**:
+```bash
+cd release
+unzip <projectName-projectVersion>.zip
+cd <projectName-projectVersion>
+```
+
+2. **Start the backend server**:
+```bash
+./runner start
+```
+
+3. **Start the registration application**:
+```bash
+java -jar register.jar
+```
+
+4. **Start the admin interface**:
+```bash
+java -jar admin.jar
+```
+
 # Race Timing System - Technical Architecture
 
 ## Component Details
@@ -135,7 +186,6 @@ If you follow these steps, you should be able to control the server without issu
   - `EndStation`: Represents an end station
   - `StationModel`: Represents stations
   - `StartStation`: Represents a start station
-  - `RegisterFilter`: Filters user input
   - `RegisterView`: Interface for GUI
 
 ### 2. Admin Application
@@ -182,6 +232,18 @@ If you follow these steps, you should be able to control the server without issu
   - `CustomConfig`: Custom configurations
   - `SecurityConfig`: Security configuration for testing
   - `InvalidTimeFormat`: Custom time exceptions
+
+- For API documentation view the README.md file stored in the backend folder
+
+### 4. Shared files for all applications
+- **Classes**
+  - `RegisterFilter`: Filters user input
+  - `ParticipantDTO`:  Representation of data values for Participant 
+  - `TimeDTO`: Representation of data values for Time
+  - `UpdateParticipantDTO`: Updates start number and name for ParticipantDTO
+  - `FileUtils`: Methods for reading & writing files
+  - `PlaceholderTextField`: A JTextField with a placeholder text that is displayed when the field is empty
+  - `Utils`: Program utilities
   
 ## Network Communication
 - Backend runs on port 8080
