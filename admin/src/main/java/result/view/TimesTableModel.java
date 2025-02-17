@@ -1,33 +1,23 @@
-package result.model;
+package result.view;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
-import result.dto.CompetitorDTO;
+import result.model.AdminModel;
+import result.model.AdminModelObserver;
 import shared.dto.ParticipantDTO;
 import shared.dto.TimeDTO;
 
 public class TimesTableModel extends AbstractTableModel implements AdminModelObserver {
-  private final CompetitorsCalculator competitorsCalculator;
   private final String[] columnNames = { "Station", "Nr.", "Tid" };
   private List<TimeDTO> times = new ArrayList<>();
-  private Map<String, CompetitorDTO> competitors = new HashMap<>();
-  private final AdminModel adminModel;
+  private final AdminModel model;
 
-  public TimesTableModel(AdminModel adminModel) {
-    this(new CompetitorsCalculator(), adminModel);
-  }
-
-  public TimesTableModel(CompetitorsCalculator competitorsCalculator, AdminModel adminModel) {
-    this.competitorsCalculator = competitorsCalculator;
-    this.adminModel = adminModel;
+  public TimesTableModel(AdminModel model) {
+    this.model = model;
   }
 
   @Override
@@ -75,17 +65,19 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
 
         time.setStartNbr(startNbr);
 
-        adminModel.updateTime(1, time);
+        model.updateTime(1, time);
         break;
     }
   }
 
   public boolean isDuplicateTime(int row) {
     TimeDTO time = times.get(row);
-    Optional<CompetitorDTO> competitor = Optional.ofNullable(competitors.get(time.getStartNbr()));
-    Optional<List<Instant>> competitorTimes = competitor.map(c -> c.getTimesForStation(time.getStationId()));
 
-    return competitorTimes.map(c -> c.size() > 1).orElse(false);
+    List<TimeDTO> duplicateTimes = times.stream()
+        .filter(t -> t.getStationId() == time.getStationId() && t.getStartNbr().equals(time.getStartNbr()))
+        .toList();
+
+      return duplicateTimes.size() > 1;
   }
 
   @Override
@@ -96,9 +88,6 @@ public class TimesTableModel extends AbstractTableModel implements AdminModelObs
   public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
     SwingUtilities.invokeLater(() -> {
       this.times = times;
-      competitors = competitorsCalculator.aggregateTimesByParticipant(times, participants).stream().collect(
-          HashMap::new, (map, competitor) -> map.put(competitor.getParticipant().getStartNbr(), competitor),
-          HashMap::putAll);
 
       fireTableDataChanged();
     });

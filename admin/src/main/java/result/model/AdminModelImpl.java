@@ -23,14 +23,14 @@ public class AdminModelImpl implements AdminModel {
     }
 
     @Override
-    public void addListener(AdminModelObserver observer) {
+    public void addObserver(AdminModelObserver observer) {
         this.observers.add(observer);
 
         observer.onDataUpdated(this.times, this.participants);
     }
 
     @Override
-    public void removeListener(AdminModelObserver observer) {
+    public void removeObserver(AdminModelObserver observer) {
         this.observers.remove(observer);
     }
 

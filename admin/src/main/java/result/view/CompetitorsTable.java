@@ -17,15 +17,12 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import result.model.AdminModel;
-import result.model.AdminModelObserver;
-import result.model.CompetitorsTableModel;
+import result.model.StationStartNumberAdminModel;
 import shared.Utils;
-import shared.dto.ParticipantDTO;
-import shared.dto.TimeDTO;
 
-public class CompetitorsTable extends JTable implements AdminModelObserver {
-    public CompetitorsTable(AdminModel adminModel) {
-        super(new CompetitorsTableModel());
+public class CompetitorsTable extends JTable {
+    public CompetitorsTable(AdminModel adminModel, CompetitorsTableModel model) {
+        super(model);
 
         setShowGrid(true);
         setGridColor(Color.WHITE);
@@ -132,8 +129,11 @@ public class CompetitorsTable extends JTable implements AdminModelObserver {
                 switch (column) {
                     case 2:
                     case 3:
-                        TimesWindow.openTimesDialog(adminModel, model.getStationId(column),
-                                (String) getValueAt(row, 0));
+                        int stationId = model.getStationId(column);
+                        String startNumber = (String) getValueAt(row, 0);
+
+                        TimesWindow.openTimesDialog(
+                                new StationStartNumberAdminModel(adminModel, stationId, startNumber));
                 }
             }
         });
@@ -146,10 +146,5 @@ public class CompetitorsTable extends JTable implements AdminModelObserver {
         header.setPreferredSize(new Dimension(5, 40));
         header.setReorderingAllowed(false);
         header.setResizingAllowed(false);
-    }
-
-    @Override
-    public void onDataUpdated(List<TimeDTO> times, List<ParticipantDTO> participants) {
-        ((CompetitorsTableModel) getModel()).onDataUpdated(times, participants);
     }
 }

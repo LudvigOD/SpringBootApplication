@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
@@ -26,11 +25,11 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import result.model.AdminModel;
+import result.model.OnlyValidTimesAdminModel;
 import shared.dto.ParticipantDTO;
-import result.model.AdminModelFilteredStartNbr;
 
 public class AdminGUI extends JFrame {
-    public AdminGUI(AdminModel model) {
+    public AdminGUI(AdminModel adminModel) {
         setTitle("Adminverktyg");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1600, 1133);
@@ -39,25 +38,32 @@ public class AdminGUI extends JFrame {
 
         JPanel tablesPanel = new JPanel(new GridBagLayout());
         tablesPanel.setBackground(new Color(165, 165, 165));
-        AdminModel filteredModelValid = new AdminModelFilteredStartNbr(model, true);
-        AdminModel filteredModelInvalid = new AdminModelFilteredStartNbr(model, false);
-        TimesTable timesTable1 = new TimesTable(filteredModelValid);
-        TimesTable timesTable2 = new TimesTable(filteredModelInvalid);
-        filteredModelValid.addListener(timesTable1);
-        filteredModelInvalid.addListener(timesTable2);
 
-      /*   TimesTable timesTable1 = new TimesTable(new AdminModelFilteredStartNbr(model, true));
-        TimesTable timesTable2 = new TimesTable(new AdminModelFilteredStartNbr(model, false)); */
-        CompetitorsTable competitorsTable = new CompetitorsTable(model);
-        ResultsTable resultsTable   = new ResultsTable();
+        /* Times Tables */
+        AdminModel validTimesModel = new OnlyValidTimesAdminModel(adminModel, true);
+        AdminModel invalidTimesModel = new OnlyValidTimesAdminModel(adminModel, false);
+        TimesTableModel validTimesTableModel = new TimesTableModel(validTimesModel);
+        TimesTableModel invalidTimesTableModel = new TimesTableModel(invalidTimesModel);
+        validTimesModel.addObserver(validTimesTableModel);
+        invalidTimesModel.addObserver(invalidTimesTableModel);
 
-        /* model.addListener(timesTable1);
-        model.addListener(timesTable2); */
-        model.addListener(competitorsTable);
-        model.addListener(resultsTable);
+        TimesTable validTimesTable = new TimesTable(validTimesTableModel);
+        TimesTable invalidTimesTable = new TimesTable(invalidTimesTableModel);
 
-        JScrollPane leftTopScrollPane = new JScrollPane(timesTable1);
-        JScrollPane leftBottomScrollPane = new JScrollPane(timesTable2);
+        /* Competitors Table */
+        CompetitorsTableModel competitorsTableModel = new CompetitorsTableModel();
+        adminModel.addObserver(competitorsTableModel);
+
+        CompetitorsTable competitorsTable = new CompetitorsTable(adminModel, competitorsTableModel);
+
+        /* Results Table */
+        ResultsTableModel resultsTableModel = new ResultsTableModel();
+        adminModel.addObserver(resultsTableModel);
+
+        ResultsTable resultsTable = new ResultsTable(resultsTableModel);
+
+        JScrollPane leftTopScrollPane = new JScrollPane(validTimesTable);
+        JScrollPane leftBottomScrollPane = new JScrollPane(invalidTimesTable);
         JScrollPane rightScrollPane = new JScrollPane(competitorsTable);
 
         JButton selectCompetitorsTableButton = new JButton("Deltagare");
@@ -72,8 +78,8 @@ public class AdminGUI extends JFrame {
         selectFileButton.setForeground(Color.WHITE);
         selectFileButton.setPreferredSize(new Dimension(200, 50));
 
-        selectFileButton.addActionListener( (f)-> {        
-            parseFile(model);
+        selectFileButton.addActionListener((f) -> {
+            parseFile(adminModel);
         });
 
         leftTopScrollPane.getViewport().setBackground(new Color(129, 178, 223));
@@ -122,7 +128,7 @@ public class AdminGUI extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                if (getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
+                if (getWidth() < 900) { // när fönstret är under 900 pixlar används vertikal-layout
                     buttonPanel.setLayout(verticalLayoutInput);
                 } else {
                     buttonPanel.setLayout(gridLayoutInput); // annars används gridlayout (bredvid varandra)
@@ -180,11 +186,11 @@ public class AdminGUI extends JFrame {
                 File selectedFile = fileChooser.getSelectedFile();
                 Scanner s = new Scanner(selectedFile);
 
-                while(s.hasNextLine()) {
+                while (s.hasNextLine()) {
                     String[] l = s.nextLine().split(",");
-                    model.sendPostRequest(new ParticipantDTO(l[0], l[1]),1);
+                    model.sendPostRequest(new ParticipantDTO(l[0], l[1]), 1);
                 }
-                
+
                 s.close();
             } else {
                 System.out.println("Ingen fil valdes.");

@@ -1,25 +1,22 @@
-package admin.model;
+package admin.view;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import result.model.CompetitorsCalculator;
-import result.model.CompetitorsTableModel;
+import result.view.CompetitorsTableModel;
 
 public class TestCompetitorsTableModel {
 
     private CompetitorsTableModel tableModel;
-    private CompetitorsCalculator competitorsCalculatorMock;
 
     @BeforeEach
     void setUp() {
-        competitorsCalculatorMock = mock(CompetitorsCalculator.class);
-        tableModel = new CompetitorsTableModel(competitorsCalculatorMock);
+        tableModel = new CompetitorsTableModel();
     }
 
     @Test
@@ -44,6 +41,7 @@ public class TestCompetitorsTableModel {
     @Test
     void testOnDataUpdated_WithEmptyLists_ClearsTable() {
         tableModel.onDataUpdated(List.of(), List.of());
+
         assertEquals(0, tableModel.getRowCount());
     }
 
@@ -53,4 +51,3 @@ public class TestCompetitorsTableModel {
         assertFalse(tableModel.isCellEditable(5, 2));
     }
 }
-

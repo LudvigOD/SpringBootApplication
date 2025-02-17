@@ -34,7 +34,7 @@ public class TestCompetitorsCalculator {
         new ParticipantDTO("01", "Alice"),
         new ParticipantDTO("02", "Bob"));
 
-    List<CompetitorDTO> competitors = calculator.aggregateTimesByParticipant(times, participants);
+    List<CompetitorDTO> competitors = calculator.aggregateCompetitors(times, participants);
 
     assertEquals(2, competitors.size());
 
@@ -57,7 +57,7 @@ public class TestCompetitorsCalculator {
     List<ParticipantDTO> participants = List.of(
         new ParticipantDTO("01", "Alice"));
 
-    List<CompetitorDTO> competitors = calculator.aggregateTimesByParticipant(times, participants);
+    List<CompetitorDTO> competitors = calculator.aggregateCompetitors(times, participants);
 
     assertEquals(1, competitors.size());
 
@@ -74,7 +74,7 @@ public class TestCompetitorsCalculator {
     List<ParticipantDTO> participants = List.of(
         new ParticipantDTO("01", "Alice"));
 
-    List<CompetitorDTO> competitors = calculator.aggregateTimesByParticipant(times, participants);
+    List<CompetitorDTO> competitors = calculator.aggregateCompetitors(times, participants);
 
     assertEquals(1, competitors.size());
 
@@ -90,7 +90,7 @@ public class TestCompetitorsCalculator {
 
     List<ParticipantDTO> participants = List.of();
 
-    List<CompetitorDTO> competitors = calculator.aggregateTimesByParticipant(times, participants);
+    List<CompetitorDTO> competitors = calculator.aggregateCompetitors(times, participants);
 
     assertEquals(0, competitors.size());
   }
@@ -108,7 +108,7 @@ public class TestCompetitorsCalculator {
         new ParticipantDTO("01", "Alice"),
         new ParticipantDTO("02", "Bob"));
 
-    List<CompetitorDTO> competitors = calculator.aggregateTimesByParticipant(times, participants);
+    List<CompetitorDTO> competitors = calculator.aggregateCompetitors(times, participants);
 
     assertEquals(3, competitors.size());
 
