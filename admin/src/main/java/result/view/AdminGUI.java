@@ -90,17 +90,16 @@ public class AdminGUI extends JFrame {
         raceIDField.setAlignmentX(CENTER_ALIGNMENT);
         formatRaceIDButton(raceIDField, setRaceIDButton, adminModel);
 
-        JButton selectFileButton = new JButton("Ladda fil...");
+        JButton selectFileButton = new JButton("Ladda in deltagare");
         selectFileButton.setFont(new Font("Arial", Font.PLAIN, 20));
         selectFileButton.setBackground(new Color(112, 173, 71));
         selectFileButton.setForeground(Color.WHITE);
-        selectFileButton.setPreferredSize(new Dimension(200, 50));
-
+        selectFileButton.setPreferredSize(new Dimension(250, 50));
         selectFileButton.addActionListener((f) -> {
             parseFile(adminModel);
         });
 
-        JButton sendResultButton = new JButton("Skicka");
+        JButton sendResultButton = new JButton("Skicka resultat");
         sendResultButton.setFont(new Font("Arial", Font.PLAIN, 20));
         sendResultButton.setBackground(new Color(112, 173, 71));
         sendResultButton.setForeground(Color.WHITE);
@@ -159,6 +158,7 @@ public class AdminGUI extends JFrame {
         setRaceIDButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         selectFileButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         raceIDField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sendResultButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Box raceIdBox = Box.createHorizontalBox();
         raceIdBox.setAlignmentX(CENTER_ALIGNMENT);
@@ -218,6 +218,7 @@ public class AdminGUI extends JFrame {
         selectCompetitorsTableButton.setMaximumSize(new Dimension(200, 50));
         selectFileButton.setMaximumSize(new Dimension(200, 50));
         setRaceIDButton.setMaximumSize(new Dimension(150, 50));
+        sendResultButton.setMaximumSize(new Dimension(200, 50));
 
         mainPanel.add(buttonPanel, BorderLayout.NORTH);
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
