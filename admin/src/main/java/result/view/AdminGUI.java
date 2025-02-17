@@ -32,6 +32,7 @@ import javax.swing.text.AbstractDocument;
 import result.model.AdminModel;
 import result.model.OnlyValidTimesAdminModel;
 import shared.dto.ParticipantDTO;
+import result.model.AdminModelImpl;
 
 public class AdminGUI extends JFrame {
     public AdminGUI(AdminModel adminModel) {
@@ -99,6 +100,18 @@ public class AdminGUI extends JFrame {
             parseFile(adminModel);
         });
 
+        JButton sendResultButton = new JButton("Skicka");
+        sendResultButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        sendResultButton.setBackground(new Color(112, 173, 71));
+        sendResultButton.setForeground(Color.WHITE);
+        sendResultButton.setPreferredSize(new Dimension(200, 50));
+
+        sendResultButton.addActionListener( (f)-> {        
+            ((AdminModelImpl) adminModel).sendResults(((ResultsTableModel) resultsTable.getModel()).getResultDTOs());
+        });
+
+        
+
         leftTopScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         leftBottomScrollPane.getViewport().setBackground(new Color(129, 178, 223));
         rightScrollPane.getViewport().setBackground(new Color(156, 202, 124));
@@ -139,6 +152,7 @@ public class AdminGUI extends JFrame {
         buttonPanel.add(selectCompetitorsTableButton);
         buttonPanel.add(selectResultsTableButton);
         buttonPanel.add(selectFileButton);
+        buttonPanel.add(sendResultButton);
 
         selectCompetitorsTableButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         selectResultsTableButton.setAlignmentX(Component.CENTER_ALIGNMENT);

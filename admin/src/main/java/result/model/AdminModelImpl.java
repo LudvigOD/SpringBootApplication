@@ -9,7 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import result.dto.AllFinalResultsDTO;
 import result.dto.FinalResultDTO;
-import result.dto.FinalResultsDTO;
 import result.dto.ResultDTO;
 import shared.dto.ParticipantDTO;
 import shared.dto.RaceConfigurationDTO;
@@ -54,7 +53,6 @@ public class AdminModelImpl implements AdminModel {
         notifyObservers();
     }
 
-<<<<<<< HEAD
     public RaceConfigurationDTO syncGetRaceConfigurationFromServer(int raceID) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -64,14 +62,15 @@ public class AdminModelImpl implements AdminModel {
                 .retrieve()
                 .bodyToMono(RaceConfigurationDTO.class)
                 .block();
-=======
-    private void sendResults(List<ResultDTO> resultDTOs) {
+    }
+
+    public void sendResults(List<ResultDTO> resultDTOs) {
         List<FinalResultDTO> listOfResults = resultDTOs.stream().map(r -> new FinalResultDTO(r, 1, 2)).toList();
         AllFinalResultsDTO results = new AllFinalResultsDTO("", listOfResults);
         sendFinalResultPostRequest(results);
-
->>>>>>> a283228 (added post-request)
     }
+
+
 
     public List<TimeDTO> syncGetAllTimesFromServer(int raceID) {
         return webClient.get()
@@ -105,7 +104,6 @@ public class AdminModelImpl implements AdminModel {
 
     public void createParticipant(ParticipantDTO dto) {
         webClient.post()
-<<<<<<< HEAD
                 .uri("/races/{raceId}/participants", raceID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
@@ -118,13 +116,6 @@ public class AdminModelImpl implements AdminModel {
     public void setRaceID(int raceID) {
         this.raceID = raceID;
         fetchUpdates();
-=======
-            .uri("/races/{raceId}/participants", raceId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(dto)
-            .retrieve()
-            .toBodilessEntity()
-            .block();
     }
 
     public void sendFinalResultPostRequest(AllFinalResultsDTO dto) {
@@ -138,6 +129,6 @@ public class AdminModelImpl implements AdminModel {
             .retrieve()
             .toBodilessEntity()
             .block();
->>>>>>> a283228 (added post-request)
     }
+
 }

@@ -79,4 +79,9 @@ public class ResultsTableModel extends AbstractTableModel implements AdminModelO
       fireTableDataChanged();
     });
   }
+
+  public List<ResultDTO> getResultDTOs() {
+    return results;
+  }
+
 }
