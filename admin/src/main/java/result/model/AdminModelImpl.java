@@ -7,6 +7,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import result.dto.AllFinalResultsDTO;
+import result.dto.FinalResultDTO;
+import result.dto.FinalResultsDTO;
+import result.dto.ResultDTO;
 import shared.dto.ParticipantDTO;
 import shared.dto.RaceConfigurationDTO;
 import shared.dto.TimeDTO;
@@ -50,6 +54,7 @@ public class AdminModelImpl implements AdminModel {
         notifyObservers();
     }
 
+<<<<<<< HEAD
     public RaceConfigurationDTO syncGetRaceConfigurationFromServer(int raceID) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -59,6 +64,13 @@ public class AdminModelImpl implements AdminModel {
                 .retrieve()
                 .bodyToMono(RaceConfigurationDTO.class)
                 .block();
+=======
+    private void sendResults(List<ResultDTO> resultDTOs) {
+        List<FinalResultDTO> listOfResults = resultDTOs.stream().map(r -> new FinalResultDTO(r, 1, 2)).toList();
+        AllFinalResultsDTO results = new AllFinalResultsDTO("", listOfResults);
+        sendFinalResultPostRequest(results);
+
+>>>>>>> a283228 (added post-request)
     }
 
     public List<TimeDTO> syncGetAllTimesFromServer(int raceID) {
@@ -93,6 +105,7 @@ public class AdminModelImpl implements AdminModel {
 
     public void createParticipant(ParticipantDTO dto) {
         webClient.post()
+<<<<<<< HEAD
                 .uri("/races/{raceId}/participants", raceID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(dto)
@@ -105,5 +118,26 @@ public class AdminModelImpl implements AdminModel {
     public void setRaceID(int raceID) {
         this.raceID = raceID;
         fetchUpdates();
+=======
+            .uri("/races/{raceId}/participants", raceId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(dto)
+            .retrieve()
+            .toBodilessEntity()
+            .block();
+    }
+
+    public void sendFinalResultPostRequest(AllFinalResultsDTO dto) {
+        WebClient webClientResults = WebClient.builder()
+        .baseUrl("http://lweb1142.cs.lth.se:8081")
+        .build();
+        webClientResults.post()
+            .uri("/api/results/submit")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(dto)
+            .retrieve()
+            .toBodilessEntity()
+            .block();
+>>>>>>> a283228 (added post-request)
     }
 }

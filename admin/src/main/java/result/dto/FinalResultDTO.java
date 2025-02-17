@@ -1,31 +1,10 @@
 package result.dto;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Optional;
 
-public class FinalResultsDTO {
-    private String teamToken;
-    private List<FinalResultDTO> jsonResult;
-
-    public FinalResultsDTO() {
-        // The automatic JSON conversion requires a default constructor
-    }
-
-    public FinalResultsDTO(String teamToken, List<FinalResultDTO> jsonResult) {
-        this.teamToken = teamToken;
-        this.jsonResult = jsonResult;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("FinalResultsDTO{teamToken='%s', jsonResult='%s'}", teamToken, jsonResult);
-    }
-    
-}
-
-class FinalResultDTO {
+public class FinalResultDTO {
     private String plac;
     private String startNbr;
     private String name;
@@ -84,5 +63,3 @@ class FinalResultDTO {
     }
     
 }
-
-
