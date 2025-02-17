@@ -33,10 +33,10 @@ import register.model.EndStation;
 import register.model.RegisterModel;
 import register.model.StartStation;
 import register.model.StationModel;
-import register.utils.RegisterFilter;
 import shared.Utils;
 import shared.dto.TimeDTO;
 import shared.gui.PlaceholderTextField;
+import shared.gui.RegisterFilter;
 
 public class RegisterGUI extends JFrame implements RegisterView {
 
@@ -51,6 +51,7 @@ public class RegisterGUI extends JFrame implements RegisterView {
   private JTextField startNumberField;
   private JButton registerButton;
   private DefaultTableModel tableModel = new DefaultTableModel(tableHeaders, 0);
+  private JTextField raceIdField = new PlaceholderTextField("RaceID", 10);
 
   public RegisterGUI(RegisterModel model) {
     this.model = model;
@@ -59,18 +60,17 @@ public class RegisterGUI extends JFrame implements RegisterView {
     initGUI();
   }
 
-
   @Override
   public void timeWasRegistered() {
     tableModel.setRowCount(0);
     Consumer<List<TimeDTO>> responseHandler = response -> {
       response.forEach(timeDTO -> {
-        if(timeDTO.getStartNbr().equals("000")) {
+        if (timeDTO.getStartNbr().equals("000")) {
           tableModel.addRow(new Object[] { "StartID?", Utils.formatInstant(timeDTO.getTime()),
-            selectedStation });
+              selectedStation });
         } else {
           tableModel.addRow(new Object[] { timeDTO.getStartNbr(), Utils.formatInstant(timeDTO.getTime()),
-            selectedStation });
+              selectedStation });
         }
       });
     };
@@ -91,18 +91,18 @@ public class RegisterGUI extends JFrame implements RegisterView {
       }
     };
     tableModel.addTableModelListener(e -> {
-      if(e.getType() == TableModelEvent.UPDATE) {
+      if (e.getType() == TableModelEvent.UPDATE) {
         int row = e.getFirstRow();
         int column = e.getColumn();
 
-        if(column == 0) {
+        if (column == 0) {
           Object newValueObj = tableModel.getValueAt(row, column);
           String newStartNbr = (newValueObj != null) ? newValueObj.toString() : "";
-          try{
+          try {
             TimeDTO time = model.syncReloadTimes(Optional.of(selectedStation.id())).get(row);
             time.setStartNbr(newStartNbr);
             model.updateTime(time, 1);
-          } catch(Exception x) {
+          } catch (Exception x) {
             x.printStackTrace();
           }
         }
@@ -120,12 +120,9 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
     // Filter för TextField så att man ej kan skriva in annat än siffror
     ((AbstractDocument) startNumberField.getDocument()).setDocumentFilter(new RegisterFilter());
-
-    startNumberField.setFont(defaultFont);
+    ((AbstractDocument) raceIdField.getDocument()).setDocumentFilter(new RegisterFilter());
 
     registerButton = new JButton("Registrera tid");
-    registerButton.setFont(defaultFont);
-    registerButton.setBackground(Color.RED);
     registerButton.setFont(defaultFont);
     registerButton.setBackground(Color.RED);
 
@@ -135,20 +132,19 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.setLayout(gridLayout);
 
     addComponentListener(new ComponentAdapter() {
-        @Override
-        public void componentResized(ComponentEvent e) {
-            if (getWidth() < 900) {   // när fönstret är under 900 pixlar används vertikal-layout
-                inputPanel.setLayout(verticalLayout);
-                inputPanel.setPreferredSize(new Dimension(200 , 200));
-            } else {
-                inputPanel.setLayout(gridLayout); // annars används gridlayout (bredvid varandra)
-                inputPanel.setPreferredSize(new Dimension(700,60));
-            }
-            inputPanel.revalidate(); // berättar för komponenterna att de ska ändra form/layout
-            inputPanel.repaint(); // ritar ut den nya layouten
+      @Override
+      public void componentResized(ComponentEvent e) {
+        if (getWidth() < 1200) { // när fönstret är under 900 pixlar används vertikal-layout
+          inputPanel.setLayout(verticalLayout);
+          inputPanel.setPreferredSize(new Dimension(200, 270));
+        } else {
+          inputPanel.setLayout(gridLayout); // annars används gridlayout (bredvid varandra)
+          inputPanel.setPreferredSize(new Dimension(900, 60));
         }
+        inputPanel.revalidate(); // berättar för komponenterna att de ska ändra form/layout
+        inputPanel.repaint(); // ritar ut den nya layouten
+      }
     });
-
 
     JLabel startNum = new JLabel("Startnummer:");
     startNum.setFont(defaultFont);
@@ -157,9 +153,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
     chooseStation.addActionListener(event -> {
       selectedStation = (StationModel) chooseStation.getSelectedItem();
     });
-    chooseStation.setMaximumSize(new Dimension(75,25));
+    chooseStation.setMaximumSize(new Dimension(75, 25));
 
-    startNumberField.setMaximumSize(new Dimension(175,40));
+    startNumberField.setMaximumSize(new Dimension(175, 40));
+    raceIdField.setMaximumSize(new Dimension(175, 40));
 
     JLabel stationLabel = new JLabel("Station:");
     stationLabel.setFont(defaultFont);
@@ -168,11 +165,15 @@ public class RegisterGUI extends JFrame implements RegisterView {
     startNumberField.setAlignmentX(Component.CENTER_ALIGNMENT);
     startNum.setAlignmentX(Component.CENTER_ALIGNMENT);
     stationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    raceIdField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    raceIdField.setFont(defaultFont);
     registerButton.setMaximumSize(new Dimension(200, 40));
     registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    registerButton.setOpaque(true);
+    registerButton.setBorderPainted(false);
 
     inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    inputPanel.setPreferredSize(new Dimension(700,60));
+    inputPanel.setPreferredSize(new Dimension(900, 60));
 
     inputPanel.add(stationLabel);
     inputPanel.add(Box.createHorizontalStrut(5));
@@ -181,6 +182,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.add(startNum);
     inputPanel.add(Box.createHorizontalStrut(5));
     inputPanel.add(startNumberField);
+    inputPanel.add(Box.createHorizontalStrut(5));
+    inputPanel.add(raceIdField);
     inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(registerButton);
 
@@ -197,13 +200,15 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
   private void timeRegistering() {
     String startNumber = startNumberField.getText();
-      if (!startNumber.isEmpty()) {
-        model.registerTime(startNumber, selectedStation.id());
-      } else {
-        model.registerTime("0", selectedStation.id());
-      }
-      startNumberField.setText("");
-      SwingUtilities.invokeLater(() -> startNumberField.requestFocusInWindow());
+    int raceId = Integer.parseInt(raceIdField.getText());
+    model.setRaceID(raceId);
+    if (!startNumber.isEmpty()) {
+      model.registerTime(startNumber, selectedStation.id());
+    } else {
+      model.registerTime("0", selectedStation.id());
+    }
+    startNumberField.setText("");
+    SwingUtilities.invokeLater(() -> startNumberField.requestFocusInWindow());
   }
 
 }

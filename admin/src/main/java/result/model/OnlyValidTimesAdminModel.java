@@ -10,6 +10,7 @@ import shared.dto.TimeDTO;
  */
 public class OnlyValidTimesAdminModel extends FilteredAdminModel {
   private final boolean validTimes;
+  private final AdminModel adminModel;
 
   /**
    * @param onlyValid If true, only Times whose Participant exists are shown. If
@@ -18,6 +19,7 @@ public class OnlyValidTimesAdminModel extends FilteredAdminModel {
    */
   public OnlyValidTimesAdminModel(AdminModel adminModel, boolean onlyValid) {
     super(adminModel);
+    this.adminModel = adminModel;
     this.validTimes = onlyValid;
   }
 
@@ -26,5 +28,15 @@ public class OnlyValidTimesAdminModel extends FilteredAdminModel {
     return validTimes == participants.stream()
         .map(ParticipantDTO::getStartNbr)
         .anyMatch(n -> n.equals(time.getStartNbr()));
+  }
+
+  @Override
+  public void setRaceID(int raceID) {
+    adminModel.setRaceID(raceID);
+  }
+
+  @Override
+  public int getRaceID() {
+    return adminModel.getRaceID();
   }
 }
