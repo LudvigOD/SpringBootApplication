@@ -29,4 +29,18 @@ public class Utils {
 
         return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds, millis);
     }
+
+    public static String formatDurationServer(Duration duration) {
+        if(duration.isNegative()) {
+            return "-" + formatDuration(duration.negated());
+        }
+
+        // Format to HH:mm:ss
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.getSeconds() % 60;
+
+
+        return String.format("%02d:%02d:%02d.%d", hours, minutes, seconds);
+    }
 }
