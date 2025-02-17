@@ -2,8 +2,6 @@ package result.dto;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import shared.Utils;
@@ -24,7 +22,9 @@ public class FinalResultDTO {
         setPlace(result.getPlace());
         this.startNbr = result.getCompetitor().getParticipant().getStartNbr();
         this.name = result.getCompetitor().getParticipant().getName();
-        setTotalTime(result.getCompetitor().getTotalTime());
+        setTotalTime(result.getCompetitor().getTotalTime(), 
+                     result.getCompetitor().getOnlyTimeForStation(startStation), 
+                     result.getCompetitor().getOnlyTimeForStation(endStation));
         setStartTime(result.getCompetitor().getOnlyTimeForStation(startStation));
         setEndTime(result.getCompetitor().getOnlyTimeForStation(endStation));
     }
@@ -37,11 +37,16 @@ public class FinalResultDTO {
         }
     }
 
-    private void setTotalTime(Optional<Duration> totalTime) {
+    private void setTotalTime(Optional<Duration> totalTime, Optional<Instant> startTime, Optional<Instant> endTime) {
         if (totalTime.isEmpty()){
             this.totalTime = "--:--:--";
         } else {
-            this.totalTime = Utils.formatDurationServer(totalTime.get().plusNanos(500_000_000)).toString();
+            Instant start = startTime.get().plusNanos(500_000_000);
+            start = start.minusNanos(start.getNano());
+            Instant end = endTime.get().plusNanos(500_000_000);
+            end = end.minusNanos(end.getNano());
+            Duration total = Duration.between(start, end);
+            this.totalTime = Utils.formatDurationServer(total);
         }
     }
 
@@ -49,7 +54,7 @@ public class FinalResultDTO {
         if (startTime.isEmpty()){
             this.startTime = "--:--:--";
         } else {
-            this.startTime = Utils.formatInstantServer(startTime.get()).toString();
+            this.startTime = Utils.formatInstantServer(startTime.get().plusNanos(500_000_000));
         }
     }
 
@@ -57,7 +62,7 @@ public class FinalResultDTO {
         if (endTime.isEmpty()){
             this.endTime = "--:--:--";
         } else {
-            this.endTime = Utils.formatInstantServer(endTime.get()).toString();
+            this.endTime = Utils.formatInstantServer(endTime.get().plusNanos(500_000_000));
         }
     }
 

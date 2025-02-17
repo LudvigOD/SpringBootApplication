@@ -39,12 +39,6 @@ public class Utils {
         long hours = duration.toHours();
         long minutes = duration.toMinutes() % 60;
         long seconds = duration.getSeconds() % 60;
-        long millis = (duration.toMillis() % 1000) / 100;
-        if (millis >= 5) {
-            seconds++;
-        }
-
-
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
