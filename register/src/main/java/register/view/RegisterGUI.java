@@ -161,10 +161,14 @@ public class RegisterGUI extends JFrame implements RegisterView {
     JLabel stationLabel = new JLabel("Station:");
     stationLabel.setFont(defaultFont);
 
+    JLabel raceIdLabel = new JLabel("RaceID:");
+    raceIdLabel.setFont(defaultFont);
+
     chooseStation.setAlignmentX(Component.CENTER_ALIGNMENT);
     startNumberField.setAlignmentX(Component.CENTER_ALIGNMENT);
     startNum.setAlignmentX(Component.CENTER_ALIGNMENT);
     stationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    raceIdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     raceIdField.setAlignmentX(Component.CENTER_ALIGNMENT);
     raceIdField.setFont(defaultFont);
     registerButton.setMaximumSize(new Dimension(200, 40));
@@ -183,6 +187,8 @@ public class RegisterGUI extends JFrame implements RegisterView {
     inputPanel.add(Box.createHorizontalStrut(5));
     inputPanel.add(startNumberField);
     inputPanel.add(Box.createHorizontalStrut(5));
+    inputPanel.add(raceIdLabel);
+    inputPanel.add(Box.createHorizontalStrut(5));
     inputPanel.add(raceIdField);
     inputPanel.add(Box.createHorizontalStrut(15));
     inputPanel.add(registerButton);
@@ -200,8 +206,10 @@ public class RegisterGUI extends JFrame implements RegisterView {
 
   private void timeRegistering() {
     String startNumber = startNumberField.getText();
-    int raceId = Integer.parseInt(raceIdField.getText());
-    model.setRaceID(raceId);
+    if (!raceIdField.getText().isEmpty()) {
+      int raceId = Integer.parseInt(raceIdField.getText());
+      model.setRaceID(raceId);
+    }
     if (!startNumber.isEmpty()) {
       model.registerTime(startNumber, selectedStation.id());
     } else {
