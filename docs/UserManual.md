@@ -60,3 +60,5 @@ Ledningen kan också, vid flera tider för en station, välja att trycka på fel
 När servern är igång kommer tiderna att registreras på den. Tiderna med all övrig information, som stationsid och startnummer, finns att se på url:en:
     http://localhost:8080/api/races/{raceId}/times  
 **Obs!** Istället för {raceId} ska det aktuella raceId:t för racet skrivas in. I nuläget är raceId alltid 1.
+
+När admin anser att tidsregistreringana är korrekt kan resultatet av tiderna skickas genom att klicka på "Skicka resultat" i adminverktyget.
