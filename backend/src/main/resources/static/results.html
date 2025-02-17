@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Race Results</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Race Results</h1>
+    <div class="controls">
+      <label for="raceId">Race ID:</label>
+      <input type="text" id="raceId" value="1">
+      <button id="loadData">Load Data</button>
+    </div>
+    <div id="loading">Loading…</div>
+    <table id="resultsTable">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    function formatTime(timeStr) {
+      const regex = /T(\d{2}):(\d{2}):(\d{2})\.(\d+?)Z/;
+      const match = timeStr.match(regex);
+      if (match) {
+        let [ , hh, mm, ss, frac ] = match;
+        let fracFloat = parseFloat("0." + frac);
+        let ms = Math.round(fracFloat * 1000);
+        if (ms >= 1000) ms = 999;
+        let msStr = ms.toString().padStart(3, '0');
+        return `${hh}:${mm}:${ss}.${msStr}`;
+      }
+      let dt = new Date(timeStr);
+      return dt.toISOString().slice(11, 23);
+    }
+	
+    function formatDuration(ms) {
+      const hours = Math.floor(ms / 3600000);
+      const minutes = Math.floor((ms % 3600000) / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      const milliseconds = ms % 1000;
+      return `${hours.toString().padStart(2, '0')}:` +
+             `${minutes.toString().padStart(2, '0')}:` +
+             `${seconds.toString().padStart(2, '0')}.` +
+             `${milliseconds.toString().padStart(3, '0')}`;
+    }
+
+    function showLoading() {
+      document.getElementById('loading').style.display = 'block';
+    }
+    function hideLoading() {
+      document.getElementById('loading').style.display = 'none';
+    }
+
+    async function loadRaceData(raceId) {
+      showLoading();
+      const timesUrl = `http://pvg-projekt.cs.lth.se:8005/api/races/${raceId}/times`;
+      const participantsUrl = `http://pvg-projekt.cs.lth.se:8005/api/races/${raceId}/participants`;
+
+      try {
+        const [timesRes, participantsRes] = await Promise.all([
+          fetch(timesUrl),
+          fetch(participantsUrl)
+        ]);
+
+        if (!timesRes.ok || !participantsRes.ok) {
+          throw new Error('Failed to fetch data from one or more endpoints.');
+        }
+
+        const timesData = await timesRes.json();
+        const participantsData = await participantsRes.json();
+
+        const maxStationId = timesData.reduce((max, entry) => Math.max(max, entry.stationId), 0);
+
+        const timesByParticipant = {};
+        timesData.forEach(entry => {
+          if (!timesByParticipant[entry.startNbr]) {
+            timesByParticipant[entry.startNbr] = {};
+          }
+          if (!timesByParticipant[entry.startNbr][entry.stationId]) {
+            timesByParticipant[entry.startNbr][entry.stationId] = [];
+          }
+          timesByParticipant[entry.startNbr][entry.stationId].push(entry.time);
+        });
+
+        function getValidTimeForStation(participant, station) {
+          const pTimes = timesByParticipant[participant.startNbr] || {};
+          const arr = pTimes[station] || [];
+          if (arr.length === 1) {
+            return new Date(arr[0]).getTime();
+          }
+          return Infinity;
+        }
+
+        function compareParticipants(a, b) {
+          for (let station = maxStationId; station >= 0; station--) {
+            let timeA = getValidTimeForStation(a, station);
+            let timeB = getValidTimeForStation(b, station);
+            if (timeA !== timeB) {
+              return timeA - timeB;
+            }
+          }
+          return 0;
+        }
+
+        const sortedParticipants = participantsData.slice().sort(compareParticipants);
+
+        const thead = document.querySelector('#resultsTable thead');
+        thead.innerHTML = '';
+        const headerRow = document.createElement('tr');
+
+        const thPos = document.createElement('th');
+        thPos.textContent = 'Position';
+        headerRow.appendChild(thPos);
+
+        const thName = document.createElement('th');
+        thName.textContent = 'Name';
+        headerRow.appendChild(thName);
+
+        for (let station = 0; station <= maxStationId; station++) {
+          const thStation = document.createElement('th');
+          if (station === 0) {
+            thStation.textContent = 'Start';
+          } else if (station === maxStationId) {
+            thStation.textContent = 'Mål';
+          } else {
+            thStation.textContent = `Station ${station}`;
+          }
+          headerRow.appendChild(thStation);
+        }
+
+        const thTotal = document.createElement('th');
+        thTotal.textContent = 'Total';
+        headerRow.appendChild(thTotal);
+        thead.appendChild(headerRow);
+
+        const tbody = document.querySelector('#resultsTable tbody');
+        tbody.innerHTML = '';
+
+        sortedParticipants.forEach((participant, index) => {
+          const tr = document.createElement('tr');
+          const pTimes = timesByParticipant[participant.startNbr] || {};
+
+
+          const stationCells = [];
+          for (let station = 0; station <= maxStationId; station++) {
+            const timesArr = pTimes[station] || [];
+            let cell = { display: '', raw: null };
+
+            if (timesArr.length > 1) {
+              cell.display = "Fel med registrering!";
+            } else if (timesArr.length === 1) {
+              cell.display = formatTime(timesArr[0]);
+              cell.raw = timesArr[0];
+            } else {
+              let laterFound = false;
+              for (let j = station + 1; j <= maxStationId; j++) {
+                const laterArr = pTimes[j] || [];
+                if (laterArr.length > 0) {
+                  laterFound = true;
+                  break;
+                }
+              }
+              cell.display = laterFound ? "Fel med registrering!" : "-";
+            }
+            stationCells.push(cell);
+          }
+
+          // Build row cells.
+          const tdPos = document.createElement('td');
+          tdPos.textContent = index + 1;
+          tr.appendChild(tdPos);
+
+          const tdName = document.createElement('td');
+          tdName.textContent = participant.name;
+          tr.appendChild(tdName);
+
+          stationCells.forEach(cellInfo => {
+            const td = document.createElement('td');
+            td.textContent = cellInfo.display;
+            tr.appendChild(td);
+          });
+
+          const tdTotal = document.createElement('td');
+          let anyError = stationCells.some(cell => cell.display === "Fel med registrering!");
+          if (anyError || stationCells[0].raw === null || stationCells[maxStationId].raw === null) {
+            tdTotal.textContent = "-";
+          } else {
+            const diff = new Date(stationCells[maxStationId].raw) - new Date(stationCells[0].raw);
+            tdTotal.textContent = formatDuration(diff);
+          }
+          tr.appendChild(tdTotal);
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Error loading race data:', error);
+        alert('Error fetching race data. Check console for details.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    document.getElementById('loadData').addEventListener('click', () => {
+      const raceId = document.getElementById('raceId').value;
+      loadRaceData(raceId);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const raceId = document.getElementById('raceId').value;
+      loadRaceData(raceId);
+    });
+  </script>
+</body>
+</html>
