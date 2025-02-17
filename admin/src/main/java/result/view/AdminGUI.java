@@ -220,7 +220,7 @@ public class AdminGUI extends JFrame {
 
                 while (s.hasNextLine()) {
                     String[] l = s.nextLine().split(",");
-                    model.sendPostRequest(new ParticipantDTO(l[0], l[1]), 1);
+                    model.sendPostRequest(new ParticipantDTO(l[0], l[1]), model.getRaceID());
                 }
 
                 s.close();
