@@ -13,11 +13,11 @@ subprojects {
     repositories {
         mavenCentral()
     }
-    // If Gradle is using the wrong Java version, you can set it here!
-    // java {
-    //     sourceCompatibility = JavaVersion.VERSION_17
-    //     targetCompatibility = JavaVersion.VERSION_17
-    // }
+     //If Gradle is using the wrong Java version, you can set it here!
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
     dependencies {
 
         // I previously had the following dependencies here, but I don't think we need them

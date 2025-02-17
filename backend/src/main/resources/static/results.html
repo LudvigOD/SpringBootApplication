@@ -168,7 +168,7 @@
             stationCells.push(cell);
           }
 
-          // Build row cells.
+          
           const tdPos = document.createElement('td');
           tdPos.textContent = index + 1;
           tr.appendChild(tdPos);
@@ -211,6 +211,29 @@
       const raceId = document.getElementById('raceId').value;
       loadRaceData(raceId);
     });
+  
+    let autoUpdateInterval = null;
+
+function startAutoUpdate() {
+  if (autoUpdateInterval) clearInterval(autoUpdateInterval);
+  autoUpdateInterval = setInterval(() => {
+    const raceId = document.getElementById('raceId').value;
+    loadRaceData(raceId);
+  }, 5000);
+}
+
+document.getElementById('loadData').addEventListener('click', () => {
+  const raceId = document.getElementById('raceId').value;
+  loadRaceData(raceId);
+  startAutoUpdate();
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const raceId = document.getElementById('raceId').value;
+  loadRaceData(raceId);
+  startAutoUpdate();
+});
+
   </script>
 </body>
 </html>
