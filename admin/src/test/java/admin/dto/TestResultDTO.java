@@ -2,11 +2,11 @@ package admin.dto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,20 +24,20 @@ public class TestResultDTO {
     @Test
     @DisplayName("It should return times for a station")
     public void testGetTimesForStation() {
-      Map<Integer, List<Instant>> times = new HashMap<>();
-      times.put(0, List.of(Instant.ofEpochSecond(123), Instant.ofEpochSecond(789)));
-      times.put(1, List.of(Instant.ofEpochSecond(456)));
+      Map<Long, List<Instant>> times = new HashMap<>();
+      times.put(0l, List.of(Instant.ofEpochSecond(123), Instant.ofEpochSecond(789)));
+      times.put(1l, List.of(Instant.ofEpochSecond(456)));
 
-      CompetitorDTO competitor = new CompetitorDTO(participant, times);
+      CompetitorDTO competitor = new CompetitorDTO(participant, times, Optional.empty());
 
-      assertEquals(times.get(0), competitor.getTimesForStation(0));
-      assertEquals(times.get(1), competitor.getTimesForStation(1));
+      assertEquals(times.get(0l), competitor.getTimesForStation(0));
+      assertEquals(times.get(1l), competitor.getTimesForStation(1));
     }
 
     @Test
     @DisplayName("It should return an empty list for a station with no times")
     public void testGetTimesForStationEmpty() {
-      CompetitorDTO competitor = new CompetitorDTO(participant, new HashMap<>());
+      CompetitorDTO competitor = new CompetitorDTO(participant, new HashMap<>(), Optional.empty());
 
       assertEquals(0, competitor.getTimesForStation(0).size());
     }
@@ -49,10 +49,10 @@ public class TestResultDTO {
     @Test
     @DisplayName("It should return the only time for a station")
     public void testGetOnlyTimeForStation() {
-      Map<Integer, List<Instant>> times = new HashMap<>();
-      times.put(0, List.of(Instant.ofEpochSecond(123)));
+      Map<Long, List<Instant>> times = new HashMap<>();
+      times.put(0l, List.of(Instant.ofEpochSecond(123)));
 
-      CompetitorDTO competitor = new CompetitorDTO(participant, times);
+      CompetitorDTO competitor = new CompetitorDTO(participant, times, Optional.empty());
 
       assertEquals(Instant.ofEpochSecond(123), competitor.getOnlyTimeForStation(0).get());
     }
@@ -60,7 +60,7 @@ public class TestResultDTO {
     @Test
     @DisplayName("It should return an empty optional for a station with no times")
     public void testGetOnlyTimeForStationEmpty() {
-      CompetitorDTO competitor = new CompetitorDTO(participant, new HashMap<>());
+      CompetitorDTO competitor = new CompetitorDTO(participant, new HashMap<>(), Optional.empty());
 
       assertEquals(false, competitor.getOnlyTimeForStation(0).isPresent());
     }
@@ -68,48 +68,12 @@ public class TestResultDTO {
     @Test
     @DisplayName("It should return an empty optional for a station with multiple times")
     public void testGetOnlyTimeForStationMultiple() {
-      Map<Integer, List<Instant>> times = new HashMap<>();
-      times.put(0, List.of(Instant.ofEpochSecond(123), Instant.ofEpochSecond(456)));
+      Map<Long, List<Instant>> times = new HashMap<>();
+      times.put(0l, List.of(Instant.ofEpochSecond(123), Instant.ofEpochSecond(456)));
 
-      CompetitorDTO competitor = new CompetitorDTO(participant, times);
+      CompetitorDTO competitor = new CompetitorDTO(participant, times, Optional.empty());
 
       assertEquals(false, competitor.getOnlyTimeForStation(0).isPresent());
-    }
-  }
-
-  @Nested
-  @DisplayName("getTotalTime")
-  class GetTotalTimeTests {
-    @Test
-    @DisplayName("It should return the total time")
-    public void testGetTotalTime() {
-      Map<Integer, List<Instant>> times = new HashMap<>();
-      times.put(0, List.of(Instant.ofEpochSecond(123)));
-      times.put(1, List.of(Instant.ofEpochSecond(456)));
-
-      CompetitorDTO competitor = new CompetitorDTO(participant, times);
-
-      assertEquals(Duration.ofSeconds(333), competitor.getTotalTime().get());
-    }
-
-    @Test
-    @DisplayName("It should return an empty optional for missing times")
-    public void testGetTotalTimeMissing() {
-      CompetitorDTO competitor = new CompetitorDTO(participant, new HashMap<>());
-
-      assertEquals(false, competitor.getTotalTime().isPresent());
-    }
-
-    @Test
-    @DisplayName("It should return an empty optional for multiple times")
-    public void testGetTotalTimeMultiple() {
-      Map<Integer, List<Instant>> times = new HashMap<>();
-      times.put(0, List.of(Instant.ofEpochSecond(123), Instant.ofEpochSecond(456)));
-      times.put(1, List.of(Instant.ofEpochSecond(789)));
-
-      CompetitorDTO competitor = new CompetitorDTO(participant, times);
-
-      assertEquals(false, competitor.getTotalTime().isPresent());
     }
   }
 }

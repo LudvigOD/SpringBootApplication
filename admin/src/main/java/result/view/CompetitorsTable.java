@@ -62,55 +62,44 @@ public class CompetitorsTable extends JTable {
                         break;
                     }
                     case 2: {
-                        // Start time: List<Instant>
-                        @SuppressWarnings("unchecked")
-                        List<Instant> startTimes = (List<Instant>) value;
-
-                        switch (startTimes.size()) {
-                            case 0:
-                                setText("Start saknas");
-                                c.setForeground(new Color(255, 99, 71));
-                                break;
-                            case 1:
-                                setText(Utils.formatInstant(startTimes.get(0)));
-                                break;
-                            default:
-                                setText("Flera starttider");
-                                c.setForeground(new Color(255, 99, 71));
-                                break;
-                        }
-
-                        break;
-                    }
-                    case 3: {
-                        // Finish time: List<Instant>
-                        @SuppressWarnings("unchecked")
-                        List<Instant> finishTime = (List<Instant>) value;
-
-                        switch (finishTime.size()) {
-                            case 0:
-                                setText("Måltid saknas");
-                                c.setForeground(new Color(255, 99, 71));
-                                break;
-
-                            case 1:
-                                setText(Utils.formatInstant(finishTime.get(0)));
-                                break;
-
-                            default:
-                                setText("Flera måltider");
-                                c.setForeground(new Color(255, 99, 71));
-                                break;
-                        }
-
-                        break;
-                    }
-                    case 4: {
                         // Total time: Optional<Duration>
                         @SuppressWarnings("unchecked")
                         Optional<Duration> totalTime = (Optional<Duration>) value;
 
                         setText(totalTime.map(Utils::formatDuration).orElse("--:--:--"));
+
+                        break;
+                    }
+                    default: {
+                        if (model.isDuration(column)) {
+                            // Station Duration: Optional<Duration>
+                            @SuppressWarnings("unchecked")
+                            Optional<Duration> stationDuration = (Optional<Duration>) value;
+
+                            setText(stationDuration.map(Utils::formatDuration).orElse("--:--:--"));
+                        } else {
+                            // Station Times: List<Instant>
+                            @SuppressWarnings("unchecked")
+                            List<Instant> times = (List<Instant>) value;
+
+                            switch (times.size()) {
+                                case 0:
+                                    setText("Tid saknas");
+                                    c.setForeground(new Color(255, 99, 71));
+                                    break;
+
+                                case 1:
+                                    setText(Utils.formatInstant(times.get(0)));
+                                    break;
+
+                                default:
+                                    setText("Flera tider");
+                                    c.setForeground(new Color(255, 99, 71));
+                                    break;
+                            }
+
+                        }
+
                         break;
                     }
                 }
@@ -126,10 +115,8 @@ public class CompetitorsTable extends JTable {
                 int column = columnAtPoint(e.getPoint());
                 CompetitorsTableModel model = (CompetitorsTableModel) getModel();
 
-                switch (column) {
-                    case 2:
-                    case 3:
-                        int stationId = model.getStationId(column);
+                if (column > 3) {
+                        long stationId = model.getStationId(column);
                         String startNumber = (String) getValueAt(row, 0);
 
                         TimesWindow.openTimesDialog(

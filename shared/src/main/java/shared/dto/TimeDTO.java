@@ -5,7 +5,7 @@ import java.time.Instant;
 import org.springframework.lang.NonNull;
 
 public class TimeDTO {
-    private Integer stationId;
+    private long stationId;
     private String startNbr;
     private Long timeId;
 
@@ -19,7 +19,7 @@ public class TimeDTO {
     // If it is used for PUT, the id will be used to find the Time Entity with the
     // same Id.
     public TimeDTO(
-            Integer stationId,
+            long stationId,
             @NonNull String startNbr,
             Instant time,
             @NonNull Long timeId) {
@@ -33,7 +33,7 @@ public class TimeDTO {
         return timeId;
     }
 
-    public Integer getStationId() {
+    public long getStationId() {
         return stationId;
     }
 

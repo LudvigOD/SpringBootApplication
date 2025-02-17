@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.time.Instant;
+import java.util.Optional;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
@@ -42,31 +43,14 @@ public class TimesTable extends JTable {
                     c.setBackground(new Color(234, 239, 247));
                 }
 
-                // if we need to select cells
-                // if (isSelected) {
-                // c.setBackground(new Color(100, 149, 237));
-                // }
-
-                // if (row == 4 && column == 1) {
-                // c.setForeground(new Color(255, 99, 71));
-                // }
-
                 switch (column) {
                     case 0: {
-                        // Station ID: int
-                        int stationId = (int) value;
+                        // Station name: Optional<String>
+                        @SuppressWarnings("unchecked")
+                        Optional<String> stationName = (Optional<String>) value;
 
-                        switch (stationId) {
-                            case 1:
-                                setText("Start");
-                                break;
-                            case 2:
-                                setText("Mål");
-                                break;
-                                default:
-                                setText("Mellanstation " + stationId);
-                                break;
-                        }
+                        setText(stationName.orElse("Okänd"));
+
                         break;
                     }
                     case 1: {

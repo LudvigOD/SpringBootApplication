@@ -73,7 +73,10 @@ public class ResultsTableModel extends AbstractTableModel implements AdminModelO
 
   public void onDataUpdated(RaceConfigurationDTO raceConfig, List<TimeDTO> times) {
     SwingUtilities.invokeLater(() -> {
-      List<CompetitorDTO> competitors = competitorsCalculator.aggregateCompetitors(times, raceConfig.getParticipants());
+      List<CompetitorDTO> competitors = competitorsCalculator.aggregateCompetitors(
+          raceConfig.getStations(),
+          times,
+          raceConfig.getParticipants());
       this.results = resultsCalculator.aggregateResults(competitors);
 
       fireTableDataChanged();

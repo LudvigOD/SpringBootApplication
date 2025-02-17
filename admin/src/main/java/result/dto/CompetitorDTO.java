@@ -9,31 +9,34 @@ import java.util.Optional;
 import shared.dto.ParticipantDTO;
 
 /**
- * A Competitor DTO contains information about a specific participant together with
- * their registered times per station.
+ * A Competitor DTO contains information about a specific participant together
+ * with their registered times per station.
  */
 public class CompetitorDTO {
   private ParticipantDTO participant;
-  private Map<Integer, List<Instant>> timesPerStation;
+  private Map<Long, List<Instant>> timesPerStation;
+  private Optional<Duration> totalTime;
 
-  public CompetitorDTO(ParticipantDTO participant, Map<Integer, List<Instant>> timesPerStation) {
+  public CompetitorDTO(ParticipantDTO participant, Map<Long, List<Instant>> timesPerStation,
+      Optional<Duration> totalTime) {
     this.participant = participant;
     this.timesPerStation = timesPerStation;
+    this.totalTime = totalTime;
   }
 
   public ParticipantDTO getParticipant() {
     return participant;
   }
 
-  public Map<Integer, List<Instant>> getTimesPerStation() {
+  public Map<Long, List<Instant>> getTimesPerStation() {
     return timesPerStation;
   }
 
-  public List<Instant> getTimesForStation(int stationId) {
+  public List<Instant> getTimesForStation(long stationId) {
     return timesPerStation.getOrDefault(stationId, List.of());
   }
 
-  public Optional<Instant> getOnlyTimeForStation(int stationId) {
+  public Optional<Instant> getOnlyTimeForStation(long stationId) {
     List<Instant> times = getTimesForStation(stationId);
 
     return times.size() == 1
@@ -42,12 +45,12 @@ public class CompetitorDTO {
   }
 
   public Optional<Duration> getTotalTime() {
-    return getOnlyTimeForStation(0)
-        .flatMap(startTime -> getOnlyTimeForStation(1).map(finishTime -> Duration.between(startTime, finishTime)));
+    return this.totalTime;
   }
 
   @Override
   public String toString() {
-    return "CompetitorDTO [participant=" + participant + ", timesPerStation=" + timesPerStation + "]";
+    return "CompetitorDTO [participant=" + participant + ", timesPerStation=" + timesPerStation + ", totalTime="
+        + totalTime + "]";
   }
 }

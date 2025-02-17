@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 public class Utils {
     private static String TIME_FORMAT = "HH:mm:ss:S";
@@ -17,7 +19,7 @@ public class Utils {
     }
 
     public static String formatDuration(Duration duration) {
-        if(duration.isNegative()) {
+        if (duration.isNegative()) {
             return "-" + formatDuration(duration.negated());
         }
 
@@ -41,5 +43,13 @@ public class Utils {
         long seconds = duration.getSeconds() % 60;
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
+    /**
+     * Returns the only element of the list as an {@link Optional}.
+     */
+    public static <T> Optional<T> getOnlyElement(List<T> list) {
+        return list.size() == 1
+            ? Optional.of(list.get(0))
+            : Optional.empty();
     }
 }
